@@ -16,6 +16,11 @@
 </template>
 <script>
 export default {
+  data() {
+    return {
+      currentDate: null,
+    }
+  },
   props: {
     evaluaciones: {
       type: Array,
@@ -23,10 +28,10 @@ export default {
     day: {
       type: Number,
     },
-    currentDate: {
-      type: String,
-      required: true,
-    }
+  },
+  created() {
+    const d = new Date();
+    this.currentDate = `${d.getFullYear()}-${(d.getMonth()+'').padStart(2, 0)}-${(d.getDate()+'').padStart(2, 0)}`;
   },
   filters: {
     hour: value => {
@@ -39,7 +44,7 @@ export default {
   },
   computed:{
     date() {
-      return this.currentDate.slice(0,-2)+(this.day + "") .padStart(2, 0);
+      return this.currentDate.slice(0,-2)+(this.day + "").padStart(2, 0);
     },
     isDisabled() {
       return this.date !== this.currentDate;

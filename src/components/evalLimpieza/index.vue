@@ -24,7 +24,6 @@
                       <day-check
                           :evaluaciones="evaluaciones"
                           :day="(startDay+(n-1))"
-                          :currentDate="fecha"
                         >
                         </day-check>
                     </td>
@@ -69,3 +68,9 @@ export default {
     },
 }
 </script>
+
+<style lang="scss">
+.collapsible-body {
+  overflow: scroll;
+}
+</style>
