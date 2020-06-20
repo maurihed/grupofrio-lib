@@ -9,12 +9,12 @@
                   <tr>
                       <td class="center">Aspecto</td>
                       <td class="center">{{'Lunes ('+startDay+')'}}</td>
-                      <td class="center">{{'Martes ('+(startDay+1)+')'}}</td>
-                      <td class="center">{{'Miercoles ('+(startDay+2)+')'}}</td>
-                      <td class="center">{{'Jueves ('+(startDay+3)+')'}}</td>
-                      <td class="center">{{'Viernes ('+(startDay+4)+')'}}</td>
-                      <td class="center">{{'Sabado ('+(startDay+5)+')'}}</td>
-                      <td class="center">{{'Domingo ('+(startDay+6)+')'}}</td>
+                      <td class="center">{{'Martes ('+(plusDay(startDay, 1))+')'}}</td>
+                      <td class="center">{{'Miercoles ('+plusDay(startDay, 2)+')'}}</td>
+                      <td class="center">{{'Jueves ('+plusDay(startDay, 3)+')'}}</td>
+                      <td class="center">{{'Viernes ('+plusDay(startDay, 4)+')'}}</td>
+                      <td class="center">{{'Sabado ('+plusDay(startDay, 5)+')'}}</td>
+                      <td class="center">{{'Domingo ('+plusDay(startDay, 6)+')'}}</td>
                   </tr>
                 </thead>
                 <tbody>
@@ -22,8 +22,12 @@
                     <td>{{aspecto}}</td>
                     <td v-for="n of 7" class="center" :key="n">
                       <day-check
-                          :evaluaciones="evaluaciones"
-                          :day="(startDay+(n-1))"
+                          :empleado="empleado"
+                          :maquina="parseInt(maquina)"
+                          :aspectoId="parseInt(evaluaciones.id)"
+                          :evaluaciones="evaluaciones.data"
+                          :daySelected="fecha"
+                          :day="plusDay(startDay, n-1)"
                         >
                         </day-check>
                     </td>
@@ -45,7 +49,7 @@ export default {
             tipos: [],
         };
     },
-    props: ['maquina', 'fecha'],
+    props: ['maquina', 'fecha', 'empleado'],
     async created() {
       const response = await axios.post(`${this.baseUrl}?option=getEvaluaciones`,{ maquina: this.maquina, fecha: this.fecha });
       this.aspectos = response.data;
@@ -55,16 +59,17 @@ export default {
       M.Collapsible.init(document.querySelectorAll('.collapsible'));
     },
     methods: {
+      plusDay(currentDay, day) {
+        const newDate = this.fecha.slice(0,-2) + (currentDay + "").padStart(2, 0);
+        const date = new Date(newDate);
+        return new Date(date.setDate(date.getDate() + 1 + day)).getDate();
+      }
     },
     computed: {
         startDay() {
             const date = new Date(this.fecha);
-            return date.getDate() - (date.getDay() - 1);
+            return new Date(date.setDate(date.getDate() - (date.getDay() - 1))).getDate();
         },
-        currentDay() {
-            const date = new Date(this.fecha);
-            return date.getDate() + 1; 
-        }
     },
 }
 </script>

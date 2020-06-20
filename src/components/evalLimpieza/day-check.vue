@@ -23,47 +23,99 @@ export default {
   },
   props: {
     evaluaciones: {
-      type: Array,
+      type: Array | Object,
     },
     day: {
       type: Number,
     },
-  },
-  created() {
-    const d = new Date();
-    this.currentDate = `${d.getFullYear()}-${(d.getMonth()+'').padStart(2, 0)}-${(d.getDate()+'').padStart(2, 0)}`;
+    daySelected: {
+      type: String,
+    },
+    maquina: {
+      type: Number,
+    },
+    aspectoId: {
+      type: Number,
+    },
+    empleado: {
+      type: String,
+    }
   },
   filters: {
     hour: value => {
       const d = new Date();
-      const currentDate = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+      const currentDate = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
       if (!value) return ''
       const date = new Date(`${currentDate} ${value}`);
       return date.toLocaleString([], { hour12: true}).split(',')[1].trim();;
     }
   },
+  created() {
+    const d = new Date();
+    this.currentDate = `${d.getFullYear()}-${(d.getMonth()+1+'').padStart(2, 0)}-${(d.getDate()+'').padStart(2, 0)}`;
+    console.log('evaluaciones', this.evaluaciones);
+    console.log('evaluacion', this.evaluacion);
+  },
   computed:{
     date() {
-      return this.currentDate.slice(0,-2)+(this.day + "").padStart(2, 0);
+      return this.daySelected.slice(0,-2)+(this.day + "").padStart(2, 0);
     },
     isDisabled() {
       return this.date !== this.currentDate;
     },
-    evaluacion() {
-      let evaluacion = this.evaluaciones.filter(e => e.fecha === this.date);
-      evaluacion = evaluacion.length ? evaluacion[0] : {};
-      return evaluacion;
+    evaluacion:{
+      get() {
+        if (!this.evaluaciones.length) {
+          return {};
+        }
+        let evaluacion = this.evaluaciones.filter(e => e.fecha === this.date);
+        evaluacion = evaluacion.length ? evaluacion[0] : {};
+        return evaluacion;
+      },
+      set(value) {
+        if (Object.keys(this.evaluacion).length) {
+          // existe
+          this.evaluaciones[0].evaluacion = value.evaluacion;
+          this.evaluaciones[0].hora = value.hora;
+        }
+        else {
+          // no existe
+          this.evaluaciones.push(value);
+        }
+      }
     },
     wasChecked() {
-      return !!this.evaluacion.evaluacion;
+      return this.evaluacion.evaluacion === '1';
     }
   },
   methods: {
     updateValue(isChecked) {
-      console.log('updating...', this.evaluacion, this.date, isChecked)
+      // $maquina, $id, $date, $empleado, $aspecto, $eval
+      const request = {
+        maquina: this.maquina, 
+        id: this.evaluacion.eval_id || null, 
+        date: this.date, 
+        empleado: this.empleado, 
+        aspecto: this.aspectoId, 
+        eval: isChecked ? 1 : 0,
+      };
+      axios.post(`${env.ASPECTOS_EVAL_LIMPIEZA_URL}?option=updateEvaluacion`, request).then(response => {
+        const [val] = response.data;
+        this.evaluacion = val;
+      });
     },
     removeEvaluation() {
-      console.log('removing...');
+      const request = {
+        maquina: this.maquina, 
+        id: this.evaluacion.eval_id || null, 
+        date: this.date, 
+        empleado: this.empleado, 
+        aspecto: this.aspectoId, 
+        eval: 0,
+      };
+      axios.post(`${env.ASPECTOS_EVAL_LIMPIEZA_URL}?option=updateEvaluacion`, request).then(response => {
+        this.evaluacion.evaluacion = '0';
+      });
     }
   }
 }
