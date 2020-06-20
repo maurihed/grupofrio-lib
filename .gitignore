@@ -1,4 +1,5 @@
 node_modules
 dist
-./webpack-assets.json
-./yarn.lock
+merma.php
+s.sql
+webpack-assets.json
