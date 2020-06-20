@@ -1,2 +1,5 @@
 node_modules
 dist
+merma.php
+s.sql
+webpack-assets.json
