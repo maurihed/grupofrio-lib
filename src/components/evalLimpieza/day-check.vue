@@ -6,7 +6,7 @@
       <div class="switch">
         <label>
           No
-          <input type="checkbox" @change="updateSolucion($event.target.checked)" :checked="(!!evaluacion.se_soluciono)" :disabled="isDisabled">
+          <input type="checkbox" @change="updateSolucion($event.target.checked)" :checked="(!!Number(evaluacion.se_soluciono))" :disabled="isDisabled">
           <span class="lever"></span>
           Si
         </label>
