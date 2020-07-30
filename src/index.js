@@ -13,6 +13,12 @@ Vue.component('day-check', require('./components/evalLimpieza/day-check.vue').de
 Vue.component('eval-aspectos-limpieza', require('./components/evalLimpieza/index.vue').default)
 Vue.component('bitacora-merma', require('./components/bitacora-merma/index.vue').default)
 Vue.component('merma-input', require('./components/bitacora-merma/merma-input.vue').default)
+Vue.component('comisiones-produccion', require('./components/comisiones-produccion/comisiones.vue').default)
+// -- Configuracion --
+Vue.component('conf-turnos', require('./components/configuracion/turnos/index.vue').default)
+Vue.component('turno-timer', require('./components/configuracion/turnos/timer.vue').default)
+Vue.component('variables-comisiones-produccion', require('./components/comisiones-produccion/variables.vue').default)
+Vue.component('comisiones-produccion', require('./components/comisiones-produccion/comisiones.vue').default)
 
 var app = new Vue({
   el: '#app',

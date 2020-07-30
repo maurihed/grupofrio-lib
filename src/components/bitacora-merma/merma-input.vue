@@ -1,7 +1,7 @@
 <template>
   <div>
     <a class="btn-link center" @click="removeEvaluation" v-if="isEvaluated">
-      {{value}} / <span class="text-muted">{{horaComputed | hour}} </span>
+      {{value | number}} / <span class="text-muted">{{horaComputed | hour}} </span>
     </a>
     <div class="input-field" v-if="!isEvaluated">
       <input placeholder="0" :value="value" @blur="updateValue" type="number" class="validate">
@@ -61,6 +61,10 @@ export default {
       const currentDate = getCurrentDate();
       const date = new Date(`${currentDate} ${value}`);
       return date.toLocaleString([], { hour12: true}).split(',')[1].trim();;
+    },
+    number(value) {
+      if (!value) return 0;
+      return new Intl.NumberFormat("en-IN").format(value);
     }
   },
 }

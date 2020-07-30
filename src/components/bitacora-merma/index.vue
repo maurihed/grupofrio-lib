@@ -28,6 +28,7 @@
                 </td>
                 <td class="center">
                   <merma-input
+                    v-if="variable.descripcion !== 'Carro Tanque'"
                     v-model="variable.valor_final"
                     :documento="documento"
                     :idVar="variable.variable_id"
@@ -37,7 +38,7 @@
                   </merma-input>
                 </td>
                 <td class="center">
-                  <span>{{getConsumo(variable.valor_inicial, variable.valor_final)}}</span>
+                  <span>{{getConsumo(variable.valor_inicial, variable.valor_final, variable.multiplicador) | number}}</span>
                 </td>
               </tr>
             </tbody>
@@ -63,13 +64,22 @@ export default {
     M.Collapsible.init(document.querySelectorAll('.collapsible'));
   },
   methods: {
-    getConsumo(inicial, final) {
+    getConsumo(inicial, final, multiplicador = 1) {
       if (parseInt(inicial) && parseInt(final)) {
-        return final - inicial;
+        return (final - inicial) * multiplicador;
+      }
+      if (parseInt(inicial) && multiplicador == 10000) {
+        return inicial * multiplicador;
       }
       return 0;
     }
-  }
+  },
+  filters: {
+    number(value) {
+      if (!value) return 0;
+      return new Intl.NumberFormat("en-IN").format(value);
+    }
+  },
 }
 </script>
 

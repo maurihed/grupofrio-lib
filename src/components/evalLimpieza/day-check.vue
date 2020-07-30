@@ -1,6 +1,18 @@
 <template>
   <div>
     <a class="btn-link" :class="{disabled:isDisabled}" @click="removeEvaluation" v-if="wasChecked">{{evaluacion.hora | hour}}</a>
+    <div v-if="!isDisabled && wasChecked">
+      <span>¿Se solucionó?</span>
+      <div class="switch">
+        <label>
+          No
+          <input type="checkbox" @change="updateSolucion($event.target.checked)" :checked="(!!evaluacion.se_soluciono)" :disabled="isDisabled">
+          <span class="lever"></span>
+          Si
+        </label>
+      </div>
+    </div>
+    <div v-if="isDisabled && evaluacion.hora">{{!!evaluacion.se_soluciono ? '' : 'No'}} solucionado</div>
     <p v-if="!wasChecked">
       <label>
         <input
@@ -53,8 +65,6 @@ export default {
   created() {
     const d = new Date();
     this.currentDate = `${d.getFullYear()}-${(d.getMonth()+1+'').padStart(2, 0)}-${(d.getDate()+'').padStart(2, 0)}`;
-    console.log('evaluaciones', this.evaluaciones);
-    console.log('evaluacion', this.evaluacion);
   },
   computed:{
     date() {
@@ -115,6 +125,15 @@ export default {
       };
       axios.post(`${env.ASPECTOS_EVAL_LIMPIEZA_URL}?option=updateEvaluacion`, request).then(response => {
         this.evaluacion.evaluacion = '0';
+      });
+    },
+    updateSolucion(isSolved) {
+      const request = {
+        id: this.evaluacion.eval_id,
+        isSolved: !!isSolved,
+      };
+      axios.post(`${env.ASPECTOS_EVAL_LIMPIEZA_URL}?option=updateSolucionLimpieza`, request).then(response => {
+        console.log(response);
       });
     }
   }
