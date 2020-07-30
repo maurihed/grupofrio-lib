@@ -92,7 +92,7 @@
                   <td v-for="d in days" :key="d">
                     {{getTotalKilos('agua', d) | number}}
                   </td>
-                  <td>{{totalLutrosAgua | number}}</td>
+                  <td>{{totalLitrosAgua | number}}</td>
                 </tr>
                 <tr class="center">
                   <td class="left-align">Eficiencia</td>
@@ -106,7 +106,7 @@
                   <td>
                     <porcentaje-eficiencia
                       :variable="getVariable(1)"
-                      :total="totalLutrosAgua / 7"
+                      :total="totalLitrosAgua / 7"
                     >
                     </porcentaje-eficiencia>
                   </td>
@@ -151,39 +151,106 @@
             <table class="bordered">
               <thead>
                 <tr>
-                    <td style="width:20%" class="center bold">Producto</td>
-                    <td style="width:10%" class="center bold">{{'Sabado ('+sabado+')'}}</td>
-                    <td style="width:10%" class="center bold">{{'Domingo ('+domingo+')'}}</td>
-                    <td style="width:10%" class="center bold">{{'Lunes ('+lunes+')'}}</td>
-                    <td style="width:10%" class="center bold">{{'Martes ('+martes+')'}}</td>
-                    <td style="width:10%" class="center bold">{{'Miercoles ('+miercoles+')'}}</td>
-                    <td style="width:10%" class="center bold">{{'Jueves ('+jueves+')'}}</td>
-                    <td style="width:10%" class="center bold">{{'Viernes ('+viernes+')'}}</td>
-                    <td style="width:10%" class="center bold disabled">TOTAL</td>
+                    <td class="center bold">Producto</td>
+                    <td class="center bold">{{'Sabado ('+sabado+')'}}</td>
+                    <td class="center bold">{{'Domingo ('+domingo+')'}}</td>
+                    <td class="center bold">{{'Lunes ('+lunes+')'}}</td>
+                    <td class="center bold">{{'Martes ('+martes+')'}}</td>
+                    <td class="center bold">{{'Miercoles ('+miercoles+')'}}</td>
+                    <td class="center bold">{{'Jueves ('+jueves+')'}}</td>
+                    <td class="center bold">{{'Viernes ('+viernes+')'}}</td>
+                    <td class="center bold disabled">TOTAL</td>
                 </tr>
               </thead>
-              <tr>
-                <td colspan="9">
-                  <table v-for="tipo in Object.keys(tiposMerma)" :key="tipo">
-                    <thead>               
-                      <tr>
-                        <td colspan="9" class="center bold">{{tipo}}</td>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <row-rendimiento-merma
-                        v-for="variable in tiposMerma[tipo]"
-                        :key="variable.id"
-                        :variable="variable"
-                        :tipo="tipo"
-                        :days="days"
-                        :rendimientoMerma="rendimientoMerma"
-                      ></row-rendimiento-merma>
-                      <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
+              <thead>               
+                <tr>
+                  <td colspan="9" class="center bold">Agua</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Consumo litros</td>
+                  <td class="center" v-for="day in days" :key="day">{{getConsumo(day) | number}}</td>
+                  <td class="center disabled">{{getConsumoTotal() | number}}</td>
+                </tr>
+                <tr>
+                  <td>Consumo Maximo producción</td>
+                  <td class="center" v-for="day in days" :key="day">{{valorVariable('merma agua') * (Number(getTotalKilos('rolito', day)) + Number(getTotalKilos('barra', day))) | number}}</td>
+                  <td class="center disabled">{{ valorVariable('merma agua') *  (Number(totalKilosRolitos) + Number(totalKilosBarras)) | number}}</td>
+                </tr>
+                <tr>
+                  <td>Consumo Agua venta</td>
+                  <td class="center" v-for="day in days" :key="day">{{getTotalKilos('agua', day) | number}}</td>
+                  <td class="center disabled">{{totalLitrosAgua | number}}</td>
+                </tr>
+                <tr>
+                  <td>Consumo Hielo</td>
+                  <td class="center" v-for="day in days" :key="day">{{getConsumo(day) - Number(getTotalKilos('agua', day)) | number}}</td>
+                  <td class="center disabled">{{getConsumoTotal() - totalLitrosAgua | number}}</td>
+                </tr>
+                <tr>
+                  <td>Eficiencia</td>
+                  <td class="center" v-for="day in days" :key="day" v-html="getEficienciaAgua(day)"></td>
+                  <td class="center" v-html="getEficienciaTotalAgua()"></td>
+                </tr>
+                 <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
+              </tbody>
+              <thead>               
+                <tr>
+                  <td colspan="9" class="center bold">Energia</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Consumo</td>
+                  <td class="center" v-for="day in days" :key="day">{{valorVariable('Multiplicador Kwh') * getConsumo(day,'Electricidad') | number}}</td>
+                  <td class="center disabled">{{valorVariable('Multiplicador Kwh') * getConsumoTotal('Electricidad') | number}}</td>
+                </tr>
+                <tr>
+                  <td>Kilos producción</td>
+                  <td class="center" v-for="day in days" :key="day">{{Number(getTotalKilos('rolito', day)) + Number(getTotalKilos('barra', day)) | number}}</td>
+                  <td class="center disabled">{{Number(totalKilosRolitos) + Number(totalKilosBarras) | number}}</td>
+                </tr>
+                <tr>
+                  <td>kg/Kwh</td>
+                  <td class="center" v-for="day in days" :key="day">{{getKgKwh(day) | number}}</td>
+                  <td class="center disabled">{{getTotalKgKwh() | number}}</td>
+                </tr>
+                <tr>
+                  <td>Eficiencia</td>
+                  <td class="center" v-for="day in days" :key="day" v-html="getEficienciaKgKwh(day)"></td>
+                  <td class="center" v-html="getEficienciaTotalAgua()"></td>
+                </tr>
+                 <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
+              </tbody>
+              <thead>               
+                <tr>
+                  <td colspan="9" class="center bold">Aceite</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="compresor in compresoresBySucursal" :key="compresor.id">
+                  <td>{{compresor.descripcion}}</td>
+                  <td class="center" v-for="day in days" :key="day">{{getConsumoCompresor(compresor.id, day)| number}}</td>
+                  <td class="center disabled">{{ getConsumoTotalCompresor() | number}}</td>
+                </tr>
+                <tr>
+                  <td>Horas trabajadas</td>
+                  <td class="center" v-for="day in days" :key="day">8</td>
+                  <td class="center disabled">{{56 | number}}</td>
+                </tr>
+                <tr>
+                  <td>Consumo maximo L</td>
+                  <td class="center" v-for="day in days" :key="day">{{valorVariable('Consumo maximo aceite') * compresoresBySucursal.length}}</td>
+                  <td class="center disabled">{{valorVariable('Consumo maximo aceite') * compresoresBySucursal.length * 7 | number}}</td>
+                </tr>
+                <tr>
+                  <td>Eficiencia</td>
+                  <td class="center" v-for="day in days" :key="day" v-html="getEficienciaAceite(day)"></td>
+                  <td class="center" v-html="getEficienciaTotalAceite()"></td>
+                </tr>
+                 <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
+              </tbody>
             </table>
         </div>
       </li>
@@ -261,12 +328,14 @@ export default {
       data: {},
       totalKilosBarras: 0,
       totalKilosRolitos: 0,
-      totalLutrosAgua: 0,
+      totalLitrosAgua: 0,
       variables: [],
       fallas_produccion: [],
       variablesMerma: [],
       tiposMerma: [],
       rendimientoMerma: [],
+      compresores: [],
+      compresoresBySucursal: 0,
       inicidenciasLimpieza: {
         problemas: [],
         soluciones: [],
@@ -323,29 +392,23 @@ export default {
         'AGUA0006',
         'AGUA0007',
         'AGUA0008',
+        'CRAG0001',
+        'CRAG0002',
+        'CRAG0003',
+        'CRAG0004',
       ],
     }
   },
-  props: ['fecha', 'suc'],
+  props: ['fecha', 'suc', 'turno'],
   async created() {
-    const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getProduccion`,{ fecha: this.fecha, suc: this.suc });
-    const variables = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getVariables`);
-    const fallas_produccion = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getErroresProduccion`, { fecha: this.fecha, suc: this.suc });
-    const bMerma = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getBitacoraMerma`,{ fecha: this.fecha, suc: this.suc });
-    const tiposMerma = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getTiposMerma`, {suc: this.suc});
-    const inicidenciasLimpieza = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getIncidenciasLimpieza`, {fecha: this.fecha, suc: this.suc});
-    const problemasMecanicos = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getProblemasMaquinaria`, {fecha: this.fecha, suc: this.suc});
-    this.problemasMecanicos = problemasMecanicos.data;
-    this.inicidenciasLimpieza = inicidenciasLimpieza.data;
-    this.tiposMerma = tiposMerma.data;
-    this.rendimientoMerma = bMerma.data;
-    this.variables = variables.data;
-    this.data = response.data;
-    this.fallas_produccion = fallas_produccion.data;
-    this.productos = Object.keys(this.data);
-    this.totalKilosBarras = this.sumTotalKilos('barra');
-    this.totalKilosRolitos = this.sumTotalKilos('rolito');
-    this.totalLutrosAgua = this.sumTotalKilos('agua');
+    this.fetchVariablesComisiones();
+    this.fetchProduccion();
+    this.fetchFallasProduccion();
+    this.fetchBitacoraMerma();
+    this.fetchTiposMerma();
+    this.fetchIncidenciasLimpieza();
+    this.fetchProblemasMaquinaria();
+    this.fetchCompresores();
   },
   updated() {
     M.Collapsible.init(document.querySelectorAll('.collapsible'));
@@ -353,7 +416,7 @@ export default {
   filters: {
     number(value) {
       if (!value) return 0;
-      return new Intl.NumberFormat("en-IN").format(value);
+      return new Intl.NumberFormat("es-MX").format(value);
     },
     porcentaje(value) {
       if (!value) return `<span class="red-text">${value} %</span>`;
@@ -469,7 +532,6 @@ export default {
     getProblemasMecanicos(day, tipo) {
       const fecha = this.getDate(String(day));
       const incidencias = this.problemasMecanicos[tipo];
-      console.log(this.problemasMecanicos, incidencias);
       const item = incidencias.find(i => i.fecha == fecha);
       return item ? item.cantidad : 0;
     },
@@ -483,7 +545,115 @@ export default {
       if (problemas == 0) return `<span class="green-text">100 %</span>`;
       const value = ((soluciones / problemas )* 100).toFixed(1);
       return `<span class="${ value < 50 ? 'red-text' : 'green-text'}">${value} %</span>`
-    }
+    },
+    getEficienciaAgua(day, asNumber = false) {
+      const consumoMaximoHielo = this.valorVariable('merma agua') * (Number(this.getTotalKilos('rolito', day)) + Number(this.getTotalKilos('barra', day)));
+      const consumoHielo = this.getConsumo(day) - Number(this.getTotalKilos('agua', day));
+      const porcentaje = consumoHielo == 0 ? 0 : ((consumoMaximoHielo / consumoHielo) * 100).toFixed(2);
+      if (asNumber) {
+        return Number(porcentaje);
+      }
+      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje} %</span>`;
+    },
+    getEficienciaTotalAgua() {
+      const porcentaje = this.days.reduce((total, day) => total + this.getEficienciaAgua(day, true), 0) / this.days.length;
+      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
+    },
+    getConsumo(day, tipo = "Agua") {
+      const date = this.getDate(String(day));
+      const key = Object.keys(this.rendimientoMerma).find(d => d.substr(1) == date);
+      if(!key) return 0;
+      const variables = this.rendimientoMerma[key].tipos[tipo];
+      return variables.reduce((total, item) => {
+        const value = item.valor_final ? item.valor_final - item.valor_inicial : item.valor_inicial;
+        return total+Number(value)
+        }, 0);
+    },
+    getConsumoTotal(tipo= "Agua") {
+      return Object.values(this.rendimientoMerma).reduce((total, fecha) => total + fecha.tipos[tipo].reduce((sub, item)=> {
+        const value = item.valor_final ? item.valor_final - item.valor_inicial : item.valor_inicial;
+        return sub+Number(value)
+        }, 0),0);
+    },
+    valorVariable(name) {
+      const valor = this.variables.find(v=>v.descripcion == name);
+      if (!valor) return 0;
+      return Number(valor.valor);
+    },
+    getKgKwh(day) {
+      const consumo = this.valorVariable('Multiplicador Kwh') * this.getConsumo(day,'Electricidad');
+      const produccion = Number(this.getTotalKilos('rolito', day)) + Number(this.getTotalKilos('barra', day))
+      const total = consumo > 0 ? (produccion / consumo).toFixed(2) : 0;
+      return Number(Math.ceil(total));
+    },
+    getTotalKgKwh() {
+      return this.days.reduce((total, day) => total + this.getKgKwh(day), 0);
+    },
+    getEficienciaKgKwh(day) {
+      const porcentaje = this.valorVariable('Kwh/kg esperado') ? this.getKgKwh(day) / this.valorVariable('Kwh/kg esperado') * 100 : 0;
+      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
+    },
+    getConsumoCompresor(id, day) {
+      const date = this.getDate(String(day));
+      const compresor = this.compresores.find(a=>a.fecha == date && a.id == id);
+      return compresor ? compresor.valor : 0; 
+    },
+    getConsumoTotalCompresor() {
+      return this.compresores.reduce((total,item) => total + Number(item.valor), 0);
+    },
+    getEficienciaAceite(day, asNumber = false) {
+      const consumo = this.getConsumoCompresor(day);
+      const maximo = this.valorVariable('Consumo maximo aceite') * this.compresoresBySucursal.length;
+      const porcentaje = consumo ? (maximo / consumo) * 100 : 0;
+      if (asNumber) {
+        return Number(porcentaje);
+      }
+      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
+    },
+    getEficienciaTotalAceite() {
+      const divisor = this.compresoresBySucursal.length || 1; 
+      const porcentaje =  this.days.reduce((total, day) => total + this.getEficienciaAceite(day), 0) / divisor;
+      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
+    },
+    async fetchVariablesComisiones() {
+      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getVariables`, { suc: this.suc });
+      this.variables = response.data;
+      this.variables.forEach(v => v.valor = Number(Number(v.valor).toFixed(3)));
+    },
+    async fetchProduccion() {
+      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getProduccion`,{ fecha: this.fecha, suc: this.suc });
+      this.data = response.data;
+      this.totalKilosBarras = this.sumTotalKilos('barra');
+      this.totalKilosRolitos = this.sumTotalKilos('rolito');
+      this.totalLitrosAgua = this.sumTotalKilos('agua');
+      this.productos = Object.keys(this.data);
+    },
+    async fetchFallasProduccion() {
+      const fallas_produccion = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getErroresProduccion`, { fecha: this.fecha, suc: this.suc });
+      this.fallas_produccion = fallas_produccion.data;
+    },
+    async fetchBitacoraMerma() {
+      const bMerma = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getBitacoraMerma`,{ fecha: this.fecha, suc: this.suc });
+      this.rendimientoMerma = bMerma.data;
+    },
+    async fetchTiposMerma() {
+      const tiposMerma = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getTiposMerma`, {suc: this.suc});
+      this.tiposMerma = tiposMerma.data;
+    },
+    async fetchIncidenciasLimpieza() {
+      const inicidenciasLimpieza = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getIncidenciasLimpieza`, {fecha: this.fecha, suc: this.suc});
+      this.inicidenciasLimpieza = inicidenciasLimpieza.data;
+    },
+    async fetchProblemasMaquinaria() {
+      const problemasMecanicos = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getProblemasMaquinaria`, {fecha: this.fecha, suc: this.suc});
+      this.problemasMecanicos = problemasMecanicos.data;
+    },
+    async fetchCompresores() {
+      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getRendimientoAceite`, {fecha: this.fecha, suc: this.suc, turno: this.turno});
+      this.compresores = response.data;
+      this.compresoresBySucursal = [...new Set(response.data.map(a=>a.id))];
+      this.compresoresBySucursal = this.compresores.filter(a=>this.compresoresBySucursal.includes(a.id));
+    },
   },
   computed: {
     startDay() {
@@ -491,10 +661,10 @@ export default {
         return new Date(date.setDate(date.getDate() - (date.getDay() - 1))).getDate();
     },
     sabado() {
-      return this.plusDay(this.startDay, -1);
+      return this.plusDay(this.startDay, -2);
     },
     domingo() {
-      return this.plusDay(this.startDay, -2);
+      return this.plusDay(this.startDay, -1);
     },
     lunes() {
       return this.startDay;

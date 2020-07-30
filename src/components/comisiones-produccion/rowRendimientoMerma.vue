@@ -8,6 +8,12 @@
 <script>
 export default {
   props:['tipo', 'variable', 'days', 'rendimientoMerma'],
+  created() {
+    console.log({tipo,
+variable,
+days,
+rendimientoMerma});
+  },
   data() {
     return {};
   },
