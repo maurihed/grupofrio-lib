@@ -232,7 +232,7 @@
                 <tr v-for="compresor in compresoresBySucursal" :key="compresor.id">
                   <td>{{compresor.descripcion}}</td>
                   <td class="center" v-for="day in days" :key="day">{{getConsumoCompresor(compresor.id, day)| number}}</td>
-                  <td class="center disabled">{{ getConsumoTotalCompresor() | number}}</td>
+                  <td class="center disabled">{{getConsumoTotalCompresor(compresor.id)}}</td>
                 </tr>
                 <tr>
                   <td>Horas trabajadas</td>
@@ -593,16 +593,23 @@ export default {
       const porcentaje = this.valorVariable('Kwh/kg esperado') ? this.getKgKwh(day) / this.valorVariable('Kwh/kg esperado') * 100 : 0;
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
-    getConsumoCompresor(id, day) {
+    getConsumoCompresor(id, day, temp=null) {
+      if(temp){
+        console.log({id,day});
+      }
       const date = this.getDate(String(day));
       const compresor = this.compresores.find(a=>a.fecha == date && a.id == id);
-      return compresor ? compresor.valor : 0; 
+      return Number(compresor ? compresor.valor : 0); 
     },
-    getConsumoTotalCompresor() {
-      return this.compresores.reduce((total,item) => total + Number(item.valor), 0);
+    getConsumoTotalCompresor(id) {
+      const total = this.days.reduce((total, day) => total + this.getConsumoCompresor(id, day, true), 0);
+      const porcentaje =  total;
+      return porcentaje;
     },
     getEficienciaAceite(day, asNumber = false) {
-      const consumo = this.getConsumoCompresor(day);
+      const fecha = this.getDate(day+'');
+      const compresores = this.compresores.filter(a=>a.fecha === fecha);
+      const consumo = compresores.reduce((total, compresor) => total + Number(compresor.valor), 0);
       const maximo = this.valorVariable('Consumo maximo aceite') * this.compresoresBySucursal.length;
       const porcentaje = consumo ? (maximo / consumo) * 100 : 0;
       if (asNumber) {
@@ -611,8 +618,8 @@ export default {
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getEficienciaTotalAceite() {
-      const divisor = this.compresoresBySucursal.length || 1; 
-      const porcentaje =  this.days.reduce((total, day) => total + this.getEficienciaAceite(day), 0) / divisor;
+      const divisor = 7; 
+      const porcentaje =  this.days.reduce((total, day) => total + this.getEficienciaAceite(day, true), 0) / divisor;
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     async fetchVariablesComisiones() {
