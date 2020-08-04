@@ -287,7 +287,7 @@
                 <tr>
                   <td class="text-justify">Eficiencia</td>
                   <td v-for="day in days" :key="day" v-html="getEficienciaDeIncidencias(day)"></td>
-                  <td><span class="green-text">100 %</span></td>
+                  <td><span v-html="getEficienciaTotalDeIncidencias()"></span></td>
                 </tr>
               </tbody>
               <thead>
@@ -309,7 +309,7 @@
                 <tr>
                   <td class="text-justify">Eficiencia</td>
                   <td v-for="day in days" :key="day" v-html="getEficienciaDeProblemasMecanicos(day)"></td>
-                  <td><span class="green-text">100 %</span></td>
+                  <td><span v-html="getEficienciaTotalDeProblemasMecanicos()"></span></td>
                 </tr>
               </tbody>
             </table>
@@ -522,12 +522,23 @@ export default {
       const incidencias = this.inicidenciasLimpieza[tipo];
       return incidencias.reduce((t, item) => t + Number(item.cantidad), 0)
     },
-    getEficienciaDeIncidencias(day) {
+    getEficienciaDeIncidencias(day, asNumber = false) {
       const problemas = this.getIncidenciasLimpieza(day, 'problemas');
       const soluciones = this.getIncidenciasLimpieza(day, 'soluciones');
+      if(problemas == 0 && asNumber) {
+        return 100;
+      }
       if (problemas == 0) return `<span class="green-text">100 %</span>`;
       const value = ((soluciones / problemas )* 100).toFixed(1);
+      if (asNumber) {
+        return Number(value);
+      }
       return `<span class="${ value < 50 ? 'red-text' : 'green-text'}">${value} %</span>`
+    },
+    getEficienciaTotalDeIncidencias() {
+      const total = this.days.reduce((total, day) => total + this.getEficienciaDeIncidencias(day, true), 0);
+      const porcentaje = total / 7;
+      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje} %</span>`;
     },
     getProblemasMecanicos(day, tipo) {
       const fecha = this.getDate(String(day));
@@ -539,12 +550,23 @@ export default {
       const incidencias = this.problemasMecanicos[tipo];
       return incidencias.reduce((t, item) => t + Number(item.cantidad), 0)
     },
-    getEficienciaDeProblemasMecanicos(day) {
+    getEficienciaDeProblemasMecanicos(day, asNumber = false) {
       const problemas = this.getProblemasMecanicos(day, 'problemas');
       const soluciones = this.getProblemasMecanicos(day, 'soluciones');
+      if(problemas == 0 && asNumber) {
+        return 100;
+      }
       if (problemas == 0) return `<span class="green-text">100 %</span>`;
       const value = ((soluciones / problemas )* 100).toFixed(1);
+      if (asNumber) {
+        return Number(value);
+      }
       return `<span class="${ value < 50 ? 'red-text' : 'green-text'}">${value} %</span>`
+    },
+    getEficienciaTotalDeProblemasMecanicos() {
+      const total = this.days.reduce((total, day) => total + this.getEficienciaDeProblemasMecanicos(day, true), 0);
+      const porcentaje = total / 7;
+      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje} %</span>`;
     },
     getEficienciaAgua(day, asNumber = false) {
       const consumoMaximoHielo = this.valorVariable('merma agua') * (Number(this.getTotalKilos('rolito', day)) + Number(this.getTotalKilos('barra', day)));
@@ -593,16 +615,13 @@ export default {
       const porcentaje = this.valorVariable('Kwh/kg esperado') ? this.getKgKwh(day) / this.valorVariable('Kwh/kg esperado') * 100 : 0;
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
-    getConsumoCompresor(id, day, temp=null) {
-      if(temp){
-        console.log({id,day});
-      }
+    getConsumoCompresor(id, day) {
       const date = this.getDate(String(day));
       const compresor = this.compresores.find(a=>a.fecha == date && a.id == id);
       return Number(compresor ? compresor.valor : 0); 
     },
     getConsumoTotalCompresor(id) {
-      const total = this.days.reduce((total, day) => total + this.getConsumoCompresor(id, day, true), 0);
+      const total = this.days.reduce((total, day) => total + this.getConsumoCompresor(id, day), 0);
       const porcentaje =  total;
       return porcentaje;
     },
