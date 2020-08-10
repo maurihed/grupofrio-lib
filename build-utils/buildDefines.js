@@ -7,6 +7,7 @@ module.exports = ({ mode }, defines) => {
     EVAL_BITACORA_MERMA: JSON.stringify(`${BASE_URL}/bitacora/evalMerma.php`),
     EVAL_VARIABLE_COMISION_PROD: JSON.stringify(`${BASE_URL}/comisiones_produccion/variables.php`),
     CONFIGURACION_TURNO: JSON.stringify(`${BASE_URL}/configuracion/turno.php`),
+    FALLAS_PRODUCCION: JSON.stringify(`${BASE_URL}/produccion/fallas.php`),
   };
   
   return {

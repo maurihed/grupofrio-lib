@@ -19,6 +19,8 @@ Vue.component('conf-turnos', require('./components/configuracion/turnos/index.vu
 Vue.component('turno-timer', require('./components/configuracion/turnos/timer.vue').default)
 Vue.component('variables-comisiones-produccion', require('./components/comisiones-produccion/variables.vue').default)
 Vue.component('comisiones-produccion', require('./components/comisiones-produccion/comisiones.vue').default)
+// --Fallas produccion--
+Vue.component('fallas-produccion', require('./components/produccion/fallas.vue').default);
 
 var app = new Vue({
   el: '#app',
