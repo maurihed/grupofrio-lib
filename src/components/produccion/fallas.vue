@@ -15,11 +15,11 @@
     </div>
     <div v-if="isLoaded">
       <div class="row" v-if="fallas.length">
-        <div class="col l3 s2" v-for="falla in fallas" :key="falla.IdRecibo">
+        <div class="col l4 s2" v-for="falla in fallas" :key="falla.IdRecibo">
           <label :for="falla.IdRecibo">{{falla.U_Tfalla}}</label>
           <div class="switch">
             <label>
-              Off
+              No se solucionó
               <input
                 :disabled="today"
                 @change="updateFalla(falla.IdRecibo, $event.target.checked)"
@@ -29,7 +29,7 @@
                 :checked="falla.valor === '1'"  
               >
               <span class="lever"></span>
-              On
+              Se solucionó
             </label>
           </div>
         </div>
@@ -45,7 +45,7 @@
 <script>
 import { isToday, displayError, displayMessage } from '../../assets/js/utilities.js';
 export default {
-  props: ['fecha', 'turno'],
+  props: ['fecha', 'turno', 'suc'],
   data() {
     return {
       fallas: [],
@@ -54,13 +54,13 @@ export default {
     }
   },
   async created() {
-    this.fallas = await this.getFallas(this.fecha, this.turno)
+    this.fallas = await this.getFallas(this.fecha, this.turno, this.suc)
     this.today = isToday(this.fecha);
     this.isLoaded = true;
   },
   methods: {
-    async getFallas(fecha, turno) {
-      const response = await axios.post(`${env.FALLAS_PRODUCCION}?option=getFallas`, {fecha, turno});
+    async getFallas(fecha, turno, suc) {
+      const response = await axios.post(`${env.FALLAS_PRODUCCION}?option=getFallas`, {fecha, turno, suc});
       return response.data;  
     },
     async updateFalla(idRecibo, value) {
