@@ -542,7 +542,7 @@ export default {
       if (asNumber) {
         return Number(value);
       }
-      return `<span class="${ value < 50 ? 'red-text' : 'green-text'}">${value.toFixed(2)} %</span>`
+      return `<span class="${ value < 50 ? 'red-text' : 'green-text'}">${value} %</span>`
     },
     getEficienciaTotalDeIncidencias() {
       const total = this.days.reduce((total, day) => total + this.getEficienciaDeIncidencias(day, true), 0);
@@ -690,7 +690,7 @@ export default {
       this.inicidenciasLimpieza = inicidenciasLimpieza.data;
     },
     async fetchProblemasMaquinaria() {
-      const problemasMecanicos = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getProblemasMaquinaria`, {fecha: this.fecha, suc: this.suc});
+      const problemasMecanicos = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getProblemasMaquinaria`, {fecha: this.fecha, suc: this.suc, turno: this.turno});
       this.problemasMecanicos = problemasMecanicos.data;
     },
     async fetchCompresores() {
