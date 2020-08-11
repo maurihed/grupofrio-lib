@@ -120,24 +120,18 @@
               <tbody>
                 <tr>
                   <td>Numero de fallas</td>
-                  <td>{{getFallasProduccion(sabado)}}</td>
-                  <td>{{getFallasProduccion(domingo)}}</td>
-                  <td>{{getFallasProduccion(lunes)}}</td>
-                  <td>{{getFallasProduccion(martes)}}</td>
-                  <td>{{getFallasProduccion(miercoles)}}</td>
-                  <td>{{getFallasProduccion(jueves)}}</td>
-                  <td>{{getFallasProduccion(viernes)}}</td>
-                  <td>{{totalFallasProduccion()}}</td>
+                  <td class="center" v-for="day in days" :key="day">{{getDataProduccion(day, 'fallas')}}</td>
+                  <td class="center">{{totalDataProduccion('fallas')}}</td>
                 </tr>
                 <tr>
-                  <td>Numero de fallas solucionadas</td>
-                  <td>0</td><td>0</td><td>0</td><td>0</td>
-                  <td>0</td><td>0</td><td>0</td><td>0</td>
+                  <td>Numero de Soluciones</td>
+                  <td class="center" v-for="day in days" :key="day">{{getDataProduccion(day, 'soluciones')}}</td>
+                  <td class="center">{{totalDataProduccion('soluciones')}}</td>
                 </tr>
                 <tr>
                   <td>Eficiencia</td>
-                  <td>0</td><td>0</td><td>0</td><td>0</td>
-                  <td>0</td><td>0</td><td>0</td><td>0</td>
+                  <td class="center" v-for="day in days" :key="day" v-html="porcentajeToString(getDataProduccion(day, 'eficiencia'))"></td>
+                  <td class="center" v-html="porcentajeToString(totalDataProduccion('eficiencia'))"></td>
                 </tr>
               </tbody>
             </table>
@@ -146,7 +140,7 @@
     </ul>
     <ul class="collapsible popout">
       <li>
-        <div class="collapsible-header"><i class="material-icons">radio_button_checked</i>Rendimientos</div>
+        <div class="collapsible-header"><i class="material-icons">radio_button_checked</i>Eficiencias</div>
           <div class="collapsible-body">
             <table class="bordered">
               <thead>
@@ -252,6 +246,14 @@
                  <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
               </tbody>
             </table>
+            <eficiencia-generica v-for="(tipo, name) in eficienciaByTipos" :key="name"
+              :tipo="name"
+              :variables="tipo"
+              :days="days"
+              :esperado="getValorEsperado(name)"
+              :fecha="fecha"
+            >
+            </eficiencia-generica>
         </div>
       </li>
     </ul>
@@ -321,6 +323,7 @@
 <script>
 import porcentajeEficiencia from './porcentajeEficiencia.vue';
 import rowRendimientoMerma from './rowRendimientoMerma.vue';
+import eficienciaGenerica from './eficienciaGenerica.vue';
 export default {
   data() {
     return {
@@ -336,6 +339,7 @@ export default {
       rendimientoMerma: [],
       compresores: [],
       compresoresBySucursal: 0,
+      eficienciaByTipos: [],
       inicidenciasLimpieza: {
         problemas: [],
         soluciones: [],
@@ -409,6 +413,7 @@ export default {
     this.fetchIncidenciasLimpieza();
     this.fetchProblemasMaquinaria();
     this.fetchCompresores();
+    this.fetchEficienciaGenerica();
   },
   updated() {
     M.Collapsible.init(document.querySelectorAll('.collapsible'));
@@ -425,7 +430,7 @@ export default {
   },
   methods: {
     getDate(day) {
-      const d = new Date();
+      const d = new Date(this.fecha);
       const month = String(d.getMonth() + 1).padStart(2, 0);
       const year = d.getFullYear();
       return `${year}-${month}-${day.padStart(2,0)}`;
@@ -498,19 +503,23 @@ export default {
     getVariable(id) {
       return this.variables.find(v => v.id == id);
     },
-    getFallasProduccion(day) {
-      const D = new Date();
-      const year = D.getFullYear();
-      const month = String(D.getMonth() + 1).padStart(2, 0);
-      const date = `${year}-${month}-${day}`;
-      const current = this.fallas_produccion.find(item => item.fecha == date);
-      return current ? current.cantidad : 0;
+    porcentajeToString(porcentaje) {
+      return porcentaje < 50 ? `<span class="red-text">${porcentaje.toFixed(2)} %</span>`:`<span class="green-text">${porcentaje.toFixed(2)} %</span>`;
     },
-    totalFallasProduccion() {
-      if (!this.fallas_produccion) {
+    getDataProduccion(day, tipo) {
+      const fecha = this.getDate(String(day));
+      if (!this.fallas_produccion[`F${fecha}`]) {
         return 0;
       }
-      return this.fallas_produccion.reduce((total, fecha) => total + Number(fecha.cantidad), 0);
+      const value = this.fallas_produccion[`F${fecha}`][tipo];
+      return !!value ? value : 0;
+    },
+    totalDataProduccion(tipo) {
+      if (!Object.keys(this.fallas_produccion).length) {
+        return 0;
+      }
+      const porcentaje = Object.values(this.fallas_produccion).reduce((total, item) => total += Number(item[tipo]), 0)
+      return tipo === 'eficiencia' ? porcentaje / 7 : porcentaje;
     },
     getIncidenciasLimpieza(day, tipo) {
       const fecha = this.getDate(String(day));
@@ -533,12 +542,12 @@ export default {
       if (asNumber) {
         return Number(value);
       }
-      return `<span class="${ value < 50 ? 'red-text' : 'green-text'}">${value} %</span>`
+      return `<span class="${ value < 50 ? 'red-text' : 'green-text'}">${value.toFixed(2)} %</span>`
     },
     getEficienciaTotalDeIncidencias() {
       const total = this.days.reduce((total, day) => total + this.getEficienciaDeIncidencias(day, true), 0);
       const porcentaje = total / 7;
-      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje} %</span>`;
+      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getProblemasMecanicos(day, tipo) {
       const fecha = this.getDate(String(day));
@@ -566,7 +575,7 @@ export default {
     getEficienciaTotalDeProblemasMecanicos() {
       const total = this.days.reduce((total, day) => total + this.getEficienciaDeProblemasMecanicos(day, true), 0);
       const porcentaje = total / 7;
-      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje} %</span>`;
+      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${(porcentaje).toFixed(2)} %</span>`;
     },
     getEficienciaAgua(day, asNumber = false) {
       const consumoMaximoHielo = this.valorVariable('merma agua') * (Number(this.getTotalKilos('rolito', day)) + Number(this.getTotalKilos('barra', day)));
@@ -641,6 +650,16 @@ export default {
       const porcentaje =  this.days.reduce((total, day) => total + this.getEficienciaAceite(day, true), 0) / divisor;
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
+    getValorEsperado(tipo) {
+      switch(tipo) {
+        case 'Bolsa': return this.valorVariable('Bolsas minimas a utilizar') || 1;
+        case 'Grapa - Inventario': return this.valorVariable('Grapas minimas a utilizar') || 1;
+        case 'Grapa - Carrete': return this.valorVariable('Carrete minimo a utilizar') || 1;
+        case 'Sal': return this.valorVariable('Grados Baume promedio') || 1;
+        case 'Amoniaco': return this.valorVariable('Lectura recibidor esperada') || 1;
+      }
+      return 1;
+    },
     async fetchVariablesComisiones() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getVariables`, { suc: this.suc });
       this.variables = response.data;
@@ -655,7 +674,7 @@ export default {
       this.productos = Object.keys(this.data);
     },
     async fetchFallasProduccion() {
-      const fallas_produccion = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getErroresProduccion`, { fecha: this.fecha, suc: this.suc });
+      const fallas_produccion = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getErroresProduccion`, { fecha: this.fecha, suc: this.suc, turno: this.turno });
       this.fallas_produccion = fallas_produccion.data;
     },
     async fetchBitacoraMerma() {
@@ -679,6 +698,10 @@ export default {
       this.compresores = response.data;
       this.compresoresBySucursal = [...new Set(response.data.map(a=>a.id))];
       this.compresoresBySucursal = this.compresores.filter(a=>this.compresoresBySucursal.includes(a.id));
+    },
+    async fetchEficienciaGenerica() {
+      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getEficienciaMermaGenerica`, {fecha: this.fecha, suc: this.suc, turno: this.turno});
+      this.eficienciaByTipos = response.data;
     },
   },
   computed: {
@@ -714,6 +737,7 @@ export default {
    components: {
     'porcentaje-eficiencia': porcentajeEficiencia,
     'row-rendimiento-merma': rowRendimientoMerma,
+    'eficiencia-generica': eficienciaGenerica
   }
 }
 </script>
