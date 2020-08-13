@@ -592,9 +592,10 @@ export default {
     },
     getConsumo(day, tipo = "Agua") {
       const date = this.getDate(String(day));
-      const key = Object.keys(this.rendimientoMerma).find(d => d.substr(1) == date);
-      if(!key) return 0;
-      const variables = this.rendimientoMerma[key].tipos[tipo];
+      if(this.rendimientoMerma.length === 0) {
+        return 0;
+      }
+      const variables = this.rendimientoMerma ? this.rendimientoMerma[`F${date}`].tipos[tipo] : [];
       return variables.reduce((total, item) => {
         const value = item.valor_final ? item.valor_final - item.valor_inicial : item.valor_inicial;
         return total+Number(value)
@@ -666,7 +667,7 @@ export default {
       this.variables.forEach(v => v.valor = Number(Number(v.valor).toFixed(3)));
     },
     async fetchProduccion() {
-      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getProduccion`,{ fecha: this.fecha, suc: this.suc });
+      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getProduccion`,{ fecha: this.fecha, suc: this.suc, turno: this.turno });
       this.data = response.data;
       this.totalKilosBarras = this.sumTotalKilos('barra');
       this.totalKilosRolitos = this.sumTotalKilos('rolito');
@@ -678,7 +679,7 @@ export default {
       this.fallas_produccion = fallas_produccion.data;
     },
     async fetchBitacoraMerma() {
-      const bMerma = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getBitacoraMerma`,{ fecha: this.fecha, suc: this.suc });
+      const bMerma = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getBitacoraMerma`,{ fecha: this.fecha, suc: this.suc, turno: this.turno });
       this.rendimientoMerma = bMerma.data;
     },
     async fetchTiposMerma() {
