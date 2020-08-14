@@ -88,7 +88,7 @@
                 </tr>
                 <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
                 <tr class="center">
-                  <td class="left-align">Kilos agua</td>
+                  <td class="left-align">Litros agua</td>
                   <td v-for="d in days" :key="d">
                     {{getTotalKilos('agua', d) | number}}
                   </td>
