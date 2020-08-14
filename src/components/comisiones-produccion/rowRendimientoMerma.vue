@@ -18,7 +18,7 @@ rendimientoMerma});
     return {};
   },
   updated() {
-    console.log(this.tipos, this.tiposKeys, Object.values(this.tipos));
+    //console.log(this.tipos, this.tiposKeys, Object.values(this.tipos));
   },
   filters: {
     number(value) {

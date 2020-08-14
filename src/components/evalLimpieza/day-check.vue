@@ -138,7 +138,7 @@ export default {
         isSolved: !!isSolved,
       };
       axios.post(`${env.ASPECTOS_EVAL_LIMPIEZA_URL}?option=updateSolucionLimpieza`, request).then(response => {
-        console.log(response);
+        // console.log(response);
       });
     }
   }
