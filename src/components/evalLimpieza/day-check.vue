@@ -12,7 +12,7 @@
         </label>
       </div>
     </div>
-    <div v-if="isDisabled && evaluacion.hora">{{!!evaluacion.se_soluciono ? '' : 'No'}} solucionado</div>
+    <div v-if="isDisabled && evaluacion.hora" :class="!!Number(evaluacion.se_soluciono) ? 'green-text': 'red-text'">{{!!Number(evaluacion.se_soluciono) ? '' : 'No'}} solucionado</div>
     <p v-if="!wasChecked">
       <label>
         <input
@@ -50,6 +50,9 @@ export default {
       type: Number,
     },
     empleado: {
+      type: String,
+    },
+    turno: {
       type: String,
     }
   },
@@ -108,6 +111,7 @@ export default {
         empleado: this.empleado, 
         aspecto: this.aspectoId, 
         eval: isChecked ? 1 : 0,
+        turno: this.turno,
       };
       axios.post(`${env.ASPECTOS_EVAL_LIMPIEZA_URL}?option=updateEvaluacion`, request).then(response => {
         const [val] = response.data;
@@ -122,6 +126,7 @@ export default {
         empleado: this.empleado, 
         aspecto: this.aspectoId, 
         eval: 0,
+        turno: this.turno,
       };
       axios.post(`${env.ASPECTOS_EVAL_LIMPIEZA_URL}?option=updateEvaluacion`, request).then(response => {
         this.evaluacion.evaluacion = '0';

@@ -28,6 +28,7 @@
                           :evaluaciones="evaluaciones.data"
                           :daySelected="fecha"
                           :day="plusDay(startDay, n-1)"
+                          :turno="turno"
                         >
                         </day-check>
                     </td>
@@ -49,9 +50,9 @@ export default {
             tipos: [],
         };
     },
-    props: ['maquina', 'fecha', 'empleado'],
+    props: ['maquina', 'fecha', 'empleado', 'turno'],
     async created() {
-      const response = await axios.post(`${this.baseUrl}?option=getEvaluaciones`,{ maquina: this.maquina, fecha: this.fecha });
+      const response = await axios.post(`${this.baseUrl}?option=getEvaluaciones`,{ maquina: this.maquina, fecha: this.fecha, turno: this.turno });
       this.aspectos = response.data;
       this.tipos = Object.keys(this.aspectos);
     },

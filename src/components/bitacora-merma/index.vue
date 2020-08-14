@@ -28,7 +28,7 @@
                 </td>
                 <td class="center">
                   <merma-input
-                    v-if="variable.descripcion !== 'Carro Tanque'"
+                    v-if="!tipoBloqueados.includes(variable.descripcion)"
                     v-model="variable.valor_final"
                     :documento="documento"
                     :idVar="variable.variable_id"
@@ -54,6 +54,7 @@ export default {
   data() {
     return {
       tipos: [],
+      tipoBloqueados:['Carro Tanque','Compresor 1','Compresor 2','Compresor 3','Compresor 4','Compresor 5','Compresor 6','Grados Baume','Lectura M1'],
     }
   },
   async created() {
@@ -68,7 +69,7 @@ export default {
       if (parseInt(inicial) && parseInt(final)) {
         return (final - inicial) * multiplicador;
       }
-      if (parseInt(inicial) && multiplicador == 10000) {
+      if (parseInt(inicial)) {
         return inicial * multiplicador;
       }
       return 0;

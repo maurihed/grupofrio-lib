@@ -40,7 +40,7 @@ export default {
     getEficiencia(day, asNumber = false) {
       const [key] = Object.keys(this.variables);
       const value = this.variables[key][`F${this.getDate(String(day))}`];
-      const porcentaje = value ? value / this.esperado : 0;
+      const porcentaje = value ? (value / this.esperado) * 100 : 0;
       if (asNumber) {
         return Number(porcentaje);
       }

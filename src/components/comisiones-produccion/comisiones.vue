@@ -48,7 +48,7 @@
                   <td class="left-align">Eficiencia</td>
                   <td v-for="d in days" :key="d">
                     <porcentaje-eficiencia
-                      :variable="getVariable(1)"
+                      :variable="getCombinada(3)"
                       :total="getTotalKilos('rolito', d)"
                     >
                     </porcentaje-eficiencia>
@@ -73,7 +73,7 @@
                   <td class="left-align">Eficiencia</td>
                   <td v-for="d in days" :key="d">
                     <porcentaje-eficiencia
-                      :variable="getVariable(2)"
+                      :variable="getCombinada(1)"
                       :total="getTotalKilos('barra', d)"
                     >
                     </porcentaje-eficiencia>
@@ -213,7 +213,7 @@
                 <tr>
                   <td>Eficiencia</td>
                   <td class="center" v-for="day in days" :key="day" v-html="getEficienciaKgKwh(day)"></td>
-                  <td class="center" v-html="getEficienciaTotalAgua()"></td>
+                  <td class="center" v-html="getEficienciaTotalElectricidad()"></td>
                 </tr>
                  <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
               </tbody>
@@ -223,20 +223,20 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="compresor in compresoresBySucursal" :key="compresor.id">
-                  <td>{{compresor.descripcion}}</td>
-                  <td class="center" v-for="day in days" :key="day">{{getConsumoCompresor(compresor.id, day)| number}}</td>
-                  <td class="center disabled">{{getConsumoTotalCompresor(compresor.id)}}</td>
+                <tr v-for="(compresorName, key) in compresoresNames" :key="key">
+                  <td>{{compresorName}}</td>
+                  <td class="center" v-for="day in days" :key="day">{{getConsumoCompresor(compresorName, day)| number}}</td>
+                  <td class="center disabled">{{getConsumoTotalCompresor(compresorName)}}</td>
                 </tr>
                 <tr>
                   <td>Horas trabajadas</td>
-                  <td class="center" v-for="day in days" :key="day">8</td>
-                  <td class="center disabled">{{56 | number}}</td>
+                  <td class="center" v-for="day in days" :key="day">{{valorVariable('Horas trabajadas')}}</td>
+                  <td class="center disabled">{{valorVariable('Horas trabajadas')*7 | number}}</td>
                 </tr>
                 <tr>
                   <td>Consumo maximo L</td>
-                  <td class="center" v-for="day in days" :key="day">{{valorVariable('Consumo maximo aceite') * compresoresBySucursal.length}}</td>
-                  <td class="center disabled">{{valorVariable('Consumo maximo aceite') * compresoresBySucursal.length * 7 | number}}</td>
+                  <td class="center" v-for="day in days" :key="day">{{valorVariable('Consumo maximo aceite') * compresoresNames.length}}</td>
+                  <td class="center disabled">{{valorVariable('Consumo maximo aceite') * compresoresNames.length * 7 | number}}</td>
                 </tr>
                 <tr>
                   <td>Eficiencia</td>
@@ -333,12 +333,13 @@ export default {
       totalKilosRolitos: 0,
       totalLitrosAgua: 0,
       variables: [],
+      variablesCombinadas: [],
       fallas_produccion: [],
       variablesMerma: [],
       tiposMerma: [],
       rendimientoMerma: [],
-      compresores: [],
-      compresoresBySucursal: 0,
+      eficienciaCompresores: {},
+      compresoresNames: 0,
       eficienciaByTipos: [],
       inicidenciasLimpieza: {
         problemas: [],
@@ -414,6 +415,7 @@ export default {
     this.fetchProblemasMaquinaria();
     this.fetchCompresores();
     this.fetchEficienciaGenerica();
+    this.fetchVariablesCombinadas();
   },
   updated() {
     M.Collapsible.init(document.querySelectorAll('.collapsible'));
@@ -442,7 +444,7 @@ export default {
     },
     getPeso(day, fechas) {
       const producto = fechas.find(f => new Date(f.DocDate).getDate() == day);
-      return producto ? producto.TOTAL : 0;
+      return producto ? Number(producto.TOTAL) : 0;
     },
     getRowTotal(row) {
       return row.reduce((total,item) => total + Number(item.TOTAL), 0);
@@ -616,31 +618,43 @@ export default {
       const consumo = this.valorVariable('Multiplicador Kwh') * this.getConsumo(day,'Electricidad');
       const produccion = Number(this.getTotalKilos('rolito', day)) + Number(this.getTotalKilos('barra', day))
       const total = consumo > 0 ? (produccion / consumo).toFixed(2) : 0;
-      return Number(Math.ceil(total));
+      return Number(Number(total).toFixed(2));
     },
     getTotalKgKwh() {
       return this.days.reduce((total, day) => total + this.getKgKwh(day), 0);
     },
-    getEficienciaKgKwh(day) {
+    getEficienciaKgKwh(day, asNumber = false) {
       const porcentaje = this.valorVariable('Kwh/kg esperado') ? this.getKgKwh(day) / this.valorVariable('Kwh/kg esperado') * 100 : 0;
+      if (asNumber) {
+        return Number(porcentaje);
+      }
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
-    getConsumoCompresor(id, day) {
-      const date = this.getDate(String(day));
-      const compresor = this.compresores.find(a=>a.fecha == date && a.id == id);
-      return Number(compresor ? compresor.valor : 0); 
+    getEficienciaTotalElectricidad() {
+      const porcentaje = this.days.reduce((total, day)=> total + this.getEficienciaKgKwh(day, true), 0);
+      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
-    getConsumoTotalCompresor(id) {
-      const total = this.days.reduce((total, day) => total + this.getConsumoCompresor(id, day), 0);
+    getConsumoCompresor(compresorName, day) {
+      const date = this.getDate(String(day));
+      const fechaData = this.eficienciaCompresores[`F${date}`];
+      if (!fechaData) {
+        return 0;
+      }
+      return fechaData[compresorName] ? Number(fechaData[compresorName]) : 0;
+    },
+    getConsumoTotalCompresor(compresorName) {
+      const total = this.days.reduce((total, day) => total + this.getConsumoCompresor(compresorName, day), 0);
       const porcentaje =  total;
       return porcentaje;
     },
     getEficienciaAceite(day, asNumber = false) {
       const fecha = this.getDate(day+'');
-      const compresores = this.compresores.filter(a=>a.fecha === fecha);
-      const consumo = compresores.reduce((total, compresor) => total + Number(compresor.valor), 0);
-      const maximo = this.valorVariable('Consumo maximo aceite') * this.compresoresBySucursal.length;
-      const porcentaje = consumo ? (maximo / consumo) * 100 : 0;
+      let porcentaje = 0;
+      if (this.eficienciaCompresores[`F${fecha}`]) {
+        const consumo = this.eficienciaCompresores[`F${fecha}`].total;
+        const maximo = this.valorVariable('Consumo maximo aceite') * this.compresoresNames.length;
+        porcentaje = consumo ? (maximo / consumo) * 100 : 0;
+      }
       if (asNumber) {
         return Number(porcentaje);
       }
@@ -660,6 +674,9 @@ export default {
         case 'Amoniaco': return this.valorVariable('Lectura recibidor esperada') || 1;
       }
       return 1;
+    },
+    getCombinada(TMId) {
+      return this.variablesCombinadas.find((v) => v.TMId == TMId);
     },
     async fetchVariablesComisiones() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getVariables`, { suc: this.suc });
@@ -687,7 +704,7 @@ export default {
       this.tiposMerma = tiposMerma.data;
     },
     async fetchIncidenciasLimpieza() {
-      const inicidenciasLimpieza = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getIncidenciasLimpieza`, {fecha: this.fecha, suc: this.suc});
+      const inicidenciasLimpieza = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getIncidenciasLimpieza`, {fecha: this.fecha, suc: this.suc, turno: this.turno});
       this.inicidenciasLimpieza = inicidenciasLimpieza.data;
     },
     async fetchProblemasMaquinaria() {
@@ -696,13 +713,21 @@ export default {
     },
     async fetchCompresores() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getRendimientoAceite`, {fecha: this.fecha, suc: this.suc, turno: this.turno});
-      this.compresores = response.data;
-      this.compresoresBySucursal = [...new Set(response.data.map(a=>a.id))];
-      this.compresoresBySucursal = this.compresores.filter(a=>this.compresoresBySucursal.includes(a.id));
+      this.eficienciaCompresores = response.data;
+      if(Object.keys(this.eficienciaCompresores).length) {
+        const [MaxCompresores] = Object.values(this.eficienciaCompresores).sort((itemA, itemB) => Object.keys(itemB).length - Object.keys(itemA).length);
+        const temp = {...MaxCompresores};
+        delete temp.total;
+        this.compresoresNames = Object.keys(temp);
+      }
     },
     async fetchEficienciaGenerica() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getEficienciaMermaGenerica`, {fecha: this.fecha, suc: this.suc, turno: this.turno});
       this.eficienciaByTipos = response.data;
+    },
+    async fetchVariablesCombinadas() {
+      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getVariablesCombinadas`, {suc: this.suc});
+      this.variablesCombinadas = response.data;
     },
   },
   computed: {
@@ -759,5 +784,8 @@ export default {
   }
   .bg-gray {
     background: #F4F4F4;
+  }
+  .collapsible-body {
+    overflow: auto;
   }
 </style>
