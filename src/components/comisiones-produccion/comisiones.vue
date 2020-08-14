@@ -55,7 +55,7 @@
                   </td>
                   <td>
                     <porcentaje-eficiencia
-                      :variable="getVariable(1)"
+                      :variable="getVariable(3)"
                       :total="totalKilosRolitos / 7"
                     >
                     </porcentaje-eficiencia>
@@ -98,14 +98,14 @@
                   <td class="left-align">Eficiencia</td>
                   <td v-for="d in days" :key="d">
                     <porcentaje-eficiencia
-                      :variable="getVariable(14)"
+                      :variable="{valor: valorVariable('Agua Litros Minimos')}"
                       :total="getTotalKilos('agua', d)"
                     >
                     </porcentaje-eficiencia>
                   </td>
                   <td>
                     <porcentaje-eficiencia
-                      :variable="getVariable(1)"
+                      :variable="{valor: valorVariable('Agua Litros Minimos')}"
                       :total="totalLitrosAgua / 7"
                     >
                     </porcentaje-eficiencia>
@@ -318,12 +318,27 @@
           </div>
       </li>
     </ul>
+    <br>
+    <salario-comision
+      :totalKilosBarras="totalKilosBarras"
+      :totalKilosRolitos="totalKilosRolitos"
+      :precioCubero="valorVariable('Precio kilo cubero')"
+      :precioSacador="valorVariable('Precio kilo sacador')"
+      :precioMaquinista="valorVariable('Precio kilo especialiasta')"
+      :precioLider="valorVariable('Precio kilo lider')"
+      :eficiencia="getTotalEficiencia()"
+      :sueldoCubero="valorVariable('Sueldo base cubero')"
+      :sueldoSacador="valorVariable('Sueldo base sacador')"
+      :sueldoMaquinista="valorVariable('Sueldo base especialista')"
+      :sueldoLider="valorVariable('Sueldo base lider')"
+    ></salario-comision>
   </div>
 </template>
 <script>
 import porcentajeEficiencia from './porcentajeEficiencia.vue';
 import rowRendimientoMerma from './rowRendimientoMerma.vue';
 import eficienciaGenerica from './eficienciaGenerica.vue';
+import salarioComision from './salario-comision.vue';
 export default {
   data() {
     return {
@@ -546,9 +561,12 @@ export default {
       }
       return `<span class="${ value < 50 ? 'red-text' : 'green-text'}">${value} %</span>`
     },
-    getEficienciaTotalDeIncidencias() {
+    getEficienciaTotalDeIncidencias(asNumber = false) {
       const total = this.days.reduce((total, day) => total + this.getEficienciaDeIncidencias(day, true), 0);
       const porcentaje = total / 7;
+      if (asNumber) {
+        return Number(porcentaje);
+      }
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getProblemasMecanicos(day, tipo) {
@@ -574,9 +592,12 @@ export default {
       }
       return `<span class="${ value < 50 ? 'red-text' : 'green-text'}">${value} %</span>`
     },
-    getEficienciaTotalDeProblemasMecanicos() {
+    getEficienciaTotalDeProblemasMecanicos(asNumber = false) {
       const total = this.days.reduce((total, day) => total + this.getEficienciaDeProblemasMecanicos(day, true), 0);
       const porcentaje = total / 7;
+      if (asNumber) {
+        return porcentaje;
+      }
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${(porcentaje).toFixed(2)} %</span>`;
     },
     getEficienciaAgua(day, asNumber = false) {
@@ -588,8 +609,11 @@ export default {
       }
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje} %</span>`;
     },
-    getEficienciaTotalAgua() {
+    getEficienciaTotalAgua(asNumber = false) {
       const porcentaje = this.days.reduce((total, day) => total + this.getEficienciaAgua(day, true), 0) / this.days.length;
+      if (asNumber) {
+        return porcentaje;
+      }
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getConsumo(day, tipo = "Agua") {
@@ -630,8 +654,11 @@ export default {
       }
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
-    getEficienciaTotalElectricidad() {
+    getEficienciaTotalElectricidad(asNumber = false) {
       const porcentaje = this.days.reduce((total, day)=> total + this.getEficienciaKgKwh(day, true), 0);
+      if (asNumber) {
+        return porcentaje;
+      }
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getConsumoCompresor(compresorName, day) {
@@ -660,9 +687,12 @@ export default {
       }
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
-    getEficienciaTotalAceite() {
+    getEficienciaTotalAceite(asNumber = false) {
       const divisor = 7; 
       const porcentaje =  this.days.reduce((total, day) => total + this.getEficienciaAceite(day, true), 0) / divisor;
+      if (asNumber) {
+        return porcentaje;
+      }
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getValorEsperado(tipo) {
@@ -677,6 +707,56 @@ export default {
     },
     getCombinada(TMId) {
       return this.variablesCombinadas.find((v) => v.TMId == TMId);
+    },
+    getEficienciaTotalMermaGenerica() {
+      return 1;
+    },
+    getEficienciaTotalProduccion(tipo) {
+      let variable = {};
+      let total = 0;
+      switch(tipo) {
+        case 'Rollito':
+          variable = this.getVariable(3);
+          total = this.totalKilosRolitos / 7;
+          break;
+        case 'Barra':
+          variable = this.getVariable(1);
+          total = this.totalKilosBarras / 7;
+          break;
+        case 'Agua':
+          variable = this.valorVariable('Agua Litros Minimos');
+          total = this.totalLitrosAgua / 7;
+          break;
+      }
+      if (!variable) return 0;
+      if (!Number(variable)) return 0;
+      return Number((total / variable * 100).toFixed(2));
+    },
+    getTotalEficiencia() {
+      const eficienciaProduccionRollito = this.getEficienciaTotalProduccion('Rollito');
+      const eficienciaProduccionBarra = this.getEficienciaTotalProduccion('Barra');
+      const eficienciaProduccionAgua = this.getEficienciaTotalProduccion('Agua');
+      const eficienciaFallasProduccion = this.totalDataProduccion('eficiencia');
+      const eficienciaAgua = this.getEficienciaTotalAgua(true);
+      const eficienciaEnergia = this.getEficienciaTotalElectricidad(true);
+      const eficienciaAceite = this.getEficienciaTotalAceite(true);
+      const eficienciaMermaGenerica = this.getEficienciaTotalMermaGenerica();
+      const eficienciaLimpieza = this.getEficienciaTotalDeIncidencias(true);
+      const eficienciaMecanica = this.getEficienciaTotalDeProblemasMecanicos(true);
+      
+      const eficiencias = [
+        eficienciaProduccionRollito
+        ,eficienciaProduccionBarra
+        ,eficienciaProduccionAgua
+        ,eficienciaFallasProduccion
+        ,eficienciaAgua
+        ,eficienciaEnergia
+        ,eficienciaAceite
+        ,eficienciaMermaGenerica
+        ,eficienciaLimpieza
+        ,eficienciaMecanica
+      ];
+      return (eficiencias.reduce((a, b) => a + b, 0) / eficiencias.length).toFixed(2);
     },
     async fetchVariablesComisiones() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getVariables`, { suc: this.suc });
@@ -763,7 +843,8 @@ export default {
    components: {
     'porcentaje-eficiencia': porcentajeEficiencia,
     'row-rendimiento-merma': rowRendimientoMerma,
-    'eficiencia-generica': eficienciaGenerica
+    'eficiencia-generica': eficienciaGenerica,
+    'salario-comision': salarioComision,
   }
 }
 </script>
