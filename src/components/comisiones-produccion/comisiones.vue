@@ -55,7 +55,7 @@
                   </td>
                   <td>
                     <porcentaje-eficiencia
-                      :variable="getVariable(3)"
+                      :variable="getCombinada(3)"
                       :total="totalKilosRolitos / 7"
                     >
                     </porcentaje-eficiencia>
@@ -80,7 +80,7 @@
                   </td>
                   <td>
                     <porcentaje-eficiencia
-                      :variable="getVariable(1)"
+                      :variable="getCombinada(1)"
                       :total="totalKilosBarras / 7"
                     >
                     </porcentaje-eficiencia>
@@ -706,21 +706,33 @@ export default {
       return 1;
     },
     getCombinada(TMId) {
-      return this.variablesCombinadas.find((v) => v.TMId == TMId);
+      const variable = {...this.variablesCombinadas.find((v) => v.TMId == TMId)};
+      return variable;
     },
     getEficienciaTotalMermaGenerica() {
-      return 1;
+      const eficiencias = [];
+      for(let typeName in this.eficienciaByTipos) {
+        const tipoObj = this.eficienciaByTipos[typeName];
+        const [tipo] = Object.values(tipoObj);
+        const { total } = tipo;
+        const esperado = this.getValorEsperado(typeName);
+        const eficiencia = total / 7 / esperado * 100;
+        eficiencias.push(eficiencia);
+      }
+      return eficiencias;
     },
     getEficienciaTotalProduccion(tipo) {
       let variable = {};
       let total = 0;
       switch(tipo) {
         case 'Rollito':
-          variable = this.getVariable(3);
+          const t = this.getCombinada(3);
+          variable = t ? t.valor : 0;
           total = this.totalKilosRolitos / 7;
           break;
         case 'Barra':
-          variable = this.getVariable(1);
+          const t2 = this.getCombinada(1);
+          variable = t2 ? t2.valor : 0;
           total = this.totalKilosBarras / 7;
           break;
         case 'Agua':
@@ -728,6 +740,7 @@ export default {
           total = this.totalLitrosAgua / 7;
           break;
       }
+      console.log({variable, total});
       if (!variable) return 0;
       if (!Number(variable)) return 0;
       return Number((total / variable * 100).toFixed(2));
@@ -752,7 +765,7 @@ export default {
         ,eficienciaAgua
         ,eficienciaEnergia
         ,eficienciaAceite
-        ,eficienciaMermaGenerica
+        ,...eficienciaMermaGenerica
         ,eficienciaLimpieza
         ,eficienciaMecanica
       ];

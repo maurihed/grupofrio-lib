@@ -7,8 +7,6 @@
 export default {
   name: 'porcentaje-eficiencia',
   props: ['variable','total'],
-  mounted(){
-  },
   computed:{
     porcentaje() {
       if (!this.variable) return 0;

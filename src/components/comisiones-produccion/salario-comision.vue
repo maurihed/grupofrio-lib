@@ -122,7 +122,6 @@ export default {
   methods: {
     calculateNomina(kilos, precio, sueldoBase) {
       const comision = Number(kilos * precio);
-      console.log('comision', comision);
       const comisionFinal = Number((this.eficiencia / 100) * comision);
       return sueldoBase + comisionFinal;
     },
