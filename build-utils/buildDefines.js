@@ -8,6 +8,7 @@ module.exports = ({ mode }, defines) => {
     EVAL_VARIABLE_COMISION_PROD: JSON.stringify(`${BASE_URL}/comisiones_produccion/variables.php`),
     CONFIGURACION_TURNO: JSON.stringify(`${BASE_URL}/configuracion/turno.php`),
     FALLAS_PRODUCCION: JSON.stringify(`${BASE_URL}/produccion/fallas.php`),
+    TANQUE_PRODUCCION: JSON.stringify(`${BASE_URL}/produccion/tanques.php`),
   };
   
   return {
