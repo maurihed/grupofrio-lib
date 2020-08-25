@@ -13,6 +13,14 @@ export const isToday = (someDate) => {
     someDate.getMonth() == today.getMonth() &&
     someDate.getFullYear() == today.getFullYear()
 }
+
+export const numberToLetter = (number) => {
+  if (Math.floor(number / 26) > 0) {
+    return numberToLetter(number/26) + String.fromCharCode(65+(number % 26));
+  }
+  return String.fromCharCode(64 + number);
+};
+
 export const displayError = txt => {
   M.toast({
     html: txt,

@@ -24,6 +24,7 @@ Vue.component('comisiones-produccion', require('./components/comisiones-producci
 Vue.component('fallas-produccion', require('./components/produccion/fallas.vue').default);
 // -- Produccion --
 Vue.component('gestion-tanque', require('./components/produccion/gestion-tanque.vue').default);
+Vue.component('v-produccion', require('./components/produccion/index.vue').default);
 
 var app = new Vue({
   el: '#app',
