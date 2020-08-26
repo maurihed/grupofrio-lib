@@ -37,7 +37,7 @@ export default {
     return {
       cajonSelected: null,
       isModalOpen: false,
-      tituloModal: 'Dehabilitar celda',
+      tituloModal: 'Dehabilitar canastilla',
       cajonesDeshabilitadosM: [],
       hideInput: false,
     };
@@ -53,7 +53,7 @@ export default {
     },
     openModal(fil, col, id) {
       this.cajonSelected = { fil, col };
-      this.tituloModal = `${id ? 'Habilitar' : 'Deshabilitar'} cajon`;
+      this.tituloModal = `${id ? 'Habilitar' : 'Deshabilitar'} canastilla`;
       this.hideInput = !!id;
       this.isModalOpen = true;
     },
