@@ -1,6 +1,6 @@
 <template>
   <div class="inputModal">
-    <div :id="id" class="modal d-flex f-column">
+    <div :id="id" class="modal">
       <div class="modal-content">
         <h4 class="message center">{{title}}</h4>
         <div v-if="!hideInput" class="input-field col s12">
@@ -97,7 +97,7 @@ export default {
       }
   }
   &__footer {
-    display: flex;
+    // display: flex;
     justify-content: space-evenly;
     margin-bottom: 40px;
     font-weight: bold;
