@@ -31,6 +31,7 @@
             :columna="c"
             :on-click="clickHandler"
             :blackList="blackList"
+            :cajones-deshabilitados="cajonesDeshabilitados"
           />
         </div>
       </div>
@@ -48,14 +49,17 @@ export default {
       isLoaded: false,
       detalleTanque: null,
       blackList: [],
+      cajonesDeshabilitados: [],
     };
   },
   async created() {
     const response = await axios.post(`${env.TANQUE_PRODUCCION}?option=getDetalleTanque`, { idTanque: this.tanque.idMaquinas });
     const res = await axios.post(`${env.TANQUE_PRODUCCION}?option=getCeldasBloqueadas`, { idTanque: this.tanque.idMaquinas });
+    const cajonesDeshabilitadosResponse = await axios.post(`${env.TANQUE_PRODUCCION}?option=getCajonesDeshabilitados`, { idTanque: this.tanque.idMaquinas });
     const [tanque] = response.data;
     this.detalleTanque = tanque;
     this.blackList = res.data;
+    this.cajonesDeshabilitados = cajonesDeshabilitadosResponse.data;
     this.isLoaded = true;
   },
   methods: {

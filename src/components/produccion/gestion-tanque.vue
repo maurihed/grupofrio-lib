@@ -40,6 +40,8 @@
       :filas="filas"
       :columnas="columnas"
       :canastillas="canastillas"
+      :cajones-deshabilitados="cajonesDeshabilitados"
+      :tanque-id="tanqueId"
     />
   </div>
 </template>
@@ -56,11 +58,14 @@ export default {
       canastillas: 0,
       tipoBarras: 0,
       tiposBarras:[75,150],
+      cajonesDeshabilitados: [],
     }
   },
   async created() {
     const response = await axios.post(`${env.TANQUE_PRODUCCION}?option=getDetalleTanque`, { idTanque: this.tanqueId });
     const [tanque] = response.data;
+    const cajonesDeshabilitadosResponse = await axios.post(`${env.TANQUE_PRODUCCION}?option=getCajonesDeshabilitados`, { idTanque: this.tanqueId });
+    this.cajonesDeshabilitados = cajonesDeshabilitadosResponse.data;
     if (tanque) {
       this.filas = tanque.n_filas;
       this.columnas = tanque.n_columnas;

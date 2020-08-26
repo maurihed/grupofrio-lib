@@ -1,10 +1,13 @@
 <template>
-  <button :class="{ 'columna-tanque': true, 'disabled': !!endTime }" @click="irAOrder">
+  <button :class="{ 'columna-tanque': true, 'disabled': !!endTime, 'disabled desactivado': !!desactivado }" @click="irAOrder">
     <span v-if="!!endTime" class="timer">
       <v-timer
         :endTime="endTime"
         :on-timeout="timeoutHandler"
       ></v-timer>
+    </span>
+    <span v-if="!!desactivado" class="motivo">
+      {{desactivado}}
     </span>
     <span v-for="ca in Number(canastillas)" :key="ca" class="tanque__canastilla"></span>
   </button>
@@ -13,7 +16,7 @@
 import timerVue from '../configuracion/turnos/timer.vue';
 
 export default {
-  props:['canastillas', 'fila', 'columna', 'onClick', 'blackList'],
+  props:['canastillas', 'fila', 'columna', 'onClick', 'blackList', 'cajonesDeshabilitados'],
   data() {
     return {
       blackListD: [],
@@ -39,6 +42,11 @@ export default {
         total = Date.parse(new Date(tiempo)) - Date.parse(new Date());
       }
       return total > 0 ? tiempo : false;
+    },
+    desactivado() {
+      const cajon = this.cajonesDeshabilitados.find((cajon) => cajon.fila == this.fila && cajon.columna == this.columna);
+      if (!cajon) return '';
+      return cajon.motivo;
     }
   },
   components: {
@@ -78,6 +86,26 @@ export default {
       border: none;
     }
   }
+  .desactivado {
+    position: relative;
+    background: #B0B0B0;
+    .tanque__canastilla {
+      background: #B0B0B0;
+      border: none;
+    }
+  }
+
+  .motivo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    widows: 100%;
+  }
+
   .tanque__canastilla {
     margin: 0 2px;
     height: 20px;

@@ -61,7 +61,6 @@ export default {
            }
         })
         .catch(function (error) {
-          console.error(error)
           M.toast({
             html: "Error inesperado, intentelo de nuevo mas tarde.",
             classes: "red darken-4",
