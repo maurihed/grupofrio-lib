@@ -70,8 +70,7 @@ export default {
         return total <= 3600000;
       }
       return false;
-    },
-
+    }
   },
   components: {
     'v-timer': timerVue,
