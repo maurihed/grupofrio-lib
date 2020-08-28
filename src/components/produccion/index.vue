@@ -35,7 +35,7 @@ export default {
     },
     irAOrden(filaCol) {
       const o = JSON.parse(this.infoOrden);
-      const id = this.tanqueSelected.idMaquinas;
+      const id = this.tanqueSelected.id_hana;
       const columna = numberToLetter(filaCol.columna);
       const { fila } = filaCol;
       const tanqueId = `${this.suc}_T${id}_${columna}${fila}_${filaCol.canastillas}`;
