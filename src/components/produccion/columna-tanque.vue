@@ -1,5 +1,10 @@
 <template>
-  <button :class="{ 'columna-tanque': true, 'disabled': !!endTime, 'disabled desactivado': !!desactivado }" @click="irAOrder">
+  <button :class="{ 'columna-tanque': true,
+  'lessthanone': !desactivado && !!isDisabled && lessThanOne,
+  'usedAndAvailable': !desactivado && !!endTime && !isDisabled,
+  'disabled': !!isDisabled,
+  'disabled desactivado': !!desactivado
+  }" @click="irAOrder">
     <span v-if="!!endTime" class="timer">
       <v-timer
         :endTime="endTime"
@@ -41,13 +46,32 @@ export default {
       if (!!tiempo) {
         total = Date.parse(new Date(tiempo)) - Date.parse(new Date());
       }
-      return total > 0 ? tiempo : false;
+      return tiempo;
+    },
+    isDisabled() {
+      const celda = this.blackListD.find((cell) => cell.fila == this.fila && cell.columna == this.columna);
+      if (celda) {
+        const { fin_bloqueo: tiempo } = celda;
+        let total = 0;
+        total = Date.parse(new Date(tiempo)) - Date.parse(new Date());
+        return total >= 0;
+      }
+      return false;
     },
     desactivado() {
       const cajon = this.cajonesDeshabilitados.find((cajon) => cajon.fila == this.fila && cajon.columna == this.columna);
       if (!cajon) return '';
       return cajon.motivo;
-    }
+    },
+    lessThanOne() {
+      if (this.endTime) {
+        let total = 0;
+        total = Date.parse(new Date(this.endTime)) - Date.parse(new Date());
+        return total <= 3600000;
+      }
+      return false;
+    },
+
   },
   components: {
     'v-timer': timerVue,
@@ -77,13 +101,24 @@ export default {
     border-radius: 5px;
     cursor: pointer;
     background: #cfd8dc;
+    &.usedAndAvailable {
+      background: #00c853;
+      .tanque__canastilla {
+        background: #69f0ae;
+        border: 1px solid #00e676;
+
+      }
+    }
   }
   .disabled {
     cursor: default;
     background: #ffbfbf;
     .tanque__canastilla {
-      background: #ffbfbf;
+      background: transparent;
       border: none;
+    }
+    &.lessthanone {
+      background: #ffc400;
     }
   }
   .desactivado {
