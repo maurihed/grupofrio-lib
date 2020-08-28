@@ -36,7 +36,7 @@ export default {
       const seconds = String(Math.floor( (total/1000) % 60 )).padStart(2, 0);
       const minutes = String(Math.floor( (total/1000/60) % 60 )).padStart(2, 0);
       const hours = String(Math.floor( (total/(1000*60*60)) % 24 )).padStart(2, 0);
-      const days = Math.floor(total/(1000*60*60*60));
+      const days = Math.floor(total/(1000 * 60 * 60) / 24);
       const dayIntime = days ? `${days}d ` : '';
       return `${dayIntime || ''}${hours}:${minutes}:${seconds}`;
     },
