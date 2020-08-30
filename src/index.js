@@ -4,8 +4,6 @@ import M from 'materialize-css';
 // bootstrap configuration
 window.axios = axios;
 window.M = M;
-// Init custom elements
-M.AutoInit();
 // Vue components
 Vue.component('vue-button', require('./button.vue').default)
 Vue.component('confirm-modal', require('./components/common/confirm-modal.vue').default)
