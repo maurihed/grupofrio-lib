@@ -28,4 +28,5 @@ var app = new Vue({
   el: '#app',
 })
 
-// console.log(env);
+// init sidebar
+M.Sidenav.init(document.querySelectorAll('.sidenav'),);
