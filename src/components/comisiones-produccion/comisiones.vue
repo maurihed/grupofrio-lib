@@ -740,7 +740,6 @@ export default {
           total = this.totalLitrosAgua / 7;
           break;
       }
-      console.log({variable, total});
       if (!variable) return 0;
       if (!Number(variable)) return 0;
       return Number((total / variable * 100).toFixed(2));

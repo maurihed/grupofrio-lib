@@ -13,9 +13,6 @@ export default {
   data() {
     return {};
   },
-  updated() {
-    //console.log(this.tipos, this.tiposKeys, Object.values(this.tipos));
-  },
   filters: {
     number(value) {
       if (!value) return 0;
