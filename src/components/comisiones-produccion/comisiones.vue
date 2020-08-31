@@ -1,337 +1,357 @@
 <template>
-  <div>
-    <ul class="collapsible popout">
-      <li>
-        <div class="collapsible-header"><i class="material-icons">radio_button_checked</i>Produccion</div>
-          <div class="collapsible-body">
-            <table class="bordered">
-              <thead>
-                <tr>
-                    <td class="center bold">PRODUCTO</td>
-                    <td class="center bold">{{'Sabado ('+sabado+')'}}</td>
-                    <td class="center bold">{{'Domingo ('+domingo+')'}}</td>
-                    <td class="center bold">{{'Lunes ('+lunes+')'}}</td>
-                    <td class="center bold">{{'Martes ('+martes+')'}}</td>
-                    <td class="center bold">{{'Miercoles ('+miercoles+')'}}</td>
-                    <td class="center bold">{{'Jueves ('+jueves+')'}}</td>
-                    <td class="center bold">{{'Viernes ('+viernes+')'}}</td>
-                    <td class="center bold">TOTAL</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="name in productos" :key="name">
-                  <td><span :class="'new badge '+getColor(data[name][0].id)" :data-badge-caption="getType(data[name][0].id)"></span> {{name}}</td>
-                  <td class="center">{{getPeso(sabado, data[name]) | number}}</td>
-                  <td class="center">{{getPeso(domingo, data[name]) | number}}</td>
-                  <td class="center">{{getPeso(lunes, data[name]) | number}}</td>
-                  <td class="center">{{getPeso(martes, data[name]) | number}}</td>
-                  <td class="center">{{getPeso(miercoles, data[name]) | number}}</td>
-                  <td class="center">{{getPeso(jueves, data[name]) | number}}</td>
-                  <td class="center">{{getPeso(viernes, data[name]) | number}}</td>
-                  <td class="center">{{getRowTotal(data[name]) | number}}</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr>
-                  <td colspan="9" class="center bold">CONSENTRADO</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="center">
-                  <td class="left-align">Kilos rolito</td>
-                  <td v-for="d in days" :key="d">
-                    {{getTotalKilos('rolito', d) | number}}
-                  </td>
-                  <td>{{totalKilosRolitos | number}}</td>
-                </tr>
-                <tr class="center">
-                  <td class="left-align">Eficiencia</td>
-                  <td v-for="d in days" :key="d">
-                    <porcentaje-eficiencia
-                      :variable="getCombinada(3)"
-                      :total="getTotalKilos('rolito', d)"
-                    >
-                    </porcentaje-eficiencia>
-                  </td>
-                  <td>
-                    <porcentaje-eficiencia
-                      :variable="getCombinada(3)"
-                      :total="totalKilosRolitos / 7"
-                    >
-                    </porcentaje-eficiencia>
-                  </td>
-                </tr>
-                <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
-                <tr class="center">
-                  <td class="left-align">Kilos barra</td>
-                  <td v-for="d in days" :key="d">
-                    {{getTotalKilos('barra', d) | number}}
-                  </td>
-                  <td>{{totalKilosBarras | number}}</td>
-                </tr>
-                <tr class="center">
-                  <td class="left-align">Eficiencia</td>
-                  <td v-for="d in days" :key="d">
-                    <porcentaje-eficiencia
-                      :variable="getCombinada(1)"
-                      :total="getTotalKilos('barra', d)"
-                    >
-                    </porcentaje-eficiencia>
-                  </td>
-                  <td>
-                    <porcentaje-eficiencia
-                      :variable="getCombinada(1)"
-                      :total="totalKilosBarras / 7"
-                    >
-                    </porcentaje-eficiencia>
-                  </td>
-                </tr>
-                <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
-                <tr class="center">
-                  <td class="left-align">Litros agua</td>
-                  <td v-for="d in days" :key="d">
-                    {{getTotalKilos('agua', d) | number}}
-                  </td>
-                  <td>{{totalLitrosAgua | number}}</td>
-                </tr>
-                <tr class="center">
-                  <td class="left-align">Eficiencia</td>
-                  <td v-for="d in days" :key="d">
-                    <porcentaje-eficiencia
-                      :variable="{valor: valorVariable('Agua Litros Minimos')}"
-                      :total="getTotalKilos('agua', d)"
-                    >
-                    </porcentaje-eficiencia>
-                  </td>
-                  <td>
-                    <porcentaje-eficiencia
-                      :variable="{valor: valorVariable('Agua Litros Minimos')}"
-                      :total="totalLitrosAgua / 7"
-                    >
-                    </porcentaje-eficiencia>
-                  </td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr>
-                  <td colspan="9" class="center bold">FALLAS</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Numero de fallas</td>
-                  <td class="center" v-for="day in days" :key="day">{{getDataProduccion(day, 'fallas')}}</td>
-                  <td class="center">{{totalDataProduccion('fallas')}}</td>
-                </tr>
-                <tr>
-                  <td>Numero de Soluciones</td>
-                  <td class="center" v-for="day in days" :key="day">{{getDataProduccion(day, 'soluciones')}}</td>
-                  <td class="center">{{totalDataProduccion('soluciones')}}</td>
-                </tr>
-                <tr>
-                  <td>Eficiencia</td>
-                  <td class="center" v-for="day in days" :key="day" v-html="porcentajeToString(getDataProduccion(day, 'eficiencia'))"></td>
-                  <td class="center" v-html="porcentajeToString(totalDataProduccion('eficiencia'))"></td>
-                </tr>
-              </tbody>
-            </table>
-        </div>
-      </li>
-    </ul>
-    <ul class="collapsible popout">
-      <li>
-        <div class="collapsible-header"><i class="material-icons">radio_button_checked</i>Eficiencias</div>
-          <div class="collapsible-body">
-            <table class="bordered">
-              <thead>
-                <tr>
-                    <td class="center bold">Producto</td>
-                    <td class="center bold">{{'Sabado ('+sabado+')'}}</td>
-                    <td class="center bold">{{'Domingo ('+domingo+')'}}</td>
-                    <td class="center bold">{{'Lunes ('+lunes+')'}}</td>
-                    <td class="center bold">{{'Martes ('+martes+')'}}</td>
-                    <td class="center bold">{{'Miercoles ('+miercoles+')'}}</td>
-                    <td class="center bold">{{'Jueves ('+jueves+')'}}</td>
-                    <td class="center bold">{{'Viernes ('+viernes+')'}}</td>
-                    <td class="center bold disabled">TOTAL</td>
-                </tr>
-              </thead>
-              <thead>               
-                <tr>
-                  <td colspan="9" class="center bold">Agua</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Consumo litros</td>
-                  <td class="center" v-for="day in days" :key="day">{{getConsumo(day) | number}}</td>
-                  <td class="center disabled">{{getConsumoTotal() | number}}</td>
-                </tr>
-                <tr>
-                  <td>Consumo Maximo producción</td>
-                  <td class="center" v-for="day in days" :key="day">{{valorVariable('merma agua') * (Number(getTotalKilos('rolito', day)) + Number(getTotalKilos('barra', day))) | number}}</td>
-                  <td class="center disabled">{{ valorVariable('merma agua') *  (Number(totalKilosRolitos) + Number(totalKilosBarras)) | number}}</td>
-                </tr>
-                <tr>
-                  <td>Consumo Agua venta</td>
-                  <td class="center" v-for="day in days" :key="day">{{getTotalKilos('agua', day) | number}}</td>
-                  <td class="center disabled">{{totalLitrosAgua | number}}</td>
-                </tr>
-                <tr>
-                  <td>Consumo Hielo</td>
-                  <td class="center" v-for="day in days" :key="day">{{getConsumo(day) - Number(getTotalKilos('agua', day)) | number}}</td>
-                  <td class="center disabled">{{getConsumoTotal() - totalLitrosAgua | number}}</td>
-                </tr>
-                <tr>
-                  <td>Eficiencia</td>
-                  <td class="center" v-for="day in days" :key="day" v-html="getEficienciaAgua(day)"></td>
-                  <td class="center" v-html="getEficienciaTotalAgua()"></td>
-                </tr>
-                 <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
-              </tbody>
-              <thead>               
-                <tr>
-                  <td colspan="9" class="center bold">Energia</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Consumo</td>
-                  <td class="center" v-for="day in days" :key="day">{{valorVariable('Multiplicador Kwh') * getConsumo(day,'Electricidad') | number}}</td>
-                  <td class="center disabled">{{valorVariable('Multiplicador Kwh') * getConsumoTotal('Electricidad') | number}}</td>
-                </tr>
-                <tr>
-                  <td>Kilos producción</td>
-                  <td class="center" v-for="day in days" :key="day">{{Number(getTotalKilos('rolito', day)) + Number(getTotalKilos('barra', day)) | number}}</td>
-                  <td class="center disabled">{{Number(totalKilosRolitos) + Number(totalKilosBarras) | number}}</td>
-                </tr>
-                <tr>
-                  <td>kg/Kwh</td>
-                  <td class="center" v-for="day in days" :key="day">{{getKgKwh(day) | number}}</td>
-                  <td class="center disabled">{{getTotalKgKwh() | number}}</td>
-                </tr>
-                <tr>
-                  <td>Eficiencia</td>
-                  <td class="center" v-for="day in days" :key="day" v-html="getEficienciaKgKwh(day)"></td>
-                  <td class="center" v-html="getEficienciaTotalElectricidad()"></td>
-                </tr>
-                 <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
-              </tbody>
-              <thead>               
-                <tr>
-                  <td colspan="9" class="center bold">Aceite</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(compresorName, key) in compresoresNames" :key="key">
-                  <td>{{compresorName}}</td>
-                  <td class="center" v-for="day in days" :key="day">{{getConsumoCompresor(compresorName, day)| number}}</td>
-                  <td class="center disabled">{{getConsumoTotalCompresor(compresorName)}}</td>
-                </tr>
-                <tr>
-                  <td>Horas trabajadas</td>
-                  <td class="center" v-for="day in days" :key="day">{{valorVariable('Horas trabajadas')}}</td>
-                  <td class="center disabled">{{valorVariable('Horas trabajadas')*7 | number}}</td>
-                </tr>
-                <tr>
-                  <td>Consumo maximo L</td>
-                  <td class="center" v-for="day in days" :key="day">{{valorVariable('Consumo maximo aceite') * compresoresNames.length}}</td>
-                  <td class="center disabled">{{valorVariable('Consumo maximo aceite') * compresoresNames.length * 7 | number}}</td>
-                </tr>
-                <tr>
-                  <td>Eficiencia</td>
-                  <td class="center" v-for="day in days" :key="day" v-html="getEficienciaAceite(day)"></td>
-                  <td class="center" v-html="getEficienciaTotalAceite()"></td>
-                </tr>
-                 <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
-              </tbody>
-            </table>
-            <eficiencia-generica v-for="(tipo, name) in eficienciaByTipos" :key="name"
-              :tipo="name"
-              :variables="tipo"
-              :days="days"
-              :esperado="getValorEsperado(name)"
-              :fecha="fecha"
-            >
-            </eficiencia-generica>
-        </div>
-      </li>
-    </ul>
-    <ul class="collapsible popout">
-      <li>
-        <div class="collapsible-header"><i class="material-icons">radio_button_checked</i>Limpieza</div>
-          <div class="collapsible-body">
-            <table class="bordered">
-              <thead>
-                <tr>
-                    <td class="center bold"></td>
-                    <td class="center bold">{{'Sabado ('+sabado+')'}}</td>
-                    <td class="center bold">{{'Domingo ('+domingo+')'}}</td>
-                    <td class="center bold">{{'Lunes ('+lunes+')'}}</td>
-                    <td class="center bold">{{'Martes ('+martes+')'}}</td>
-                    <td class="center bold">{{'Miercoles ('+miercoles+')'}}</td>
-                    <td class="center bold">{{'Jueves ('+jueves+')'}}</td>
-                    <td class="center bold">{{'Viernes ('+viernes+')'}}</td>
-                    <td class="center bold">TOTAL</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="text-justify">Incidencias</td>
-                  <td v-for="day in days" :key="day">{{getIncidenciasLimpieza(day, 'problemas')}}</td>
-                  <td>{{getTotalIncidencias('problemas')}}</td>
-                </tr>
-                <tr>
-                  <td class="text-justify">Solucionadas</td>
-                  <td v-for="day in days" :key="day">{{getIncidenciasLimpieza(day, 'soluciones')}}</td>
-                  <td>{{getTotalIncidencias('soluciones')}}</td>
-                </tr>
-                <tr>
-                  <td class="text-justify">Eficiencia</td>
-                  <td v-for="day in days" :key="day" v-html="getEficienciaDeIncidencias(day)"></td>
-                  <td><span v-html="getEficienciaTotalDeIncidencias()"></span></td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr>
-                  <td colspan="9" class="center bold">Fallas mecanicas</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="text-justify">Incidencias</td>
-                  <td v-for="day in days" :key="day">{{getProblemasMecanicos(day, 'problemas')}}</td>
-                  <td>{{getTotalProblemasMecanicos('problemas')}}</td>
-                </tr>
-                <tr>
-                  <td class="text-justify">Solucionadas</td>
-                  <td v-for="day in days" :key="day">{{getProblemasMecanicos(day, 'soluciones')}}</td>
-                  <td>{{getTotalProblemasMecanicos('soluciones')}}</td>
-                </tr>
-                <tr>
-                  <td class="text-justify">Eficiencia</td>
-                  <td v-for="day in days" :key="day" v-html="getEficienciaDeProblemasMecanicos(day)"></td>
-                  <td><span v-html="getEficienciaTotalDeProblemasMecanicos()"></span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-      </li>
-    </ul>
+  <div class="center">
     <br>
-    <salario-comision
-      :totalKilosBarras="totalKilosBarras"
-      :totalKilosRolitos="totalKilosRolitos"
-      :precioCubero="valorVariable('Precio kilo cubero')"
-      :precioSacador="valorVariable('Precio kilo sacador')"
-      :precioMaquinista="valorVariable('Precio kilo especialiasta')"
-      :precioLider="valorVariable('Precio kilo lider')"
-      :eficiencia="getTotalEficiencia()"
-      :sueldoCubero="valorVariable('Sueldo base cubero')"
-      :sueldoSacador="valorVariable('Sueldo base sacador')"
-      :sueldoMaquinista="valorVariable('Sueldo base especialista')"
-      :sueldoLider="valorVariable('Sueldo base lider')"
-    ></salario-comision>
+    <div v-if="!isLoaded">
+      <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div><div class="gap-patch">
+            <div class="circle"></div>
+          </div><div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="isLoaded">
+      <ul class="collapsible popout">
+        <li>
+          <div class="collapsible-header"><i class="material-icons">radio_button_checked</i>Produccion</div>
+            <div class="collapsible-body">
+              <table class="bordered">
+                <thead>
+                  <tr>
+                      <td class="center bold">PRODUCTO</td>
+                      <td class="center bold">{{'Sabado ('+sabado+')'}}</td>
+                      <td class="center bold">{{'Domingo ('+domingo+')'}}</td>
+                      <td class="center bold">{{'Lunes ('+lunes+')'}}</td>
+                      <td class="center bold">{{'Martes ('+martes+')'}}</td>
+                      <td class="center bold">{{'Miercoles ('+miercoles+')'}}</td>
+                      <td class="center bold">{{'Jueves ('+jueves+')'}}</td>
+                      <td class="center bold">{{'Viernes ('+viernes+')'}}</td>
+                      <td class="center bold">TOTAL</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="name in productos" :key="name">
+                    <td><span :class="'new badge '+getColor(data[name][0].id)" :data-badge-caption="getType(data[name][0].id)"></span> {{name}}</td>
+                    <td class="center">{{getPeso(sabado, data[name]) | number}}</td>
+                    <td class="center">{{getPeso(domingo, data[name]) | number}}</td>
+                    <td class="center">{{getPeso(lunes, data[name]) | number}}</td>
+                    <td class="center">{{getPeso(martes, data[name]) | number}}</td>
+                    <td class="center">{{getPeso(miercoles, data[name]) | number}}</td>
+                    <td class="center">{{getPeso(jueves, data[name]) | number}}</td>
+                    <td class="center">{{getPeso(viernes, data[name]) | number}}</td>
+                    <td class="center">{{getRowTotal(data[name]) | number}}</td>
+                  </tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <td colspan="9" class="center bold">CONSENTRADO</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="center">
+                    <td class="left-align">Kilos rolito</td>
+                    <td v-for="d in days" :key="d">
+                      {{getTotalKilos('rolito', d) | number}}
+                    </td>
+                    <td>{{totalKilosRolitos | number}}</td>
+                  </tr>
+                  <tr class="center">
+                    <td class="left-align">Eficiencia</td>
+                    <td v-for="d in days" :key="d">
+                      <porcentaje-eficiencia
+                        :variable="getCombinada(3)"
+                        :total="getTotalKilos('rolito', d)"
+                      >
+                      </porcentaje-eficiencia>
+                    </td>
+                    <td>
+                      <porcentaje-eficiencia
+                        :variable="getCombinada(3)"
+                        :total="totalKilosRolitos / 7"
+                      >
+                      </porcentaje-eficiencia>
+                    </td>
+                  </tr>
+                  <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
+                  <tr class="center">
+                    <td class="left-align">Kilos barra</td>
+                    <td v-for="d in days" :key="d">
+                      {{getTotalKilos('barra', d) | number}}
+                    </td>
+                    <td>{{totalKilosBarras | number}}</td>
+                  </tr>
+                  <tr class="center">
+                    <td class="left-align">Eficiencia</td>
+                    <td v-for="d in days" :key="d">
+                      <porcentaje-eficiencia
+                        :variable="getCombinada(1)"
+                        :total="getTotalKilos('barra', d)"
+                      >
+                      </porcentaje-eficiencia>
+                    </td>
+                    <td>
+                      <porcentaje-eficiencia
+                        :variable="getCombinada(1)"
+                        :total="totalKilosBarras / 7"
+                      >
+                      </porcentaje-eficiencia>
+                    </td>
+                  </tr>
+                  <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
+                  <tr class="center">
+                    <td class="left-align">Litros agua</td>
+                    <td v-for="d in days" :key="d">
+                      {{getTotalKilos('agua', d) | number}}
+                    </td>
+                    <td>{{totalLitrosAgua | number}}</td>
+                  </tr>
+                  <tr class="center">
+                    <td class="left-align">Eficiencia</td>
+                    <td v-for="d in days" :key="d">
+                      <porcentaje-eficiencia
+                        :variable="{valor: valorVariable('Agua Litros Minimos')}"
+                        :total="getTotalKilos('agua', d)"
+                      >
+                      </porcentaje-eficiencia>
+                    </td>
+                    <td>
+                      <porcentaje-eficiencia
+                        :variable="{valor: valorVariable('Agua Litros Minimos')}"
+                        :total="totalLitrosAgua / 7"
+                      >
+                      </porcentaje-eficiencia>
+                    </td>
+                  </tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <td colspan="9" class="center bold">FALLAS</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Numero de fallas</td>
+                    <td class="center" v-for="day in days" :key="day">{{getDataProduccion(day, 'fallas')}}</td>
+                    <td class="center">{{totalDataProduccion('fallas')}}</td>
+                  </tr>
+                  <tr>
+                    <td>Numero de Soluciones</td>
+                    <td class="center" v-for="day in days" :key="day">{{getDataProduccion(day, 'soluciones')}}</td>
+                    <td class="center">{{totalDataProduccion('soluciones')}}</td>
+                  </tr>
+                  <tr>
+                    <td>Eficiencia</td>
+                    <td class="center" v-for="day in days" :key="day" v-html="porcentajeToString(getDataProduccion(day, 'eficiencia'))"></td>
+                    <td class="center" v-html="porcentajeToString(totalDataProduccion('eficiencia'))"></td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+        </li>
+      </ul>
+      <ul class="collapsible popout">
+        <li>
+          <div class="collapsible-header"><i class="material-icons">radio_button_checked</i>Eficiencias</div>
+            <div class="collapsible-body">
+              <table class="bordered">
+                <thead>
+                  <tr>
+                      <td class="center bold">Producto</td>
+                      <td class="center bold">{{'Sabado ('+sabado+')'}}</td>
+                      <td class="center bold">{{'Domingo ('+domingo+')'}}</td>
+                      <td class="center bold">{{'Lunes ('+lunes+')'}}</td>
+                      <td class="center bold">{{'Martes ('+martes+')'}}</td>
+                      <td class="center bold">{{'Miercoles ('+miercoles+')'}}</td>
+                      <td class="center bold">{{'Jueves ('+jueves+')'}}</td>
+                      <td class="center bold">{{'Viernes ('+viernes+')'}}</td>
+                      <td class="center bold disabled">TOTAL</td>
+                  </tr>
+                </thead>
+                <thead>               
+                  <tr>
+                    <td colspan="9" class="center bold">Agua</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Consumo litros</td>
+                    <td class="center" v-for="day in days" :key="day">{{getConsumo(day) | number}}</td>
+                    <td class="center disabled">{{getConsumoTotal() | number}}</td>
+                  </tr>
+                  <tr>
+                    <td>Consumo Maximo producción</td>
+                    <td class="center" v-for="day in days" :key="day">{{valorVariable('merma agua') * (Number(getTotalKilos('rolito', day)) + Number(getTotalKilos('barra', day))) | number}}</td>
+                    <td class="center disabled">{{ valorVariable('merma agua') *  (Number(totalKilosRolitos) + Number(totalKilosBarras)) | number}}</td>
+                  </tr>
+                  <tr>
+                    <td>Consumo Agua venta</td>
+                    <td class="center" v-for="day in days" :key="day">{{getTotalKilos('agua', day) | number}}</td>
+                    <td class="center disabled">{{totalLitrosAgua | number}}</td>
+                  </tr>
+                  <tr>
+                    <td>Consumo Hielo</td>
+                    <td class="center" v-for="day in days" :key="day">{{getConsumo(day) - Number(getTotalKilos('agua', day)) | number}}</td>
+                    <td class="center disabled">{{getConsumoTotal() - totalLitrosAgua | number}}</td>
+                  </tr>
+                  <tr>
+                    <td>Eficiencia</td>
+                    <td class="center" v-for="day in days" :key="day" v-html="getEficienciaAgua(day)"></td>
+                    <td class="center" v-html="getEficienciaTotalAgua()"></td>
+                  </tr>
+                  <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
+                </tbody>
+                <thead>               
+                  <tr>
+                    <td colspan="9" class="center bold">Energia</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Consumo</td>
+                    <td class="center" v-for="day in days" :key="day">{{valorVariable('Multiplicador Kwh') * getConsumo(day,'Electricidad') | number}}</td>
+                    <td class="center disabled">{{valorVariable('Multiplicador Kwh') * getConsumoTotal('Electricidad') | number}}</td>
+                  </tr>
+                  <tr>
+                    <td>Kilos producción</td>
+                    <td class="center" v-for="day in days" :key="day">{{Number(getTotalKilos('rolito', day)) + Number(getTotalKilos('barra', day)) | number}}</td>
+                    <td class="center disabled">{{Number(totalKilosRolitos) + Number(totalKilosBarras) | number}}</td>
+                  </tr>
+                  <tr>
+                    <td>kg/Kwh</td>
+                    <td class="center" v-for="day in days" :key="day">{{getKgKwh(day) | number}}</td>
+                    <td class="center disabled">{{getTotalKgKwh() | number}}</td>
+                  </tr>
+                  <tr>
+                    <td>Eficiencia</td>
+                    <td class="center" v-for="day in days" :key="day" v-html="getEficienciaKgKwh(day)"></td>
+                    <td class="center" v-html="getEficienciaTotalElectricidad()"></td>
+                  </tr>
+                  <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
+                </tbody>
+                <thead>               
+                  <tr>
+                    <td colspan="9" class="center bold">Aceite</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(compresorName, key) in compresoresNames" :key="key">
+                    <td>{{compresorName}}</td>
+                    <td class="center" v-for="day in days" :key="day">{{getConsumoCompresor(compresorName, day)| number}}</td>
+                    <td class="center disabled">{{getConsumoTotalCompresor(compresorName)}}</td>
+                  </tr>
+                  <tr>
+                    <td>Horas trabajadas</td>
+                    <td class="center" v-for="day in days" :key="day">{{valorVariable('Horas trabajadas')}}</td>
+                    <td class="center disabled">{{valorVariable('Horas trabajadas')*7 | number}}</td>
+                  </tr>
+                  <tr>
+                    <td>Consumo maximo L</td>
+                    <td class="center" v-for="day in days" :key="day">{{valorVariable('Consumo maximo aceite') * compresoresNames.length}}</td>
+                    <td class="center disabled">{{valorVariable('Consumo maximo aceite') * compresoresNames.length * 7 | number}}</td>
+                  </tr>
+                  <tr>
+                    <td>Eficiencia</td>
+                    <td class="center" v-for="day in days" :key="day" v-html="getEficienciaAceite(day)"></td>
+                    <td class="center" v-html="getEficienciaTotalAceite()"></td>
+                  </tr>
+                  <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
+                </tbody>
+              </table>
+              <eficiencia-generica v-for="(tipo, name) in eficienciaByTipos" :key="name"
+                :tipo="name"
+                :variables="tipo"
+                :days="days"
+                :esperado="getValorEsperado(name)"
+                :fecha="fecha"
+              >
+              </eficiencia-generica>
+          </div>
+        </li>
+      </ul>
+      <ul class="collapsible popout">
+        <li>
+          <div class="collapsible-header"><i class="material-icons">radio_button_checked</i>Limpieza</div>
+            <div class="collapsible-body">
+              <table class="bordered">
+                <thead>
+                  <tr>
+                      <td class="center bold"></td>
+                      <td class="center bold">{{'Sabado ('+sabado+')'}}</td>
+                      <td class="center bold">{{'Domingo ('+domingo+')'}}</td>
+                      <td class="center bold">{{'Lunes ('+lunes+')'}}</td>
+                      <td class="center bold">{{'Martes ('+martes+')'}}</td>
+                      <td class="center bold">{{'Miercoles ('+miercoles+')'}}</td>
+                      <td class="center bold">{{'Jueves ('+jueves+')'}}</td>
+                      <td class="center bold">{{'Viernes ('+viernes+')'}}</td>
+                      <td class="center bold">TOTAL</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-justify">Incidencias</td>
+                    <td v-for="day in days" :key="day">{{getIncidenciasLimpieza(day, 'problemas')}}</td>
+                    <td>{{getTotalIncidencias('problemas')}}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-justify">Solucionadas</td>
+                    <td v-for="day in days" :key="day">{{getIncidenciasLimpieza(day, 'soluciones')}}</td>
+                    <td>{{getTotalIncidencias('soluciones')}}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-justify">Eficiencia</td>
+                    <td v-for="day in days" :key="day" v-html="getEficienciaDeIncidencias(day)"></td>
+                    <td><span v-html="getEficienciaTotalDeIncidencias()"></span></td>
+                  </tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <td colspan="9" class="center bold">Fallas mecanicas</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-justify">Incidencias</td>
+                    <td v-for="day in days" :key="day">{{getProblemasMecanicos(day, 'problemas')}}</td>
+                    <td>{{getTotalProblemasMecanicos('problemas')}}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-justify">Solucionadas</td>
+                    <td v-for="day in days" :key="day">{{getProblemasMecanicos(day, 'soluciones')}}</td>
+                    <td>{{getTotalProblemasMecanicos('soluciones')}}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-justify">Eficiencia</td>
+                    <td v-for="day in days" :key="day" v-html="getEficienciaDeProblemasMecanicos(day)"></td>
+                    <td><span v-html="getEficienciaTotalDeProblemasMecanicos()"></span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+        </li>
+      </ul>
+      <br>
+      <salario-comision
+        :totalKilosBarras="totalKilosBarras"
+        :totalKilosRolitos="totalKilosRolitos"
+        :precioCubero="valorVariable('Precio kilo cubero')"
+        :precioSacador="valorVariable('Precio kilo sacador')"
+        :precioMaquinista="valorVariable('Precio kilo especialiasta')"
+        :precioLider="valorVariable('Precio kilo lider')"
+        :eficiencia="getTotalEficiencia()"
+        :sueldoCubero="valorVariable('Sueldo base cubero')"
+        :sueldoSacador="valorVariable('Sueldo base sacador')"
+        :sueldoMaquinista="valorVariable('Sueldo base especialista')"
+        :sueldoLider="valorVariable('Sueldo base lider')"
+        :sacadores="empleados.sacadores"
+        :cuberos="empleados.cuberos"
+        :maquinistas="empleados.maquinistas"
+        :jefes-produccion="empleados.jefes_produccion"
+      ></salario-comision>
+    </div>
   </div>
 </template>
 <script>
@@ -339,9 +359,11 @@ import porcentajeEficiencia from './porcentajeEficiencia.vue';
 import rowRendimientoMerma from './rowRendimientoMerma.vue';
 import eficienciaGenerica from './eficienciaGenerica.vue';
 import salarioComision from './salario-comision.vue';
+import { getDate } from '../../assets/js/utilities';
 export default {
   data() {
     return {
+      isLoaded: false,
       productos: [],
       data: {},
       totalKilosBarras: 0,
@@ -356,6 +378,12 @@ export default {
       eficienciaCompresores: {},
       compresoresNames: 0,
       eficienciaByTipos: [],
+      empleados: {
+        cuberos: [],
+        sacadores: [],
+        maquinistas: [],
+        jefes_produccion: [],
+      },
       inicidenciasLimpieza: {
         problemas: [],
         soluciones: [],
@@ -421,16 +449,18 @@ export default {
   },
   props: ['fecha', 'suc', 'turno'],
   async created() {
-    this.fetchVariablesComisiones();
-    this.fetchProduccion();
-    this.fetchFallasProduccion();
-    this.fetchBitacoraMerma();
-    this.fetchTiposMerma();
-    this.fetchIncidenciasLimpieza();
-    this.fetchProblemasMaquinaria();
-    this.fetchCompresores();
-    this.fetchEficienciaGenerica();
-    this.fetchVariablesCombinadas();
+    await this.fetchVariablesComisiones();
+    await this.fetchProduccion();
+    await this.fetchFallasProduccion();
+    await this.fetchBitacoraMerma();
+    await this.fetchTiposMerma();
+    await this.fetchIncidenciasLimpieza();
+    await this.fetchProblemasMaquinaria();
+    await this.fetchCompresores();
+    await this.fetchEficienciaGenerica();
+    await this.fetchVariablesCombinadas();
+    await this.fetchEmpleados();
+    this.isLoaded = true;
   },
   updated() {
     M.Collapsible.init(document.querySelectorAll('.collapsible'));
@@ -446,12 +476,6 @@ export default {
     }
   },
   methods: {
-    getDate(day) {
-      const d = new Date(this.fecha);
-      const month = String(d.getMonth() + 1).padStart(2, 0);
-      const year = d.getFullYear();
-      return `${year}-${month}-${day.padStart(2,0)}`;
-    },
     plusDay(currentDay, day) {
       const newDate = this.fecha.slice(0,-2) + (currentDay + "").padStart(2, 0);
       const date = new Date(newDate);
@@ -524,7 +548,7 @@ export default {
       return porcentaje < 50 ? `<span class="red-text">${porcentaje.toFixed(2)} %</span>`:`<span class="green-text">${porcentaje.toFixed(2)} %</span>`;
     },
     getDataProduccion(day, tipo) {
-      const fecha = this.getDate(String(day));
+      const fecha = getDate(this.fecha, this.days, String(day));
       if (!this.fallas_produccion[`F${fecha}`]) {
         return 0;
       }
@@ -539,7 +563,7 @@ export default {
       return tipo === 'eficiencia' ? porcentaje / 7 : porcentaje;
     },
     getIncidenciasLimpieza(day, tipo) {
-      const fecha = this.getDate(String(day));
+      const fecha = getDate(this.fecha, this.days, String(day));
       const incidencias = this.inicidenciasLimpieza[tipo];
       const item = incidencias.find(i => i.fecha == fecha);
       return item ? item.cantidad : 0;
@@ -570,7 +594,7 @@ export default {
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getProblemasMecanicos(day, tipo) {
-      const fecha = this.getDate(String(day));
+      const fecha = getDate(this.fecha, this.days, String(day));
       const incidencias = this.problemasMecanicos[tipo];
       const item = incidencias.find(i => i.fecha == fecha);
       return item ? item.cantidad : 0;
@@ -617,11 +641,11 @@ export default {
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getConsumo(day, tipo = "Agua") {
-      const date = this.getDate(String(day));
+      const date = getDate(this.fecha, this.days, String(day));
       if(this.rendimientoMerma.length === 0) {
         return 0;
       }
-      const variables = this.rendimientoMerma ? this.rendimientoMerma[`F${date}`].tipos[tipo] : [];
+      const variables = this.rendimientoMerma && this.rendimientoMerma[`F${date}`] ? this.rendimientoMerma[`F${date}`].tipos[tipo] : [];
       return variables.reduce((total, item) => {
         const value = item.valor_final ? item.valor_final - item.valor_inicial : item.valor_inicial;
         return total+Number(value)
@@ -662,7 +686,7 @@ export default {
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getConsumoCompresor(compresorName, day) {
-      const date = this.getDate(String(day));
+      const date = getDate(this.fecha, this.days, String(day));
       const fechaData = this.eficienciaCompresores[`F${date}`];
       if (!fechaData) {
         return 0;
@@ -675,7 +699,7 @@ export default {
       return porcentaje;
     },
     getEficienciaAceite(day, asNumber = false) {
-      const fecha = this.getDate(day+'');
+      const fecha = getDate(this.fecha, this.days, day+'');
       let porcentaje = 0;
       if (this.eficienciaCompresores[`F${fecha}`]) {
         const consumo = this.eficienciaCompresores[`F${fecha}`].total;
@@ -821,6 +845,10 @@ export default {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getVariablesCombinadas`, {suc: this.suc});
       this.variablesCombinadas = response.data;
     },
+    async fetchEmpleados() {
+      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getPersonal`, {suc: this.suc, turno: this.turno});
+      this.empleados = response.data;
+    }
   },
   computed: {
     startDay() {
@@ -854,7 +882,6 @@ export default {
   },
    components: {
     'porcentaje-eficiencia': porcentajeEficiencia,
-    'row-rendimiento-merma': rowRendimientoMerma,
     'eficiencia-generica': eficienciaGenerica,
     'salario-comision': salarioComision,
   }

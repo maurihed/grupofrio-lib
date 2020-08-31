@@ -21,25 +21,21 @@
 </template>
 <script>
 import variablesVue from './variables.vue';
+import { getDate } from '../../assets/js/utilities';
+
 export default {
   props: ['tipo','variables', 'days', 'esperado', 'fecha'],
   data() {
     return {};
   },
   methods: {
-    getDate(day) {
-      const d = new Date(this.fecha);
-      const month = String(d.getMonth() + 1).padStart(2, 0);
-      const year = d.getFullYear();
-      return `${year}-${month}-${day.padStart(2,0)}`;
-    },
     getValue(variable, day) {
-      const fecha = `F${this.getDate(String(day))}`;
+      const fecha = `F${getDate(this.fecha, this.days, String(day))}`;
       return Number(variable[fecha]);
     },
     getEficiencia(day, asNumber = false) {
       const [key] = Object.keys(this.variables);
-      const value = this.variables[key][`F${this.getDate(String(day))}`];
+      const value = this.variables[key][`F${getDate(this.fecha, this.days, String(day))}`];
       const porcentaje = value ? (value / this.esperado) * 100 : 0;
       if (asNumber) {
         return Number(porcentaje);

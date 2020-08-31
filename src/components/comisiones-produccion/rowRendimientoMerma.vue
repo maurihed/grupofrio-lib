@@ -7,7 +7,7 @@
 </template>
 <script>
 export default {
-  props:['tipo', 'variable', 'days', 'rendimientoMerma'],
+  props:['tipo', 'variable','fecha', 'days', 'rendimientoMerma'],
   created() {
   },
   data() {
@@ -20,12 +20,6 @@ export default {
     }
   },
   methods: {
-    getDate(day) {
-      const d = new Date();
-      const month = String(d.getMonth() + 1).padStart(2, 0);
-      const year = d.getFullYear();
-      return `${year}-${month}-${day.padStart(2,0)}`;
-    },
     getRendimientoVariable(variable) {
       if (variable.descripcion == 'Carro Tanque') {
           return variable.valor_inicial;
@@ -33,7 +27,7 @@ export default {
       return variable.valor_final - variable.valor_inicial;
     },
     getRendimiento(tipo, day, variable_id) {
-      const date = this.getDate(String(day));
+      const date = getDate(this.fecha, this.days, String(day));
       const key = Object.keys(this.rendimientoMerma).find(d => d.substr(1) === date);
       const variables = this.rendimientoMerma[key].tipos[tipo];
       const variable = variables.find( v => v.id == variable_id);

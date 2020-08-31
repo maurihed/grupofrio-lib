@@ -1,81 +1,90 @@
 <template>
   <div>
-    <div class="panel">
-      <div class="comision-row border-bottom-gray">
-        <div class="name salario-title">Operador Rolito</div>
-        <div class="day-value salario-title">Kilos</div>
-        <div class="day-value salario-title">Pago por kilo</div>
-        <div class="day-value salario-title">Comision</div>
-        <div class="day-value salario-title">Eficiencia</div>
-        <div class="day-value salario-title">comision final</div>
-        <div class="day-value salario-title">Sueldo base</div>
-        <div class="day-value salario-title">Nomina</div>
+    <div class="panel" v-if="!!cuberos.length || !!sacadores.length || !!maquinistas.length || !!jefesProduccion.length">
+      <div v-if="!!cuberos.length">
+        <div class="comision-row border-bottom-gray">
+          <div class="name salario-title">Operador Rolito</div>
+          <div class="day-value salario-title">Kilos</div>
+          <div class="day-value salario-title">Pago por kilo</div>
+          <div class="day-value salario-title">Comision</div>
+          <div class="day-value salario-title">Eficiencia</div>
+          <div class="day-value salario-title">comision final</div>
+          <div class="day-value salario-title">Sueldo base</div>
+          <div class="day-value salario-title">Nomina</div>
+        </div>
+        <row-salario-comision
+          v-for="cubero in cuberos"
+          :key="cubero.UserId"
+          :name="nombrePersonal(cubero)"
+          :eficiencia="eficiencia"
+          :kilos="totalKilosRolitos"
+          :precioKilo="precioCubero"
+          :sueldoBase="sueldoCubero"
+        />
       </div>
-      <row-salario-comision
-        name="Cubero 1"
-        :eficiencia="eficiencia"
-        :kilos="totalKilosRolitos"
-        :precioKilo="precioCubero"
-        :sueldoBase="sueldoCubero"
-      />
-      <row-salario-comision
-        name="Cubero 2"
-        :eficiencia="eficiencia"
-        :kilos="totalKilosRolitos"
-        :precioKilo="precioCubero"
-        :sueldoBase="sueldoCubero"
-      />
-      <div class="comision-row border-bottom-gray">
-        <div class="name salario-title">Operador Barra</div>
-        <div class="day-value salario-title">Kilos</div>
-        <div class="day-value salario-title">Pago por kilo</div>
-        <div class="day-value salario-title">Comision</div>
-        <div class="day-value salario-title">Eficiencia</div>
-        <div class="day-value salario-title">comision final</div>
-        <div class="day-value salario-title">Sueldo base</div>
-        <div class="day-value salario-title">Nomina</div>
+      <div v-if="!!sacadores.length">
+        <div class="comision-row border-bottom-gray">
+          <div class="name salario-title">Operador Barra</div>
+          <div class="day-value salario-title">Kilos</div>
+          <div class="day-value salario-title">Pago por kilo</div>
+          <div class="day-value salario-title">Comision</div>
+          <div class="day-value salario-title">Eficiencia</div>
+          <div class="day-value salario-title">comision final</div>
+          <div class="day-value salario-title">Sueldo base</div>
+          <div class="day-value salario-title">Nomina</div>
+        </div>
+        <row-salario-comision
+          v-for="sacador in sacadores"
+          :key="sacador.UserId"
+          :name="nombrePersonal(sacador)"
+          :kilos="totalKilosBarras"
+          :eficiencia="eficiencia"
+          :precioKilo="precioSacador"
+          :sueldoBase="sueldoSacador"
+        />
       </div>
-      <row-salario-comision
-        name="Sacador 1"
-        :kilos="totalKilosBarras"
-        :eficiencia="eficiencia"
-        :precioKilo="precioSacador"
-        :sueldoBase="sueldoSacador"
-      />
-      <div class="comision-row border-bottom-gray">
-        <div class="name salario-title">Operador Especialista</div>
-        <div class="day-value salario-title">Kilos</div>
-        <div class="day-value salario-title">Pago por kilo</div>
-        <div class="day-value salario-title">Comision</div>
-        <div class="day-value salario-title">Eficiencia</div>
-        <div class="day-value salario-title">comision final</div>
-        <div class="day-value salario-title">Sueldo base</div>
-        <div class="day-value salario-title">Nomina</div>
+      <div v-if="!!maquinistas.length">
+        <div class="comision-row border-bottom-gray">
+          <div class="name salario-title">Operador Especialista</div>
+          <div class="day-value salario-title">Kilos</div>
+          <div class="day-value salario-title">Pago por kilo</div>
+          <div class="day-value salario-title">Comision</div>
+          <div class="day-value salario-title">Eficiencia</div>
+          <div class="day-value salario-title">comision final</div>
+          <div class="day-value salario-title">Sueldo base</div>
+          <div class="day-value salario-title">Nomina</div>
+        </div>
+        <row-salario-comision
+          v-for="maquinista in maquinistas"
+          :key="maquinista.UserId"
+          :name="nombrePersonal(maquinista)"
+          :kilos="totalKilosLider"
+          :eficiencia="eficiencia"
+          :precioKilo="precioMaquinista"
+          :sueldoBase="sueldoMaquinista"
+        />
       </div>
-      <row-salario-comision
-        name="Maquinista"
-        :kilos="totalKilosLider"
-        :eficiencia="eficiencia"
-        :precioKilo="precioMaquinista"
-        :sueldoBase="sueldoMaquinista"
-      />
-      <div class="comision-row border-bottom-gray">
-        <div class="name salario-title">Lider de celula de produccion</div>
-        <div class="day-value salario-title">Kilos</div>
-        <div class="day-value salario-title">Pago por kilo</div>
-        <div class="day-value salario-title">Comision</div>
-        <div class="day-value salario-title">Eficiencia</div>
-        <div class="day-value salario-title">comision final</div>
-        <div class="day-value salario-title">Sueldo base</div>
-        <div class="day-value salario-title">Nomina</div>
+      <div v-if="!!jefesProduccion.length">
+        <div class="comision-row border-bottom-gray">
+          <div class="name salario-title">Lider de celula de produccion</div>
+          <div class="day-value salario-title">Kilos</div>
+          <div class="day-value salario-title">Pago por kilo</div>
+          <div class="day-value salario-title">Comision</div>
+          <div class="day-value salario-title">Eficiencia</div>
+          <div class="day-value salario-title">comision final</div>
+          <div class="day-value salario-title">Sueldo base</div>
+          <div class="day-value salario-title">Nomina</div>
+        </div>
+        <row-salario-comision
+          v-for="jefeProduccion in jefesProduccion"
+          :key="jefeProduccion.UserId"
+          name=""
+          :kilos="totalKilosLider"
+          :eficiencia="eficiencia"
+          :precioKilo="precioLider"
+          :sueldoBase="sueldoLider"
+        />
       </div>
-      <row-salario-comision
-        name=""
-        :kilos="totalKilosLider"
-        :eficiencia="eficiencia"
-        :precioKilo="precioLider"
-        :sueldoBase="sueldoLider"
-      />
     </div>
     <div class="row">
       <div class="col s12 m8 l6 offset-m4 offset-l6">
@@ -112,7 +121,7 @@
 <script>
 import rowSalarioComisionVue from './row-salario-comision.vue';
 export default {
-  props: ['totalKilosBarras', 'totalKilosRolitos','precioCubero', 'precioSacador', 'precioMaquinista', 'precioLider', 'eficiencia', 'sueldoCubero','sueldoSacador','sueldoMaquinista','sueldoLider'],
+  props: ['totalKilosBarras', 'totalKilosRolitos','precioCubero', 'precioSacador', 'precioMaquinista', 'precioLider', 'eficiencia', 'sueldoCubero','sueldoSacador','sueldoMaquinista','sueldoLider', 'sacadores', 'cuberos', 'maquinistas', 'jefesProduccion'],
   data() { 
     return {};
   },
@@ -120,6 +129,9 @@ export default {
     'row-salario-comision': rowSalarioComisionVue,
   },
   methods: {
+    nombrePersonal(user) {
+      return `${user.Nombre} ${user.ApellidoPaterno} ${user.ApellidoMaterno}`;
+    },
     calculateNomina(kilos, precio, sueldoBase) {
       const comision = Number(kilos * precio);
       const comisionFinal = Number((this.eficiencia / 100) * comision);
@@ -146,16 +158,20 @@ export default {
       return Number(this.totalKilosBarras) + Number(this.totalKilosRolitos);
     },
     totalNominaCubero() {
-      return this.calculateNomina(Number(this.totalKilosRolitos), this.precioCubero, this.sueldoCubero) * 2;
+      const nCuberos = this.cuberos.length;
+      return this.calculateNomina(Number(this.totalKilosRolitos), this.precioCubero, this.sueldoCubero) * nCuberos;
     },
     totalNominaSacador() {
-      return this.calculateNomina(Number(this.totalKilosBarras), this.precioSacador, this.sueldoSacador);
+      const nSacadores = this.sacadores.length;
+      return this.calculateNomina(Number(this.totalKilosBarras), this.precioSacador, this.sueldoSacador) * nSacadores;
     },
     totalNominaMaquinista() {
-      return this.calculateNomina(Number(this.totalKilosLider), this.precioMaquinista, this.sueldoMaquinista);
+      const nMaquinistas = this.maquinistas.length;
+      return this.calculateNomina(Number(this.totalKilosLider), this.precioMaquinista, this.sueldoMaquinista) * nMaquinistas;
     },
     totalNominaLidir() {
-      return this.calculateNomina(Number(this.totalKilosLider), this.precioLider, this.sueldoLider,);
+      const nJefesProduccion = this.jefesProduccion.length;
+      return this.calculateNomina(Number(this.totalKilosLider), this.precioLider, this.sueldoLider,) * nJefesProduccion;
     },
     total() {
       return this.totalNominaCubero
