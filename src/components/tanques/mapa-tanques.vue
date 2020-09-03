@@ -117,7 +117,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .mapaTanque__header {
     text-align: center;
     color: #2e3b8d;
