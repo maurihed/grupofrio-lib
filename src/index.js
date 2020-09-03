@@ -31,3 +31,4 @@ var app = new Vue({
 
 // init sidebar
 M.Sidenav.init(document.querySelectorAll('.sidenav'),);
+M.Collapsible.init(document.querySelectorAll('.collapsible'),);
