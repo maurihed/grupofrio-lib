@@ -78,11 +78,11 @@ export default {
   .num-col {
     width: 40px;
     font-size: 1.5rem;
-    line-height: 35px;
+    line-height: 34px;
     display: flex;
     flex-direction: column;
     text-align: center;
-    padding-top: 45px;
+    padding-top: 30px;
     color: #828388;
     font-weight: bold;;
     div {
