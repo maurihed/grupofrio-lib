@@ -8,12 +8,12 @@
     <tbody>
       <tr v-for="(variable, name) in cleanVars" :key="name">
         <td width="25%">{{name}}</td>
-        <td class="center" v-for="day in days" :key="day">{{getValue(variable, day)}}</td>
+        <td class="center" v-for="day in days" :key="day.day">{{getValue(variable, day.fullDate)}}</td>
         <td class="center disabled">{{variable.total}}</td>
       </tr>
       <tr>
         <td>Eficiencia</td>
-        <td class="center" v-for="day in days" :key="day" v-html="getEficiencia(day)"></td>
+        <td class="center" v-for="day in days" :key="day.day" v-html="getEficiencia(day.fullDate)"></td>
         <td class="center" v-html="getTotalEficiencia()"></td>
       </tr>
     </tbody>
@@ -21,7 +21,6 @@
 </template>
 <script>
 import variablesVue from './variables.vue';
-import { getDate } from '../../assets/js/utilities';
 
 export default {
   props: ['tipo','variables', 'days', 'esperado', 'fecha'],
@@ -30,12 +29,12 @@ export default {
   },
   methods: {
     getValue(variable, day) {
-      const fecha = `F${getDate(this.fecha, this.days, String(day))}`;
+      const fecha = `F${day}`;
       return Number(variable[fecha]);
     },
     getEficiencia(day, asNumber = false) {
       const [key] = Object.keys(this.variables);
-      const value = this.variables[key][`F${getDate(this.fecha, this.days, String(day))}`];
+      const value = this.variables[key][`F${day}`];
       const porcentaje = value ? (value / this.esperado) * 100 : 0;
       if (asNumber) {
         return Number(porcentaje);
@@ -43,7 +42,7 @@ export default {
       return this.porcentajeToString(porcentaje);
     },
     getTotalEficiencia() {
-      const porcentaje = this.days.reduce((total,day) => total + this.getEficiencia(day, true),0) / 7;
+      const porcentaje = this.days.reduce((total,day) => total + this.getEficiencia(day.fullDate, true),0) / 7;
       return this.porcentajeToString(porcentaje);;
     },
     porcentajeToString(porcentaje) {

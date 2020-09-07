@@ -23,26 +23,26 @@
                 <thead>
                   <tr>
                       <td class="center bold">PRODUCTO</td>
-                      <td class="center bold">{{'Sabado ('+sabado+')'}}</td>
-                      <td class="center bold">{{'Domingo ('+domingo+')'}}</td>
                       <td class="center bold">{{'Lunes ('+lunes+')'}}</td>
                       <td class="center bold">{{'Martes ('+martes+')'}}</td>
                       <td class="center bold">{{'Miercoles ('+miercoles+')'}}</td>
                       <td class="center bold">{{'Jueves ('+jueves+')'}}</td>
                       <td class="center bold">{{'Viernes ('+viernes+')'}}</td>
+                      <td class="center bold">{{'Sabado ('+sabado+')'}}</td>
+                      <td class="center bold">{{'Domingo ('+domingo+')'}}</td>
                       <td class="center bold">TOTAL</td>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="name in productos" :key="name">
                     <td><span :class="'new badge '+getColor(data[name][0].id)" :data-badge-caption="getType(data[name][0].id)"></span> {{name}}</td>
-                    <td class="center">{{getPeso(sabado, data[name]) | number}}</td>
-                    <td class="center">{{getPeso(domingo, data[name]) | number}}</td>
                     <td class="center">{{getPeso(lunes, data[name]) | number}}</td>
                     <td class="center">{{getPeso(martes, data[name]) | number}}</td>
                     <td class="center">{{getPeso(miercoles, data[name]) | number}}</td>
                     <td class="center">{{getPeso(jueves, data[name]) | number}}</td>
                     <td class="center">{{getPeso(viernes, data[name]) | number}}</td>
+                    <td class="center">{{getPeso(sabado, data[name]) | number}}</td>
+                    <td class="center">{{getPeso(domingo, data[name]) | number}}</td>
                     <td class="center">{{getRowTotal(data[name]) | number}}</td>
                   </tr>
                 </tbody>
@@ -161,13 +161,13 @@
                 <thead>
                   <tr>
                       <td class="center bold">Producto</td>
-                      <td class="center bold">{{'Sabado ('+sabado+')'}}</td>
-                      <td class="center bold">{{'Domingo ('+domingo+')'}}</td>
                       <td class="center bold">{{'Lunes ('+lunes+')'}}</td>
                       <td class="center bold">{{'Martes ('+martes+')'}}</td>
                       <td class="center bold">{{'Miercoles ('+miercoles+')'}}</td>
                       <td class="center bold">{{'Jueves ('+jueves+')'}}</td>
                       <td class="center bold">{{'Viernes ('+viernes+')'}}</td>
+                      <td class="center bold">{{'Sabado ('+sabado+')'}}</td>
+                      <td class="center bold">{{'Domingo ('+domingo+')'}}</td>
                       <td class="center bold disabled">TOTAL</td>
                   </tr>
                 </thead>
@@ -264,7 +264,7 @@
               <eficiencia-generica v-for="(tipo, name) in eficienciaByTipos" :key="name"
                 :tipo="name"
                 :variables="tipo"
-                :days="days"
+                :days="fullDays"
                 :esperado="getValorEsperado(name)"
                 :fecha="fecha"
               >
@@ -280,13 +280,13 @@
                 <thead>
                   <tr>
                       <td class="center bold"></td>
-                      <td class="center bold">{{'Sabado ('+sabado+')'}}</td>
-                      <td class="center bold">{{'Domingo ('+domingo+')'}}</td>
                       <td class="center bold">{{'Lunes ('+lunes+')'}}</td>
                       <td class="center bold">{{'Martes ('+martes+')'}}</td>
                       <td class="center bold">{{'Miercoles ('+miercoles+')'}}</td>
                       <td class="center bold">{{'Jueves ('+jueves+')'}}</td>
                       <td class="center bold">{{'Viernes ('+viernes+')'}}</td>
+                      <td class="center bold">{{'Sabado ('+sabado+')'}}</td>
+                      <td class="center bold">{{'Domingo ('+domingo+')'}}</td>
                       <td class="center bold">TOTAL</td>
                   </tr>
                 </thead>
@@ -359,13 +359,13 @@ import porcentajeEficiencia from './porcentajeEficiencia.vue';
 import rowRendimientoMerma from './rowRendimientoMerma.vue';
 import eficienciaGenerica from './eficienciaGenerica.vue';
 import salarioComision from './salario-comision.vue';
-import { getDate } from '../../assets/js/utilities';
 export default {
   data() {
     return {
       isLoaded: false,
       productos: [],
       data: {},
+      fullDays: [],
       totalKilosBarras: 0,
       totalKilosRolitos: 0,
       totalLitrosAgua: 0,
@@ -449,6 +449,7 @@ export default {
   },
   props: ['fecha', 'suc', 'turno'],
   async created() {
+    this.setFullDays();
     await this.fetchVariablesComisiones();
     await this.fetchProduccion();
     await this.fetchFallasProduccion();
@@ -476,6 +477,11 @@ export default {
     }
   },
   methods: {
+    getDate(day) {
+      const temp = [...this.fullDays];
+      const date = temp.find(a=>a.day==day);
+      return date.fullDate;
+    },
     plusDay(currentDay, day) {
       const newDate = this.fecha.slice(0,-2) + (currentDay + "").padStart(2, 0);
       const date = new Date(newDate);
@@ -548,7 +554,7 @@ export default {
       return porcentaje < 50 ? `<span class="red-text">${porcentaje.toFixed(2)} %</span>`:`<span class="green-text">${porcentaje.toFixed(2)} %</span>`;
     },
     getDataProduccion(day, tipo) {
-      const fecha = getDate(this.fecha, this.days, String(day));
+      const fecha = this.getDate(day);
       if (!this.fallas_produccion[`F${fecha}`]) {
         return 0;
       }
@@ -563,7 +569,7 @@ export default {
       return tipo === 'eficiencia' ? porcentaje / 7 : porcentaje;
     },
     getIncidenciasLimpieza(day, tipo) {
-      const fecha = getDate(this.fecha, this.days, String(day));
+      const fecha = this.getDate(day);
       const incidencias = this.inicidenciasLimpieza[tipo];
       const item = incidencias.find(i => i.fecha == fecha);
       return item ? item.cantidad : 0;
@@ -594,7 +600,7 @@ export default {
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getProblemasMecanicos(day, tipo) {
-      const fecha = getDate(this.fecha, this.days, String(day));
+      const fecha = this.getDate(day);
       const incidencias = this.problemasMecanicos[tipo];
       const item = incidencias.find(i => i.fecha == fecha);
       return item ? item.cantidad : 0;
@@ -641,7 +647,7 @@ export default {
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getConsumo(day, tipo = "Agua") {
-      const date = getDate(this.fecha, this.days, String(day));
+      const date = this.getDate(day);
       if(this.rendimientoMerma.length === 0) {
         return 0;
       }
@@ -686,7 +692,7 @@ export default {
       return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getConsumoCompresor(compresorName, day) {
-      const date = getDate(this.fecha, this.days, String(day));
+      const date = this.getDate(day);
       const fechaData = this.eficienciaCompresores[`F${date}`];
       if (!fechaData) {
         return 0;
@@ -699,7 +705,7 @@ export default {
       return porcentaje;
     },
     getEficienciaAceite(day, asNumber = false) {
-      const fecha = getDate(this.fecha, this.days, day+'');
+      const fecha = this.getDate(day);
       let porcentaje = 0;
       if (this.eficienciaCompresores[`F${fecha}`]) {
         const consumo = this.eficienciaCompresores[`F${fecha}`].total;
@@ -767,6 +773,26 @@ export default {
       if (!variable) return 0;
       if (!Number(variable)) return 0;
       return Number((total / variable * 100).toFixed(2));
+    },
+    formatDay(date) {
+      const d = new Date(date);
+      const day = String(d.getDate());
+      const month = String(d.getMonth() + 1);
+      const year = String(d.getFullYear());
+      const formattedDate = `${year}-${month.padStart(2, 0)}-${day.padStart(2, 0)}`;
+      return formattedDate;
+    },
+    setFullDays() {
+      const [year, month, day] = this.fecha.split('-');
+      const date = new Date(`${month}-${day}-${year}`);
+      const startDate = new Date(date.setDate(date.getDate() - (date.getDay() - 1)));
+      const days = [-1,0,1,2,3,4,5];
+      this.fullDays =  days.map((d) => {
+        const tempDate = new Date(date);
+        const fullDate = new Date(tempDate.setDate(tempDate.getDate() + 1 + d));
+        const day = fullDate.getDate();
+        return { day, fullDate: this.formatDay(fullDate) };
+      });
     },
     getTotalEficiencia() {
       const eficienciaProduccionRollito = this.getEficienciaTotalProduccion('Rollito');
@@ -852,32 +878,40 @@ export default {
   },
   computed: {
     startDay() {
-        const date = new Date(this.fecha);
-        return new Date(date.setDate(date.getDate() - (date.getDay() - 1))).getDate();
-    },
-    sabado() {
-      return this.plusDay(this.startDay, -2);
-    },
-    domingo() {
-      return this.plusDay(this.startDay, -1);
+      const [year, month, day] = this.fecha.split('-');
+      const date = new Date(`${month}-${day}-${year}`);
+      return new Date(date.setDate(date.getDate() - (date.getDay() - 1))).getDate();
     },
     lunes() {
+      return this.fullDays[0].day;
       return this.startDay;
     },
     martes() {
+      return this.fullDays[1].day;
       return this.plusDay(this.startDay, 1);
     },
     miercoles() {
+      return this.fullDays[2].day;
       return this.plusDay(this.startDay, 2);
     },
     jueves() {
+      return this.fullDays[3].day;
       return this.plusDay(this.startDay, 3);
     },
     viernes() {
+      return this.fullDays[4].day;
       return this.plusDay(this.startDay, 4);
     },
+    sabado() {
+      return this.fullDays[5].day;
+      return this.plusDay(this.startDay, -2);
+    },
+    domingo() {
+      return this.fullDays[6].day;
+      return this.plusDay(this.startDay, -1);
+    },
     days() {
-      return [this.sabado, this.domingo, this.lunes, this.martes, this.miercoles, this.jueves, this.viernes]
+      return [this.lunes, this.martes, this.miercoles, this.jueves, this.viernes, this.sabado, this.domingo];
     }
   },
    components: {
