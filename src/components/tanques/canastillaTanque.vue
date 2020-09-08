@@ -6,7 +6,7 @@
       'deshabilitada': !!timeOut,
       'menosDe1': !descompuesto && lessThanOne && !!deshabilitado,
       'disponible': !descompuesto && !!timeOut && !deshabilitado,
-      'disabled': !!deshabilitado || !!descompuesto || !selectable,
+      'disabled': (!!deshabilitado || !!descompuesto || !selectable) && !descompuestosClikable
     }"
     @click="handleClick"
   >
@@ -32,7 +32,7 @@
 import timerVue from '../configuracion/turnos/timer.vue';
 
 export default {
-  props:['selectable','onClick','fila','col','descompuestas','deshabilitadas', 'celdas'],
+  props:['selectable','onClick','fila','col','descompuestas','deshabilitadas', 'celdas', 'descompuestosClikable'],
   computed: {
     descompuesto() {
       const canastilla = this.descompuestas.find((canastilla) => canastilla.fila == this.fila && canastilla.columna == this.col);
@@ -69,8 +69,14 @@ export default {
   },
   methods: {
     handleClick() {
-      this.onClick(this.fila, this.col);
+      const id = this.getId(this.fila, this.col);
+      this.onClick(this.fila, this.col, id);
     },
+    getId(fila, col) {
+      const cajon = this.descompuestas.find((cajon) => cajon.fila == fila && cajon.columna == col);
+      if (!cajon) return null;
+      return cajon.id;
+    }
   },
   components: {
     'v-timer': timerVue,

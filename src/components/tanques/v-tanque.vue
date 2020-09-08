@@ -1,21 +1,22 @@
 <template>
 <div>
   <div class="mapaTanque__header">
-    <h4>{{tanqueObj.Nombre}}</h4>
+    <h4>{{tanque.Nombre}}</h4>
   </div>
   <div class="tanque">
-    <div v-for="col in (Number(detalleTanque.n_columnas) + 1)" :key="col" :class="{ 'num-col': col === 1, 'col': col > 1 }">
+    <div v-for="col in (Number(columnas) + 1)" :key="col" :class="{ 'num-col': col === 1, 'col': col > 1 }">
       <div v-if="col > 1" class="col-header">{{numberToLetter(col - 1)}}</div>
-      <col-num v-if="col === 1" :filas="detalleTanque.n_filas"></col-num>
+      <col-num v-if="col === 1" :filas="filas"></col-num>
       <col-tanque
         v-if="col > 1"
-        :filas="Number(detalleTanque.n_filas)"
+        :filas="Number(filas)"
         :col="col-1"
-        :descompuestas="cajonesDeshabilitados"
-        :deshabilitadas="blackList"
-        :celdas="Number(detalleTanque.n_canastillas)"
+        :descompuestas="descompuestas"
+        :deshabilitadas="deshabilitadas"
+        :celdas="Number(canastillas)"
         :on-click="canastillaClick"
-        :selectable="false"
+        :selectable="selecteable"
+        :descompuestos-clikable="descompuestosClikable"
       ></col-tanque>
     </div>
   </div>
@@ -28,35 +29,13 @@ import colNumVue from './col-num.vue';
 import colTanqueVue from './col-tanque.vue';
 
 export default {
-  props: ['tanque'],
-  data() {
-    return {
-      detalleTanque: {
-        n_columnas: 0,
-        n_filas: 0,
-        n_canastillas: 0,
-      },
-      tanqueObj: {},
-      blackList: [],
-      cajonesDeshabilitados: [],
-    };
-  },
-  async created() {
-    const tanque = JSON.parse(this.tanque);
-    this.tanqueObj = tanque;
-    const response = await axios.post(`${env.TANQUE_PRODUCCION}?option=getDetalleTanque`, { idTanque: tanque.idMaquinas });
-    const res = await axios.post(`${env.TANQUE_PRODUCCION}?option=getCeldasBloqueadas`, { idTanque: tanque.idMaquinas });
-    const cajonesDeshabilitadosResponse = await axios.post(`${env.TANQUE_PRODUCCION}?option=getCajonesDeshabilitados`, { idTanque: tanque.idMaquinas });
-    this.blackList = res.data;
-    this.cajonesDeshabilitados = cajonesDeshabilitadosResponse.data;
-    this.detalleTanque = response.data[0];
-  },
+  props: ['tanque', 'filas', 'columnas', 'canastillas', 'deshabilitadas', 'descompuestas', 'selecteable', 'onClick', 'descompuestosClikable'],
   methods:{
     numberToLetter(v) { 
       return numberToLetter(v);
     },
-    canastillaClick(fila, col) {
-      console.log('top side', fila, col)
+    canastillaClick(fila, col, id) {
+      this.onClick(fila, col, id);
     },
   },
   components: {

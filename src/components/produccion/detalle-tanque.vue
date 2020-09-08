@@ -15,32 +15,23 @@
       </div>
     </div>
     <div v-if="isLoaded">
-      <h5 class="center">{{tanque.Nombre}}</h5>
-      <div class="tanque">
-        <div class="tanque__row">
-          <div v-for="c in Number(detalleTanque.n_columnas)" :key="'letter'+c"> <span class="cell-indicator">{{numberToLetter(c)}}</span></div>
-        </div>
-        <div v-for="f in Number(detalleTanque.n_filas)" :key="f" class="tanque__row">
-          <div class="position-relative">
-            <span class="cell-indicator abosolute-vertical-center">{{f}}</span>
-          </div>
-          <columna-tanque
-            v-for="c in Number(detalleTanque.n_columnas)" :key="c"
-            :canastillas="detalleTanque.n_canastillas"
-            :fila="f"
-            :columna="c"
-            :on-click="clickHandler"
-            :blackList="blackList"
-            :cajones-deshabilitados="cajonesDeshabilitados"
-          />
-        </div>
-      </div>
+      <v-tanque
+        :filas="detalleTanque.n_filas"
+        :columnas="detalleTanque.n_columnas"
+        :canastillas="detalleTanque.n_canastillas"
+        :deshabilitadas="blackList"
+        :descompuestas="cajonesDeshabilitados"
+        :selecteable="true"
+        :on-click="clickHandler"
+        :tanque="tanque"
+        :descompuestos-clikable="false"
+      >
+      </v-tanque>
     </div>
-    <br>
   </div>
 </template>
 <script>
-import columnaTanqueVue from './columna-tanque.vue';
+import vTanqueVue from '../tanques/v-tanque.vue';
 
 export default {
   props: ['tanque', 'onClick'],
@@ -69,12 +60,13 @@ export default {
       }
       return String.fromCharCode(64 + number);
     },
-    clickHandler(filaCol) {
+    clickHandler(fila, col) {
+      const filaCol = { columna: col, fila, canastillas: this.detalleTanque.n_canastillas};
       this.onClick(filaCol);
     }
   },
   components: {
-    'columna-tanque': columnaTanqueVue,
+    'v-tanque': vTanqueVue,
   }
 }
 </script>
