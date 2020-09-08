@@ -88,10 +88,11 @@
 .infoBar {
   display: flex;
   height: 50px;
-  color: gray;
+  color: #f3fdff;
+  background: #bec8da;
   margin-bottom: 15px;
   .infoBar__title {
-    background: #E6E6E6;
+    background: #8a9dbb;
     text-align: center;
     width: 25%;
     @media (max-width: 992px) {
@@ -106,12 +107,13 @@
     @media (max-width: 992px) {
       display: none;
     }
-    background: linear-gradient(to right, #CCC, white);
+    // background: linear-gradient(to right, #CCC, white);
     width: 75%;
     #infoBar__sucursal {
       margin: 0;
       line-height: 50px;
-      padding-right: 0.75rem;
+      padding: 0 30px;
+      background: #adbcce;
     }
   }
 }
