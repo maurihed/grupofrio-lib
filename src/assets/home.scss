@@ -90,7 +90,6 @@
   height: 50px;
   color: #f3fdff;
   background: #bec8da;
-  margin-bottom: 15px;
   .infoBar__title {
     background: #8a9dbb;
     text-align: center;
@@ -116,6 +115,10 @@
       background: #adbcce;
     }
   }
+}
+
+#app {
+  padding-top: 15px;
 }
 
 .sidenav {
@@ -193,9 +196,61 @@
  }
 }
 
+.menu {
+  position: absolute;
+  width: 25%;
+  height: calc(100% - 120px);
+  background: #FEFEFE;
+  display: block;
+  overflow: auto;
+  ul {
+    position: relative;
+    li.active {
+      background: rgb(20,20,20,.1);
+      .collapsible-body {
+        padding: 0;
+      }
+    }
+  }
+  li > a:hover {
+    background: rgb(20,20,20,.1);
+  }
+  .menuEl {
+    color: #2E3A8D;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 500;
+    height: 48px;
+    line-height: 48px;
+    padding: 0 32px;
+  }
+  li > a {
+    color: #2E3A8D !important;
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    height: 48px;
+    line-height: 48px;
+    padding: 0 32px;
+  }
+}
+.main {
+  position: absolute;
+  width: 75%;
+  left: 25%;
+  height: calc(100% - 120px);
+  display: block;
+  overflow: auto;
+}
 
 @keyframes parpadeo {
   to {
     opacity: 0;
   }
+}
+
+.text-bold {
+  font-weight: 600;
 }

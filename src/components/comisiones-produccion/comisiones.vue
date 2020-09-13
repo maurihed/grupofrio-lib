@@ -13,6 +13,8 @@
           </div>
         </div>
       </div>
+      <br>
+      <div>{{(progres * 100 / 11).toFixed(2)}}%</div>
     </div>
     <div v-if="isLoaded">
       <ul class="collapsible popout">
@@ -363,6 +365,7 @@ export default {
   data() {
     return {
       isLoaded: false,
+      progres: 0,
       productos: [],
       data: {},
       fullDays: [],
@@ -450,17 +453,21 @@ export default {
   props: ['fecha', 'suc', 'turno'],
   async created() {
     this.setFullDays();
-    await this.fetchVariablesComisiones();
-    await this.fetchProduccion();
-    await this.fetchFallasProduccion();
-    await this.fetchBitacoraMerma();
-    await this.fetchTiposMerma();
-    await this.fetchIncidenciasLimpieza();
-    await this.fetchProblemasMaquinaria();
-    await this.fetchCompresores();
-    await this.fetchEficienciaGenerica();
-    await this.fetchVariablesCombinadas();
-    await this.fetchEmpleados();
+    this.progres = 0;
+    await Promise.allSettled([
+        this.fetchVariablesComisiones(),
+        this.fetchProduccion(),
+        this.fetchFallasProduccion(),
+        this.fetchBitacoraMerma(),
+        this.fetchTiposMerma(),
+        this.fetchIncidenciasLimpieza(),
+        this.fetchProblemasMaquinaria(),
+        this.fetchCompresores(),
+        this.fetchEficienciaGenerica(),
+        this.fetchVariablesCombinadas(),
+        this.fetchEmpleados(),
+    ]);
+    console.log(this.progres);
     this.isLoaded = true;
   },
   updated() {
@@ -785,7 +792,7 @@ export default {
     setFullDays() {
       const [year, month, day] = this.fecha.split('-');
       const date = new Date(`${month}-${day}-${year}`);
-      const startDate = new Date(date.setDate(date.getDate() - (date.getDay() - 1)));
+      const startDate = new Date(date.setDate(date.getDate() - (date.getDay() == 0 ? 6 : (date.getDay() - 1))));
       const days = [-1,0,1,2,3,4,5];
       this.fullDays =  days.map((d) => {
         const tempDate = new Date(date);
@@ -824,6 +831,7 @@ export default {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getVariables`, { suc: this.suc });
       this.variables = response.data;
       this.variables.forEach(v => v.valor = Number(Number(v.valor).toFixed(3)));
+      this.progres++;
     },
     async fetchProduccion() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getProduccion`,{ fecha: this.fecha, suc: this.suc, turno: this.turno });
@@ -832,26 +840,32 @@ export default {
       this.totalKilosRolitos = this.sumTotalKilos('rolito');
       this.totalLitrosAgua = this.sumTotalKilos('agua');
       this.productos = Object.keys(this.data);
+      this.progres++;
     },
     async fetchFallasProduccion() {
       const fallas_produccion = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getErroresProduccion`, { fecha: this.fecha, suc: this.suc, turno: this.turno });
       this.fallas_produccion = fallas_produccion.data;
+      this.progres++;
     },
     async fetchBitacoraMerma() {
+      this.progres++;
       const bMerma = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getBitacoraMerma`,{ fecha: this.fecha, suc: this.suc, turno: this.turno });
       this.rendimientoMerma = bMerma.data;
     },
     async fetchTiposMerma() {
       const tiposMerma = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getTiposMerma`, {suc: this.suc});
       this.tiposMerma = tiposMerma.data;
+      this.progres++;
     },
     async fetchIncidenciasLimpieza() {
       const inicidenciasLimpieza = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getIncidenciasLimpieza`, {fecha: this.fecha, suc: this.suc, turno: this.turno});
       this.inicidenciasLimpieza = inicidenciasLimpieza.data;
+      this.progres++;
     },
     async fetchProblemasMaquinaria() {
       const problemasMecanicos = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getProblemasMaquinaria`, {fecha: this.fecha, suc: this.suc, turno: this.turno});
       this.problemasMecanicos = problemasMecanicos.data;
+      this.progres++;
     },
     async fetchCompresores() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getRendimientoAceite`, {fecha: this.fecha, suc: this.suc, turno: this.turno});
@@ -862,25 +876,29 @@ export default {
         delete temp.total;
         this.compresoresNames = Object.keys(temp);
       }
+      this.progres++;
     },
     async fetchEficienciaGenerica() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getEficienciaMermaGenerica`, {fecha: this.fecha, suc: this.suc, turno: this.turno});
       this.eficienciaByTipos = response.data;
+      this.progres++;
     },
     async fetchVariablesCombinadas() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getVariablesCombinadas`, {suc: this.suc});
       this.variablesCombinadas = response.data;
+      this.progres++;
     },
     async fetchEmpleados() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getPersonal`, {suc: this.suc, turno: this.turno});
       this.empleados = response.data;
+      this.progres++;
     }
   },
   computed: {
     startDay() {
       const [year, month, day] = this.fecha.split('-');
       const date = new Date(`${month}-${day}-${year}`);
-      return new Date(date.setDate(date.getDate() - (date.getDay() - 1))).getDate();
+      return new Date(date.setDate(date.getDate() - (date.getDay() + 1))).getDate();
     },
     lunes() {
       return this.fullDays[0].day;
