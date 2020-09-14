@@ -100,7 +100,7 @@ export default {
   },
   methods: {
     initConcentrado() {
-      const contado = this.ventasResumen.find((item)=> item.titulo == 'Gasto total').valor;
+      const contado = this.ventasResumen.find((item)=> item.titulo == 'Gasto contado').valor;
       const pagado = this.pagos.find((item)=> item.titulo == 'Gasto local').valor;
       const total = contado - pagado;
       this.concentrado = [
