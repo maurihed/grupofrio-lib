@@ -2,7 +2,7 @@
   <div class="panel">
     <panel-titulo :titulo="titulo"></panel-titulo>
     <div class="divider"></div>
-    <div class="center panelSmall__value"> $922,161.63 </div>
+    <div class="center panelSmall__value">{{92216163 | money}}</div>
   </div>
 </template>
 <script>

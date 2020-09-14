@@ -467,7 +467,6 @@ export default {
         this.fetchVariablesCombinadas(),
         this.fetchEmpleados(),
     ]);
-    console.log(this.progres);
     this.isLoaded = true;
   },
   updated() {

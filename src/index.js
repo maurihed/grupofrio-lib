@@ -4,6 +4,17 @@ import M from 'materialize-css';
 // bootstrap configuration
 window.axios = axios;
 window.M = M;
+// Filtros
+Vue.filter('money', function (value) {
+  if(!Number(value)) return value;
+  if (!value) return '$0'
+  return '$'+(new Intl.NumberFormat("en-US").format(value));
+})
+Vue.filter('number', function (value) {
+  if(!Number(value)) return value;
+  if (!value) return 0;
+  return new Intl.NumberFormat("es-MX").format(value);
+})
 // Vue components
 Vue.component('vue-button', require('./button.vue').default)
 Vue.component('confirm-modal', require('./components/common/confirm-modal.vue').default)

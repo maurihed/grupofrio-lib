@@ -1,31 +1,61 @@
 <template>
-<div>
-  <div class="row">
-    <div class="col s6">
-        <panel-cols
-          titulo="Resumen gastos"
-          :cols="gastos"
-        ></panel-cols>
+<div class="center">
+  <br>
+  <div v-if="!isLoaded">
+    <div class="preloader-wrapper big active">
+      <div class="spinner-layer spinner-blue-only">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
     </div>
-    <div class="col s6">
-        <panel-cols
-          titulo="Resumen Pagos"
-          :cols="cols"
-        ></panel-cols>
-    </div>
+    <br>
+    <div>{{(progres * 100 / 7).toFixed(2)}}%</div>
   </div>
-  <div class="row">
-    <div class="col s12">
-      <panel-table class="h-400" titulo="Total ventas" :data="ventas"></panel-table>
+  <div v-if="isLoaded">
+    <div class="row">
+      <div class="col s12 m4">
+          <panel-cols
+            titulo="Resumen Ventas"
+            :cols="ventasResumen"
+          ></panel-cols>
+      </div>
+      <div class="col s12 m4">
+          <panel-cols
+            titulo="Resumen gastos"
+            :cols="gastos"
+          ></panel-cols>
+      </div>
+      <div class="col s12 m4">
+          <panel-cols
+            titulo="Resumen Pagos"
+            :cols="pagos"
+          ></panel-cols>
+      </div>
+      <div class="col s12 m12">
+          <panel-cols
+            titulo="Concentrado"
+            :cols="concentrado"
+          ></panel-cols>
+      </div>
     </div>
-    <div class="col s12">
-      <panel-table class="h-400" titulo="Merma" :data="merma"></panel-table>
-    </div>
-    <div class="col s12 m6 mh-400">
-      <panel-table class="h-400" titulo="Entradas" :data="entradas"></panel-table>
-    </div>
-    <div class="col s12 m6 mh-400">
-      <panel-table class="h-400" titulo="Salidas" :data="salidas"></panel-table>
+    <div class="row">
+      <div class="col s12">
+        <panel-table class="h-400" titulo="Total ventas" :data="ventas"></panel-table>
+      </div>
+      <div class="col s12">
+        <panel-table class="h-400" titulo="Merma" :data="merma"></panel-table>
+      </div>
+      <div class="col s12 m6 mh-400">
+        <panel-table class="h-400" titulo="Entradas" :data="entradas"></panel-table>
+      </div>
+      <div class="col s12 m6 mh-400">
+        <panel-table class="h-400" titulo="Salidas" :data="salidas"></panel-table>
+      </div>
     </div>
   </div>
 </div>
@@ -38,26 +68,47 @@ import panelTableVue from './panel-table.vue';
 export default {
   props: ['fecha', 'suc'],
   data: () => ({
+    isLoaded: false,
+    progres: 0,
     cols: [],
     merma: [],
     entradas: [],
     salidas: [],
     ventas: [],
+    ventasResumen: [],
     gastos: [],
+    pagos: [],
+    concentrado: [],
   }),
-  created() {
+  async created() {
     this.cols = [
       { titulo:'Gasto contado', valor: 4257.45 },
       { titulo:'Gasto credito', valor: 4257.45 },
       { titulo:'Gasto Total', valor: 8514.90 },
     ];
-    this.fetchMerma();
-    this.fetchEntradasSalidas('Salidas');
-    this.fetchEntradasSalidas('Entradas');
-    this.getVentas();
-    this.fetchGastos();
+    await Promise.all([
+      this.fetchMerma(),
+      this.fetchEntradasSalidas('Salidas'),
+      this.fetchEntradasSalidas('Entradas'),
+      this.getVentas(),
+      this.fetchVentasResumen(),
+      this.fetchGastos(),
+      this.fetchPagos(),
+    ]);
+    this.initConcentrado();
+    this.isLoaded = true;
   },
   methods: {
+    initConcentrado() {
+      const contado = this.ventasResumen.find((item)=> item.titulo == 'Gasto total').valor;
+      const pagado = this.pagos.find((item)=> item.titulo == 'Gasto local').valor;
+      const total = contado - pagado;
+      this.concentrado = [
+        { titulo:'Contado', valor: contado },
+        { titulo:'Pagado Local', valor: pagado },
+        { titulo:'Total', valor: total },
+      ];
+    },
     async fetchMerma() {
       const response = await axios.post(`${env.REPORTES_ARQUEO}?option=getMerma`,{ fecha: this.fecha, suc: this.suc });
       this.merma = response.data.map((item) => ({
@@ -66,6 +117,7 @@ export default {
         Almacen: item.FromWhsCod,
         Merma: item.WhsCode
       }));
+      this.progres++;
     },
     async fetchEntradasSalidas(tipo) {
       const response = await axios.post(`${env.REPORTES_ARQUEO}?option=get${tipo}`,{ fecha: this.fecha, suc: this.suc });
@@ -73,32 +125,48 @@ export default {
         this.entradas = response.data.map((item) => ({
           Producto: item.Dscription,
           Cantidad: item.Quantity,
-          Almacen: item.WhsCod,
+          Almacen: item.WhsCode,
         }));
       } else {
         this.salidas = response.data.map((item) => ({
           Producto: item.Dscription,
           Cantidad: item.Quantity,
-          Almacen: item.WhsCod,
+          Almacen: item.WhsCode,
         }));
       }
+      this.progres++;
     },
     async getVentas() {
       const response = await axios.post(`${env.REPORTES_ARQUEO}?option=getVentas`,{ fecha: this.fecha, suc: this.suc });
       this.ventas = response.data;
+      this.progres++;
     },
-    async fetchGastos() {
-      const response = await axios.post(`${env.REPORTES_ARQUEO}?option=getGastos`,{ fecha: this.fecha, suc: this.suc });
-          this.cols = [
-      { titulo:'Gasto contado', valor: 4257.45 },
-      { titulo:'Gasto credito', valor: 4257.45 },
-      { titulo:'Gasto Total', valor: 8514.90 },
-    ];
-      this.gastos = [
+    async fetchVentasResumen() {
+      const response = await axios.post(`${env.REPORTES_ARQUEO}?option=getVentasResumen`,{ fecha: this.fecha, suc: this.suc });
+      this.ventasResumen = [
         {titulo: 'Gasto contado', valor: response.data.contado },
         {titulo: 'Gasto credito', valor: response.data.credito },
         {titulo: 'Gasto total', valor: response.data.total },
       ];
+      this.progres++;
+    },
+    async fetchGastos() {
+      const response = await axios.post(`${env.REPORTES_ARQUEO}?option=getGastos`,{ fecha: this.fecha, suc: this.suc });
+      this.gastos = [
+        {titulo: 'Gasto local', valor: response.data.local },
+        {titulo: 'Gasto corporativo', valor: response.data.corpo },
+        {titulo: 'Gasto total', valor: response.data.total },
+      ];
+      this.progres++;
+    },
+    async fetchPagos() {
+      const response = await axios.post(`${env.REPORTES_ARQUEO}?option=getPagos`,{ fecha: this.fecha, suc: this.suc });
+      this.pagos = [
+        {titulo: 'Gasto local', valor: response.data.local },
+        {titulo: 'Gasto corporativo', valor: response.data.corpo },
+        {titulo: 'Gasto total', valor: response.data.total },
+      ];
+      this.progres++;
     },
   },
   components:{

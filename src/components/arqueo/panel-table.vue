@@ -11,7 +11,7 @@
         </thead>
         <tbody>
           <tr v-for="(row, i) in data" :key="'row'+i">
-            <td v-for="(col, i) in Object.values(row)" :key="i">{{col}}</td>
+            <td v-for="(col, i) in Object.values(row)" :key="i">{{col | number}}</td>
           </tr>
         </tbody>
       </table>
@@ -43,7 +43,7 @@ export default {
     font-size: 30px;
   }
   .table-responsive {
-    max-height: 350px !important;
+    max-height: 334px !important;
     overflow: auto;
     table {
       font-size: 0.9rem;
