@@ -29,5 +29,8 @@ export default {
     color: #999999;
     font-family: axiforma thin;
     font-size: 1em;
+    .text-bold {
+      font-family: axiforma bold;
+    }
   }
 </style>
