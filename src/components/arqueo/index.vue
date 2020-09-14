@@ -144,9 +144,9 @@ export default {
     async fetchVentasResumen() {
       const response = await axios.post(`${env.REPORTES_ARQUEO}?option=getVentasResumen`,{ fecha: this.fecha, suc: this.suc });
       this.ventasResumen = [
-        {titulo: 'Gasto contado', valor: response.data.contado },
-        {titulo: 'Gasto credito', valor: response.data.credito },
-        {titulo: 'Gasto total', valor: response.data.total },
+        {titulo: 'Venta contado', valor: response.data.contado },
+        {titulo: 'Venta credito', valor: response.data.credito },
+        {titulo: 'Venta total', valor: response.data.total },
       ];
       this.progres++;
     },
