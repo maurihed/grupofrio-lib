@@ -198,7 +198,7 @@
 
 .menu {
   position: absolute;
-  width: 25%;
+  width: 0%;
   height: calc(100% - 120px);
   background: #FEFEFE;
   display: block;
@@ -235,14 +235,20 @@
     line-height: 48px;
     padding: 0 32px;
   }
+  &.open {
+    width: 20%;
+  }
 }
 .main {
   position: absolute;
-  width: 75%;
-  left: 25%;
+  left: 0;
   height: calc(100% - 120px);
   display: block;
   overflow: auto;
+}
+.menuReportesOpened {
+  left: 20%;
+  width: 80%;
 }
 
 @keyframes parpadeo {
