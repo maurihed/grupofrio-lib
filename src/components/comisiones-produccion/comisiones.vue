@@ -789,8 +789,8 @@ export default {
       return formattedDate;
     },
     setFullDays() {
-      const [year, month, day] = this.fecha.split('-');
-      const date = new Date(`${month}-${day}-${year}`);
+      // const [year, month, day] = this.fecha.split('-');
+      const date = new Date(`${this.fecha} 00:00`);
       const startDate = new Date(date.setDate(date.getDate() - (date.getDay() == 0 ? 6 : (date.getDay() - 1))));
       const days = [-1,0,1,2,3,4,5];
       this.fullDays =  days.map((d) => {
