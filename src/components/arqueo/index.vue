@@ -14,7 +14,7 @@
       </div>
     </div>
     <br>
-    <div>{{(progres * 100 / 8).toFixed(2)}}%</div>
+    <div>{{(progres * 100 / 9).toFixed(2)}}%</div>
   </div>
   <div v-if="isLoaded">
     <div class="row">
@@ -23,6 +23,9 @@
       </div>
       <div class="col s12">
         <panel-table class="h-400" titulo="Unidades" :data="unidades"></panel-table>
+      </div>
+      <div class="col s12">
+        <panel-table class="h-400" titulo="Almacen" :data="almacen"></panel-table>
       </div>
       <div class="col s12 m6 mh-400">
         <panel-table class="h-400" titulo="Entradas" :data="entradas"></panel-table>
@@ -75,6 +78,7 @@ export default {
     progres: 0,
     cols: [],
     merma: [],
+    almacen: [],
     unidades: [],
     entradas: [],
     salidas: [],
@@ -99,6 +103,7 @@ export default {
       this.fetchGastos(),
       this.fetchPagos(),
       this.fetchUnidades(),
+      this.fetchAlmacen(),
     ]);
     this.initConcentrado();
     this.isLoaded = true;
@@ -122,6 +127,11 @@ export default {
     async fetchUnidades() {
       const response = await axios.post(`${env.REPORTES_ARQUEO}?option=getUnidades`,{ fecha: this.fecha, suc: this.suc });
       this.unidades = response.data;
+      this.progres++;
+    },
+    async fetchAlmacen() {
+      const response = await axios.post(`${env.REPORTES_ARQUEO}?option=getAlmacen`,{ fecha: this.fecha, suc: this.suc });
+      this.almacen = response.data;
       this.progres++;
     },
     async fetchEntradasSalidas(tipo) {
