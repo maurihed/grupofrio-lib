@@ -31,7 +31,6 @@ export default {
     const tanque = JSON.parse(this.tanque);
     const response = await axios.post(`${env.TANQUE_PRODUCCION}?option=getDetalleTanque`, { idTanque: tanque.idMaquinas });
     this.detalleTanque = response.data[0];
-    console.log(this.detalleTanque);
   },
   methods:{
     numberToLetter(v) { 

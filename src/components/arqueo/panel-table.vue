@@ -7,11 +7,18 @@
         <thead>
           <tr>
             <td v-for="(header, i) in headers" :key="i">{{header}}</td>
+            <td v-if="extra">Estado</td>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(row, i) in data" :key="'row'+i">
             <td v-for="(col, i) in Object.values(row)" :key="i">{{col | number}}</td>
+            <td v-if="extra && extra[i]" class="center indigo-text text-darken-2">
+              <span><i class="material-icons">check_circle</i></span>
+            </td>
+            <td v-if="extra && !extra[i]" class="center red-text text-darken-2">
+              <span><i class="material-icons">cancel</i></span>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -22,7 +29,7 @@
 import panelTituloVue from './panel-titulo.vue';
 
 export default {
-  props:['titulo', 'data'],
+  props:['titulo', 'data', 'extra'],
   data:()=>({ }),
   computed: {
     headers() {
