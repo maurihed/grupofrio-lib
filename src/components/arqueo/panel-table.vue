@@ -2,7 +2,7 @@
   <div class="panel">
     <panel-titulo class="h3" :titulo="titulo"></panel-titulo>
     <div class="divider"></div>
-    <div class="table-responsive">
+    <div :class="{'table-responsive': true, 'scrollable': addScrollClass}">
       <table>
         <thead>
           <tr>
@@ -29,11 +29,15 @@
 import panelTituloVue from './panel-titulo.vue';
 
 export default {
-  props:['titulo', 'data', 'extra'],
+  props:['titulo', 'data', 'extra', 'scrollable'],
   data:()=>({
     parsedData: {},
+    addScrollClass: true,
   }),
   created() {
+    if (typeof this.scrollable == 'boolean') {
+      this.addScrollClass = this.scrollable;
+    }
     if(typeof this.data == 'string') {
       this.parsedData = JSON.parse(this.data);
       this.parsedData = JSON.parse(this.parsedData);
@@ -59,8 +63,10 @@ export default {
     font-size: 30px;
   }
   .table-responsive {
-    max-height: 334px !important;
-    overflow: auto;
+    &.scrollable {
+      max-height: 334px !important;
+      overflow: auto;
+    }
     table {
       font-size: 0.9rem;
     }
