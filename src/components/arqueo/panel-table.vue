@@ -36,6 +36,7 @@ export default {
   created() {
     if(typeof this.data == 'string') {
       this.parsedData = JSON.parse(this.data);
+      this.parsedData = JSON.parse(this.parsedData);
     }
     this.parsedData = this.data;
   },

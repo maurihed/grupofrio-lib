@@ -114,7 +114,7 @@ export default {
   methods: {
     initConcentrado() {
       const contado = this.ventasResumen.find((item)=> item.titulo == 'Venta contado').valor;
-      const pagado = this.pagos.find((item)=> item.titulo == 'Gasto local').valor;
+      const pagado = this.pagos.find((item)=> item.titulo == 'Pago local').valor;
       const total = contado - pagado;
       this.concentrado = [
         { titulo:'Contado', valor: contado },
@@ -204,9 +204,9 @@ export default {
     async fetchPagos() {
       const response = await axios.post(`${env.REPORTES_ARQUEO}?option=getPagos`,{ fecha: this.fecha, suc: this.suc });
       this.pagos = [
-        {titulo: 'Gasto local', valor: response.data.local },
-        {titulo: 'Gasto corporativo', valor: response.data.corpo },
-        {titulo: 'Gasto total', valor: response.data.total },
+        {titulo: 'Pago local', valor: response.data.local },
+        {titulo: 'Pago corporativo', valor: response.data.corpo },
+        {titulo: 'Pago total', valor: response.data.total },
       ];
       this.progres++;
     },
