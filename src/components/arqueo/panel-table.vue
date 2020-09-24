@@ -35,9 +35,10 @@ export default {
     addScrollClass: true,
   }),
   created() {
-    if (typeof this.scrollable == 'boolean') {
+    if (this.scrollable != undefined) {
       this.addScrollClass = this.scrollable;
     }
+      console.log(this.addScrollClass, this.scrollable);
     if(typeof this.data == 'string') {
       this.parsedData = JSON.parse(this.data);
       this.parsedData = JSON.parse(this.parsedData);
