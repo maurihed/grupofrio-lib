@@ -37,6 +37,7 @@ Vue.component('v-produccion', require('./components/produccion/index.vue').defau
 Vue.component('mapa-tanques', require('./components/tanques/index.vue').default);
 // -- arqueo --
 Vue.component('v-arqueo', require('./components/arqueo/index.vue').default);
+Vue.component('panel-tabla', require('./components/arqueo/panel-table.vue').default);
 
 var app = new Vue({
   el: '#app',

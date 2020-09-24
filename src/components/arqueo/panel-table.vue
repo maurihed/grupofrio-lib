@@ -11,7 +11,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(row, i) in data" :key="'row'+i">
+          <tr v-for="(row, i) in parsedData" :key="'row'+i">
             <td v-for="(col, i) in Object.values(row)" :key="i">{{col | number}}</td>
             <td v-if="extra && extra[i]" class="center indigo-text text-darken-2">
               <span><i class="material-icons">check_circle</i></span>
@@ -30,10 +30,18 @@ import panelTituloVue from './panel-titulo.vue';
 
 export default {
   props:['titulo', 'data', 'extra'],
-  data:()=>({ }),
+  data:()=>({
+    parsedData: {},
+  }),
+  created() {
+    if(typeof this.data == 'string') {
+      this.parsedData = JSON.parse(this.data);
+    }
+    this.parsedData = this.data;
+  },
   computed: {
     headers() {
-      const data = Object.values(this.data);
+      const data = Object.values(this.parsedData);
       if (data.length) {
         return Object.keys(data[0]);
       }
