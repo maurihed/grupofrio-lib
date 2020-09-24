@@ -12,7 +12,11 @@
         </thead>
         <tbody>
           <tr v-for="(row, i) in parsedData" :key="'row'+i">
-            <td v-for="(col, i) in Object.values(row)" :key="i">{{col | number}}</td>
+            <td v-for="(col, j) in Object.values(row)" :key="j">
+              <span v-if="porcentajePosition == -1 || (porcentajePosition != -1 && j != porcentajePosition)">{{col | number}}</span>
+              <span class="green-text text-darken-2" v-if="porcentajePosition != -1 && j == porcentajePosition && col >= 50">{{col}}%</span>
+              <span class="red-text text-darken-2" v-if="porcentajePosition != -1 && j == porcentajePosition && col < 50">{{col}}%</span>
+            </td>
             <td v-if="extra && extra[i]" class="center indigo-text text-darken-2">
               <span><i class="material-icons">check_circle</i></span>
             </td>
@@ -29,7 +33,7 @@
 import panelTituloVue from './panel-titulo.vue';
 
 export default {
-  props:['titulo', 'data', 'extra', 'scrollable'],
+  props:['titulo', 'data', 'extra', 'scrollable', 'porcentaje'],
   data:()=>({
     parsedData: {},
     addScrollClass: true,
@@ -38,12 +42,12 @@ export default {
     if (this.scrollable != undefined) {
       this.addScrollClass = this.scrollable;
     }
-      console.log(this.addScrollClass, this.scrollable);
     if(typeof this.data == 'string') {
       this.parsedData = JSON.parse(this.data);
       this.parsedData = JSON.parse(this.parsedData);
+    } else {
+      this.parsedData = this.data;
     }
-    this.parsedData = this.data;
   },
   computed: {
     headers() {
@@ -53,6 +57,9 @@ export default {
       }
       return [];
     },
+    porcentajePosition() {
+      return this.headers.findIndex((header) => header == this.porcentaje)
+    }
   },
   components: {
     'panel-titulo': panelTituloVue,
