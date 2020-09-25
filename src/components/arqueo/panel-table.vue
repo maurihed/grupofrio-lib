@@ -84,7 +84,10 @@ export default {
         return '';
       }
       const suma = Object.values(this.parsedData).reduce((total, item) => total += Number(Object.values(item)[index]), 0);
-      return total ? (Math.floor(suma/total)) : 0;
+      if (this.porcentaje.includes(index)) {
+        return total ? (Math.floor(suma/total)) : 0;
+      }
+      return Number(suma);
     },
   },
   components: {
