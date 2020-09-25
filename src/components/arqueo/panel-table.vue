@@ -1,8 +1,8 @@
 <template>
-  <div class="panel mb-0">
+  <div class="panel">
     <panel-titulo class="h3" :titulo="titulo"></panel-titulo>
     <div class="divider"></div>
-    <div :class="{'table-responsive': true, 'scrollable': addScrollClass}">
+    <div :class="{'table-responsive': true, 'scrollable': scrollable}">
       <table>
         <thead>
           <tr>
@@ -41,15 +41,24 @@
 import panelTituloVue from './panel-titulo.vue';
 
 export default {
-  props:['titulo', 'data', 'extra', 'scrollable', 'porcentaje', 'total'],
+  props: {
+    titulo: String,
+    data: Array|Object,
+    extra: Object,
+    scrollable: {
+      type: Boolean,
+      default: true,
+    },
+    porcentaje: {
+      type: Array,
+      default: []
+    },
+    total: Boolean,
+  },
   data:()=>({
     parsedData: {},
-    addScrollClass: true,
   }),
   created() {
-    if (this.scrollable != undefined) {
-      this.addScrollClass = this.scrollable;
-    }
     if(typeof this.data == 'string') {
       try {
         this.parsedData = JSON.parse(this.data);
