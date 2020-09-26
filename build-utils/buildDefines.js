@@ -10,6 +10,8 @@ module.exports = ({ mode }, defines) => {
     FALLAS_PRODUCCION: JSON.stringify(`${BASE_URL}/produccion/fallas.php`),
     TANQUE_PRODUCCION: JSON.stringify(`${BASE_URL}/produccion/tanques.php`),
     REPORTES_ARQUEO: JSON.stringify(`${BASE_URL}/reportes/arqueo.php`),
+    REPORTES_FRECUENCIA_UNIDADES: JSON.stringify(`${BASE_URL}/reportes/frecuencias/unidades.php`),
+    REPORTES_FRECUENCIA_SUCURSALES: JSON.stringify(`${BASE_URL}/reportes/frecuencias/sucursales.php`),
   };
   
   return {
