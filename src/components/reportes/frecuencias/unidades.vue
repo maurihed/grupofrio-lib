@@ -1,7 +1,7 @@
 <template>
 <div>
   <div v-if="!isLoaded">
-    <div class="text-center">
+    <div class="center">
       <div class="preloader-wrapper big active">
         <div class="spinner-layer spinner-blue-only">
           <div class="circle-clipper left">

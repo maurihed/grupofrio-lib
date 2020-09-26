@@ -38,7 +38,7 @@ Vue.component('mapa-tanques', require('./components/tanques/index.vue').default)
 // -- arqueo --
 Vue.component('v-arqueo', require('./components/arqueo/index.vue').default);
 Vue.component('frecuencia-unidades', require('./components/reportes/frecuencias/unidades.vue').default);
-// Vue.component('frecuencia-sucursales', require('./components/reportes/frecuencias/sucursales.vue').default);
+Vue.component('frecuencia-sucursales', require('./components/reportes/frecuencias/sucursales.vue').default);
 
 Vue.component('panel-tabla', require('./components/arqueo/panel-table.vue').default);
 
