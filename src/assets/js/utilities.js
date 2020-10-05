@@ -21,19 +21,6 @@ export const numberToLetter = (number) => {
   return String.fromCharCode(64 + number);
 };
 
-export const isConsecutivo = (days, day) => {
-  const initialValue = days[0];
-  const diff = Math.abs(initialValue - day);
-  return diff <= 6;
-};
-
-export const getDate = (fecha, days, day) => {
-  const d = new Date(fecha);
-  const month = String(d.getMonth() + (isConsecutivo(days, day) ? 1 : 2)).padStart(2, 0);
-  const year = d.getFullYear();
-  return `${year}-${month}-${day.padStart(2,0)}`;
-};
-
 export const displayError = txt => {
   M.toast({
     html: txt,
