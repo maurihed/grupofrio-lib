@@ -46,6 +46,7 @@ export default {
   .panel {
     padding: 0;
     margin-bottom: 0;
+    font-size: 1.1rem;
   }
   .panel-container {
     display: flex;

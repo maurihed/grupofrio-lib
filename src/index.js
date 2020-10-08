@@ -17,6 +17,7 @@ Vue.filter('number', function (value) {
 })
 // Vue components
 Vue.component('vue-button', require('./button.vue').default)
+Vue.component('progress-indicator', require('./components/common/progress-indicator.vue').default)
 Vue.component('confirm-modal', require('./components/common/confirm-modal.vue').default)
 Vue.component('day-check', require('./components/evalLimpieza/day-check.vue').default)
 Vue.component('eval-aspectos-limpieza', require('./components/evalLimpieza/index.vue').default)
