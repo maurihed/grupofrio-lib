@@ -5,7 +5,7 @@
   <div v-if="isLoaded">
     <div class="row">
       <div class="col s6 center"><h5>Ventas</h5></div>
-      <div class="col s6 center"><h5>Produccion</h5></div>
+      <div class="col s6 center"><h5>Producción</h5></div>
       <div class="col s1">$</div>
       <div class="col s5">
         <div class="panel acumuladoContainer">
@@ -186,7 +186,7 @@
         </div>
       </li>
       <li>
-        <div class="collapsible-header"><i class="material-icons">business</i>Metas gerente planta</div>
+        <div class="collapsible-header"><i class="material-icons">trending_up</i>Metas administrativo</div>
         <div class="collapsible-body">
           <progress-indicator :show="loadingAdmin"></progress-indicator>
           <div v-if="!loadingAdmin">
