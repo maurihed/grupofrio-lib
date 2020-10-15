@@ -28,11 +28,11 @@ export default {
   computed: {
     porcentaje() {
       if (typeof this.value == 'object') {
-        const { meta, real } = this.value;
+        const { meta, real, porcentaje } = this.value;
         if (!meta) {
           return 0;
         }
-        return ((real / meta) * 100).toFixed(2);
+        return porcentaje ? porcentaje : ((real / meta) * 100).toFixed(2);
       }
       return 0;
     }
