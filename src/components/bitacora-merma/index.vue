@@ -54,7 +54,7 @@ export default {
   data() {
     return {
       tipos: [],
-      tipoBloqueados:['Carro Tanque','Compresor 1','Compresor 2','Compresor 3','Compresor 4','Compresor 5','Compresor 6','Grados Baume','Lectura M1'],
+      tipoBloqueados:['Carro Tanque','Compresor 1','Compresor 2','Compresor 3','Compresor 4','Compresor 5','Compresor 6','Grados Baume'],
     }
   },
   async created() {

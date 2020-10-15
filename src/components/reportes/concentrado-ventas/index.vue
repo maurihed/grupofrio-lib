@@ -4,7 +4,7 @@
   <progress-indicator :show="!isLoaded"></progress-indicator>
   <div v-if="isLoaded">
     <div class="row">
-      <div class="col s6">
+      <div class="col s12">
         <div class="card">
           <div class="row mb-0">
             <div class="col s6">
@@ -152,7 +152,7 @@
                           <th>Barra</th>
                           <th>Rolito</th>
                           <th>Agua</th>
-                          <th>Luz</th>
+                          <th>Rendimiento energía</th>
                           <th>Mantenimiento</th>
                         </tr>
                       </thead>
@@ -182,7 +182,7 @@
                           <th>Barra</th>
                           <th>Rolito</th>
                           <th>Agua</th>
-                          <th>Luz</th>
+                          <th>Rendimiento energía</th>
                           <th>Mantenimiento</th>
                         </tr>
                       </thead>
@@ -395,7 +395,14 @@ export default {
       const val = Object.values(this.ventas).reduce((total, item) => {
         if (item[vendedor] && item[vendedor][name]) {
           total.real += item[vendedor][name].real;
-          total.meta += item[vendedor][name].meta;
+          if (name == 'ventasApp') {
+            total.meta += item[vendedor][name].meta;
+          } else if (name == 'kmxlitro'){
+            total.meta = item[vendedor][name].meta
+          } else {
+            total.meta = item[vendedor][name].meta * 6;
+          }
+
         }
         return { ...total };
       }, {
@@ -404,10 +411,6 @@ export default {
       });
       if (name == 'kmxlitro') {
         val.real /= this.workedDays[vendedor];
-        val.meta /= this.workedDays[vendedor];
-      } else {
-        val.real /= 6;
-        val.meta /= 6;
       }
       return val;
     },
