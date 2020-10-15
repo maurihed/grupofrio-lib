@@ -105,26 +105,33 @@
                     </div>
                   </div>
                 </li>
+                <li>
+                  <div class="collapsible-header collapsable-dayName"><span class="dayName center">Acumulado</span></div>
+                  <div class="collapsible-body">
+                    <div class="">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Nombre vendedor</th>
+                            <th class="center" v-for="(topic, index) in topics" :key="index" >{{topic}}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(vendedor, index) in getVendedores()" :key="index">
+                            <td>{{vendedor}}</td>
+                            <td v-for="name in ventasNames" :key="name">
+                              <tabla-celda
+                                :value="getAcumuladoVenta(vendedor, name)"
+                              >
+                              </tabla-celda>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </li>
               </ul>
-              <table class="panel">
-                <thead>
-                  <tr>
-                    <th>Nombre vendedor</th>
-                    <th class="center" v-for="(topic, index) in topics" :key="index" >{{topic}}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(vendedor, index) in getVendedores()" :key="index">
-                    <td>{{vendedor}}</td>
-                    <td v-for="name in ventasNames" :key="name">
-                      <tabla-celda
-                        :value="getAcumuladoVenta(vendedor, name)"
-                      >
-                      </tabla-celda>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
         </div>
       </li>
@@ -164,30 +171,37 @@
                   </div>
                 </div>
               </li>
+              <li>
+                <div class="collapsible-header collapsable-dayName"><span class="dayName center">ACUMULADO</span></div>
+                <div class="collapsible-body">
+                  <div class="">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Turno</th>
+                          <th>Barra</th>
+                          <th>Rolito</th>
+                          <th>Agua</th>
+                          <th>Luz</th>
+                          <th>Mantenimiento</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <tr v-for="(turno, index) in getTurnos()" :key="index">
+                          <td>{{turno}}</td>
+                          <td v-for="name in produccionNames" :key="name">
+                            <tabla-celda
+                              :value="getAcumuladoProduccion(turno, name)"
+                            >
+                            </tabla-celda>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </li>
             </ul>
-            <table class="panel">
-              <thead>
-                <tr>
-                  <th>Turno</th>
-                  <th>Barra</th>
-                  <th>Rolito</th>
-                  <th>Agua</th>
-                  <th>Luz</th>
-                  <th>Mantenimiento</th>
-                </tr>
-              </thead>
-              <tbody>
-                  <tr v-for="(turno, index) in getTurnos()" :key="index">
-                  <td>{{turno}}</td>
-                  <td v-for="name in produccionNames" :key="name">
-                    <tabla-celda
-                      :value="getAcumuladoProduccion(turno, name)"
-                    >
-                    </tabla-celda>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
       </li>
