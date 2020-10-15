@@ -4,50 +4,83 @@
   <progress-indicator :show="!isLoaded"></progress-indicator>
   <div v-if="isLoaded">
     <div class="row">
-      <div class="col s6 center"><h5>Ventas</h5></div>
-      <div class="col s6 center"><h5>Producción</h5></div>
-      <div class="col s1">$</div>
-      <div class="col s5">
-        <div class="panel acumuladoContainer">
-          <span>{{acumulado.Venta.dinero.Acumulado | money}}</span>
-          <span>{{acumulado.Venta.dinero.Meta | money}}</span>
-          <span>{{acumulado.Venta.dinero.Tendencia | number}}%</span>
+      <div class="col s6">
+        <div class="card">
+          <div class="row mb-0">
+            <div class="col s6">
+              <div class="custom-card">
+                <div class="custom-card-header"><i class="material-icons">attach_money</i> VENTA</div>
+                <div class="custom-card-body" v-if="isLoaded">
+                  <div class="card-row">
+                    <div class="p-1">
+                      <div class="mb-1">&nbsp;</div>
+                      <div class="center mb-2"><span class="text-bold text-primary">$</span></div>
+                      <div class="center"><span class="text-bold text-primary">Kg</span></div>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Acumulado</span>
+                      <span class="mb-1 w-100 bueno">{{acumulado.Venta.dinero.Acumulado | money}}</span>
+                      <span class="w-100 bueno">{{acumulado.Venta.kg.Acumulado | number}}</span>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Meta</span>
+                      <span class="mb-1 w-100 regular">{{acumulado.Venta.dinero.Meta | money}}</span>
+                      <span class="w-100 regular">{{acumulado.Venta.kg.Meta | number}}</span>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Tendencia</span>
+                      <span class="mb-1 w-100 malo">{{acumulado.Venta.dinero.Tendencia | number}}%</span>
+                      <span class="w-100 malo">{{acumulado.Venta.kg.Tendencia | number}}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col s6">
+              <div class="custom-card">
+                <div class="custom-card-header"><i class="material-icons">attach_money</i> PRODUCCIÓN</div>
+                <div class="custom-card-body" v-if="isLoaded">
+                  <div class="card-row">
+                    <div class="p-1">
+                      <div class="mb-1">&nbsp;</div>
+                      <div class="center mb-2"><span class="text-bold text-primary">Rolito</span></div>
+                      <div class="center"><span class="text-bold text-primary">Barra</span></div>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Acumulado</span>
+                      <span class="mb-1 w-100 bueno">{{acumulado.Produccion.rolito.Acumulado | money}}</span>
+                      <span class="w-100 bueno">{{acumulado.Produccion.barra.Acumulado | number}}</span>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Meta</span>
+                      <span class="mb-1 w-100 regular">{{acumulado.Produccion.rolito.Meta | money}}</span>
+                      <span class="w-100 regular">{{acumulado.Produccion.barra.Meta | number}}</span>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Tendencia</span>
+                      <span class="mb-1 w-100 malo">{{acumulado.Produccion.rolito.Tendencia | number}}%</span>
+                      <span class="w-100 malo">{{acumulado.Produccion.barra.Tendencia | number}}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="col s1">Rolito</div>
-      <div class="col s5">
-        <div class="panel acumuladoContainer">
-          <span>{{acumulado.Produccion.rolito.Acumulado | number}}</span>
-          <span>{{acumulado.Produccion.rolito.Meta | number}}</span>
-          <span>{{acumulado.Produccion.rolito.Tendencia | number}}%</span>
-        </div>
-      </div>
-      <div class="col s1">Kg</div>
-      <div class="col s5">
-        <div class="panel acumuladoContainer">
-          <span>{{acumulado.Venta.kg.Acumulado | number}}</span>
-          <span>{{acumulado.Venta.kg.Meta | number}}</span>
-          <span>{{acumulado.Venta.kg.Tendencia | number}}%</span>
-        </div>
-      </div>
-       <div class="col s1">Barra</div>
-      <div class="col s5">
-        <div class="panel acumuladoContainer">
-          <span>{{acumulado.Produccion.barra.Acumulado | number}}</span>
-          <span>{{acumulado.Produccion.barra.Meta | number}}</span>
-          <span>{{acumulado.Produccion.barra.Tendencia | number}}%</span>
-        </div>
+      <div class="col s6">
+        <slot></slot>
       </div>
     </div>
     <ul class="collapsible expandable">
       <li>
-        <div class="collapsible-header"><i class="material-icons">attach_money</i>Equipo de venta</div>
-          <div class="collapsible-body">
+        <div class="collapsible-header"><span class="line start"></span>EQUIPO DE &nbsp;<b> VENTAS</b> <span class="line"></span> <i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
+          <div class="collapsible-body p-0">
             <progress-indicator :show="loadingVentas"></progress-indicator>
             <div v-if="!loadingVentas">
               <ul class="collapsible expandable">
                 <li v-for="day in weekDays" :key="day.day">
-                  <div class="collapsible-header"><i class="material-icons">adjust</i>{{day.dayName}} ({{day.date}})</div>
+                  <div class="collapsible-header collapsable-dayName"><span class="dayName center">{{day.dayName}}</span></div>
                   <div class="collapsible-body">
                     <div class="">
                       <table>
@@ -96,13 +129,13 @@
         </div>
       </li>
       <li>
-        <div class="collapsible-header"><i class="material-icons">add_shopping_cart</i>Equipo de produccion</div>
+        <div class="collapsible-header"><span class="line start"></span>EQUIPO DE &nbsp;<b> PRODUCCIÓN</b> <span class="line"></span><i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
         <div class="collapsible-body">
           <progress-indicator :show="loadingProduccion"></progress-indicator>
           <div v-if="!loadingProduccion">
             <ul class="collapsible expandable">
               <li v-for="day in weekDays" :key="day.day">
-                <div class="collapsible-header"><i class="material-icons">adjust</i>{{day.dayName}} ({{day.date}})</div>
+                <div class="collapsible-header collapsable-dayName"><span class="dayName center">{{day.dayName}}</span></div>
                 <div class="collapsible-body">
                   <div class="">
                     <table>
@@ -136,8 +169,8 @@
               <thead>
                 <tr>
                   <th>Turno</th>
-                  <th>Producción</th>
-                  <th>Eficiencia</th>
+                  <th>Barra</th>
+                  <th>Rolito</th>
                   <th>Agua</th>
                   <th>Luz</th>
                   <th>Mantenimiento</th>
@@ -159,7 +192,7 @@
         </div>
       </li>
       <li>
-        <div class="collapsible-header"><i class="material-icons">business</i>Metas gerente planta</div>
+        <div class="collapsible-header"><span class="line start"></span>METAS&nbsp;<b>GERENTE DE PLATA</b> <span class="line"></span><i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
         <div class="collapsible-body"> 
           <progress-indicator :show="loadingGerente"></progress-indicator>
           <div v-if="!loadingGerente">
@@ -186,7 +219,7 @@
         </div>
       </li>
       <li>
-        <div class="collapsible-header"><i class="material-icons">trending_up</i>Metas administrativo</div>
+        <div class="collapsible-header"><span class="line start"></span>METAS&nbsp;<b>ADMINISTRATIVO</b> <span class="line"></span><i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
         <div class="collapsible-body">
           <progress-indicator :show="loadingAdmin"></progress-indicator>
           <div v-if="!loadingAdmin">
@@ -387,6 +420,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .p-1 {
+    padding: .25rem;
+  }
+  .p-2 {
+    padding: .5rem;
+  }
+  .w-100 {
+    display: block;
+    width: 100%;
+  }
+  .text-bold {
+    font-weight: bold;
+  }
+  .text-primary {
+    color: #2e3b8d;
+  }
+  .mb-0 {
+    margin-bottom: 0 !important;
+  }
+  .ml-1 {
+    margin-left: .25rem;
+  }
+  .mr-0 {
+    margin-right: 0;
+  }
   .panel {
     font-size: 0.9rem;
     .diferencia {
@@ -420,5 +478,119 @@ export default {
         border-right: none;
       }
     }
+  }
+  .card {
+    padding: 1rem;
+    .custom-card {
+      width: 100%;
+      border-radius: 5px;
+      .custom-card-header {
+        background: #2e3b8d;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .custom-card-body {
+        background: #ebe9f0;
+        padding: .5rem 1rem;
+        .card-row {
+          display: grid;
+          grid-template-columns:
+          [name] 13%
+          repeat(3, 29%);
+          text-align: center;
+        }
+      }
+    }
+  }
+  .mb-1 {
+    margin-bottom: .5rem;
+  }
+  .mb-2 {
+    margin-bottom: .75rem;
+  }
+  .mb-1 {
+    margin-bottom: .5rem;
+  }
+  .bueno {
+    border: 2px solid #84d0c1;
+    background: #c9fef6;
+    columns: #444444;
+    border-radius: 5px;
+  }
+  .malo {
+    border: 2px solid #f5b0b6;
+    background: #ffd7e1;
+    columns: #444444;
+    border-radius: 5px;
+  }
+  .regular {
+    border: 2px solid #ecd9a4;
+    background: #f9f2d0;
+    columns: #444444;
+    border-radius: 5px;
+  }
+  .collapsible-header {
+    color: #2e3b8d;
+  }
+  
+  .line {
+    flex-grow: 1;
+    margin-top: 10px;
+    height: 3px;
+    background: #c7cbd0;
+    margin-left: 1rem;
+    &.start {
+      max-width: 50px;
+      margin-left: 0;
+      margin-right: 1rem;
+    }
+  }
+  .arrow-down-size {
+    font-size: 4rem;
+    line-height: 1.2rem;
+    width: 40px;
+  }
+  .collapsable-dayName {
+    background: #d4dbe3;
+    text-align: center;
+    padding: 0;
+    text-transform: uppercase;
+    border: none;
+    margin-bottom: .5rem;
+    & .dayName {
+      padding: 10px 0;
+      width: 20%;
+      background: #96a7c2;
+      color: #FFF;
+    }
+  }
+  li.active {
+    & > .collapsable-dayName {
+      background: #96a7c2;
+      padding: 0;
+      text-transform: uppercase;
+      margin-bottom: 0;
+      & .dayName {
+        width: 100%;
+        padding: 10px 0;
+        background: #96a7c2;
+        color: #FFF;
+      }
+    }
+  }
+  table {
+    border-collapse: collapse;
+    thead tr th {
+      text-align: center;
+      background: #adbacf;
+      color: #FFF;
+      font-family: "axiforma bold";
+      font-weight: bold;
+    }
+  }
+  .collapsible-body {
+    padding: 0;
   }
 </style>
