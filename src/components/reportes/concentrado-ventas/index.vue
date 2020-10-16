@@ -48,12 +48,12 @@
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Acumulado</span>
-                      <span class="mb-1 w-100 bueno">{{acumulado.Produccion.rolito.Acumulado | money}}</span>
+                      <span class="mb-1 w-100 bueno">{{acumulado.Produccion.rolito.Acumulado | number}}</span>
                       <span class="w-100 bueno">{{acumulado.Produccion.barra.Acumulado | number}}</span>
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Meta</span>
-                      <span class="mb-1 w-100 regular">{{acumulado.Produccion.rolito.Meta | money}}</span>
+                      <span class="mb-1 w-100 regular">{{acumulado.Produccion.rolito.Meta | number}}</span>
                       <span class="w-100 regular">{{acumulado.Produccion.barra.Meta | number}}</span>
                     </div>
                     <div class="p-1">
@@ -418,15 +418,19 @@ export default {
       const val = Object.values(this.produccion).reduce((total, item) => {
         if (item[turno] && item[turno][name]) {
           total.real += item[turno][name].real;
-          total.meta += item[turno][name].meta;
+          if(name == 'agua') {
+            total.meta += item[turno][name].meta;
+          } else {
+            total.meta = item[turno][name].meta*7;
+          }
         }
         return { ...total };
       }, {
         real: 0,
         meta: 0,
       });
-      val.real /= 7;
-      val.meta /= 7;
+      // val.real /= 7;
+      // val.meta /= 7;
       return val;
     }
   },
