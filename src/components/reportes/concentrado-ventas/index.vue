@@ -19,18 +19,18 @@
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Acumulado</span>
-                      <span class="mb-1 w-100">{{acumulado.Venta.dinero.Acumulado | money}}</span>
-                      <span class="w-100">{{acumulado.Venta.kg.Acumulado | number}}</span>
+                      <span class="mb-1 w-100 neutro acumulado-text">{{acumulado.Venta.dinero.Acumulado | money}}</span>
+                      <span class="w-100 neutro acumulado-text">{{acumulado.Venta.kg.Acumulado | number}}</span>
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Meta</span>
-                      <span class="mb-1 w-100">{{acumulado.Venta.dinero.Meta | money}}</span>
-                      <span class="w-100">{{acumulado.Venta.kg.Meta | number}}</span>
+                      <span class="mb-1 w-100 bueno acumulado-text">{{acumulado.Venta.dinero.Meta | money}}</span>
+                      <span class="w-100 bueno acumulado-text">{{acumulado.Venta.kg.Meta | number}}</span>
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Tendencia</span>
-                      <span class="mb-1 w-100" :class="getStateClass(acumulado.Venta.dinero.Tendencia)">{{acumulado.Venta.dinero.Tendencia | number}}%</span>
-                      <span class="w-100" :class="getStateClass(acumulado.Venta.kg.Tendencia)">{{acumulado.Venta.kg.Tendencia | number}}%</span>
+                      <span class="mb-1 w-100 acumulado-text" :class="getStateClass(acumulado.Venta.dinero.Tendencia)">{{acumulado.Venta.dinero.Tendencia | number}}%</span>
+                      <span class="w-100 acumulado-text" :class="getStateClass(acumulado.Venta.kg.Tendencia)">{{acumulado.Venta.kg.Tendencia | number}}%</span>
                     </div>
                   </div>
                 </div>
@@ -48,18 +48,18 @@
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Acumulado</span>
-                      <span class="mb-1 w-100">{{acumulado.Produccion.rolito.Acumulado | number}}</span>
-                      <span class="w-100">{{acumulado.Produccion.barra.Acumulado | number}}</span>
+                      <span class="mb-1 w-100 neutro acumulado-text">{{acumulado.Produccion.rolito.Acumulado | number}}</span>
+                      <span class="w-100 neutro acumulado-text">{{acumulado.Produccion.barra.Acumulado | number}}</span>
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Meta</span>
-                      <span class="mb-1 w-100">{{acumulado.Produccion.rolito.Meta | number}}</span>
-                      <span class="w-100">{{acumulado.Produccion.barra.Meta | number}}</span>
+                      <span class="mb-1 w-100 bueno acumulado-text">{{acumulado.Produccion.rolito.Meta | number}}</span>
+                      <span class="w-100 bueno acumulado-text">{{acumulado.Produccion.barra.Meta | number}}</span>
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Tendencia</span>
-                      <span class="mb-1 w-100" :class="getStateClass(acumulado.Produccion.rolito.Tendencia)">{{acumulado.Produccion.rolito.Tendencia | number}}%</span>
-                      <span class="w-100" :class="getStateClass(acumulado.Produccion.barra.Tendencia)">{{acumulado.Produccion.barra.Tendencia | number}}%</span>
+                      <span class="mb-1 w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.rolito.Tendencia)">{{acumulado.Produccion.rolito.Tendencia | number}}%</span>
+                      <span class="w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.barra.Tendencia)">{{acumulado.Produccion.barra.Tendencia | number}}%</span>
                     </div>
                   </div>
                 </div>
@@ -567,6 +567,11 @@ export default {
   .mb-1 {
     margin-bottom: .5rem;
   }
+  .acumulado-text {
+    color: #444444;
+    font-family: "axiforma bold";
+    font-weight: bold;
+  }
   .bueno {
     border: 2px solid #84d0c1;
     background: #c9fef6;
@@ -583,6 +588,12 @@ export default {
     border: 2px solid #ecd9a4;
     background: #f9f2d0;
     columns: #444444;
+    border-radius: 5px;
+  }
+  .neutro {
+    border: 2px solid #162a71;
+    background: #c6cada;
+    columns: #6A6A6A;
     border-radius: 5px;
   }
   .collapsible-header {
