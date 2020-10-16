@@ -19,18 +19,18 @@
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Acumulado</span>
-                      <span class="mb-1 w-100 bueno">{{acumulado.Venta.dinero.Acumulado | money}}</span>
-                      <span class="w-100 bueno">{{acumulado.Venta.kg.Acumulado | number}}</span>
+                      <span class="mb-1 w-100">{{acumulado.Venta.dinero.Acumulado | money}}</span>
+                      <span class="w-100">{{acumulado.Venta.kg.Acumulado | number}}</span>
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Meta</span>
-                      <span class="mb-1 w-100 regular">{{acumulado.Venta.dinero.Meta | money}}</span>
-                      <span class="w-100 regular">{{acumulado.Venta.kg.Meta | number}}</span>
+                      <span class="mb-1 w-100">{{acumulado.Venta.dinero.Meta | money}}</span>
+                      <span class="w-100">{{acumulado.Venta.kg.Meta | number}}</span>
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Tendencia</span>
-                      <span class="mb-1 w-100 malo">{{acumulado.Venta.dinero.Tendencia | number}}%</span>
-                      <span class="w-100 malo">{{acumulado.Venta.kg.Tendencia | number}}%</span>
+                      <span class="mb-1 w-100" :class="getStateClass(acumulado.Venta.dinero.Tendencia)">{{acumulado.Venta.dinero.Tendencia | number}}%</span>
+                      <span class="w-100" :class="getStateClass(acumulado.Venta.kg.Tendencia)">{{acumulado.Venta.kg.Tendencia | number}}%</span>
                     </div>
                   </div>
                 </div>
@@ -43,23 +43,23 @@
                   <div class="card-row">
                     <div class="p-1">
                       <div class="mb-1">&nbsp;</div>
-                      <div class="center mb-2"><span class="text-bold text-primary">Rolito</span></div>
-                      <div class="center"><span class="text-bold text-primary">Barra</span></div>
+                      <div class="center mb-2"><span class="text-bold text-primary">Barra</span></div>
+                      <div class="center"><span class="text-bold text-primary">Rolito</span></div>
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Acumulado</span>
-                      <span class="mb-1 w-100 bueno">{{acumulado.Produccion.rolito.Acumulado | number}}</span>
-                      <span class="w-100 bueno">{{acumulado.Produccion.barra.Acumulado | number}}</span>
+                      <span class="mb-1 w-100">{{acumulado.Produccion.rolito.Acumulado | number}}</span>
+                      <span class="w-100">{{acumulado.Produccion.barra.Acumulado | number}}</span>
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Meta</span>
-                      <span class="mb-1 w-100 regular">{{acumulado.Produccion.rolito.Meta | number}}</span>
-                      <span class="w-100 regular">{{acumulado.Produccion.barra.Meta | number}}</span>
+                      <span class="mb-1 w-100">{{acumulado.Produccion.rolito.Meta | number}}</span>
+                      <span class="w-100">{{acumulado.Produccion.barra.Meta | number}}</span>
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Tendencia</span>
-                      <span class="mb-1 w-100 malo">{{acumulado.Produccion.rolito.Tendencia | number}}%</span>
-                      <span class="w-100 malo">{{acumulado.Produccion.barra.Tendencia | number}}%</span>
+                      <span class="mb-1 w-100" :class="getStateClass(acumulado.Produccion.rolito.Tendencia)">{{acumulado.Produccion.rolito.Tendencia | number}}%</span>
+                      <span class="w-100" :class="getStateClass(acumulado.Produccion.barra.Tendencia)">{{acumulado.Produccion.barra.Tendencia | number}}%</span>
                     </div>
                   </div>
                 </div>
@@ -106,30 +106,25 @@
                   </div>
                 </li>
                 <li>
-                  <div class="collapsible-header collapsable-dayName"><span class="dayName center">Acumulado</span></div>
-                  <div class="collapsible-body">
-                    <div class="">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Nombre vendedor</th>
-                            <th class="center" v-for="(topic, index) in topics" :key="index" >{{topic}}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(vendedor, index) in getVendedores()" :key="index">
-                            <td>{{vendedor}}</td>
-                            <td v-for="name in ventasNames" :key="name">
-                              <tabla-celda
-                                :value="getAcumuladoVenta(vendedor, name)"
-                              >
-                              </tabla-celda>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Nombre vendedor</th>
+                        <th class="center" v-for="(topic, index) in topics" :key="index" >{{topic}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(vendedor, index) in getVendedores()" :key="index">
+                        <td>{{vendedor}}</td>
+                        <td v-for="name in ventasNames" :key="name">
+                          <tabla-celda
+                            :value="getAcumuladoVenta(vendedor, name)"
+                          >
+                          </tabla-celda>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </li>
               </ul>
             </div>
@@ -172,34 +167,29 @@
                 </div>
               </li>
               <li>
-                <div class="collapsible-header collapsable-dayName"><span class="dayName center">ACUMULADO</span></div>
-                <div class="collapsible-body">
-                  <div class="">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Turno</th>
-                          <th>Barra</th>
-                          <th>Rolito</th>
-                          <th>Agua</th>
-                          <th>Rendimiento energía</th>
-                          <th>Mantenimiento</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr v-for="(turno, index) in getTurnos()" :key="index">
-                          <td>{{turno}}</td>
-                          <td v-for="name in produccionNames" :key="name">
-                            <tabla-celda
-                              :value="getAcumuladoProduccion(turno, name)"
-                            >
-                            </tabla-celda>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Turno</th>
+                      <th>Barra</th>
+                      <th>Rolito</th>
+                      <th>Agua</th>
+                      <th>Rendimiento energía</th>
+                      <th>Mantenimiento</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <tr v-for="(turno, index) in getTurnos()" :key="index">
+                      <td>{{turno}}</td>
+                      <td v-for="name in produccionNames" :key="name">
+                        <tabla-celda
+                          :value="getAcumuladoProduccion(turno, name)"
+                        >
+                        </tabla-celda>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </li>
             </ul>
           </div>
@@ -233,6 +223,33 @@
         </div>
       </li>
       <li>
+        <div class="collapsible-header"><span class="line start"></span>METAS&nbsp;<b>SUPERVISOR DE VENTA</b> <span class="line"></span><i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
+        <div class="collapsible-body"> 
+          <progress-indicator :show="loadingSupervisor"></progress-indicator>
+          <div v-if="!loadingSupervisor">
+            <table>
+              <thead>
+                <tr>
+                  <th>&nbsp;</th>
+                  <th v-for="(week, index) in getWeeks()" :key="index" >{{week}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(topic, index) in Object.keys(supervisor)" :key="'supervisor-'+index">
+                  <td>{{topic}}</td>
+                  <td v-for="(val, index) in Object.values(supervisor[topic])" :key="index">
+                    <tabla-celda
+                      :value="val"
+                    >
+                    </tabla-celda>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </li>
+      <li>
         <div class="collapsible-header"><span class="line start"></span>METAS&nbsp;<b>ADMINISTRATIVO</b> <span class="line"></span><i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
         <div class="collapsible-body">
           <progress-indicator :show="loadingAdmin"></progress-indicator>
@@ -250,7 +267,7 @@
                   <td v-for="(val, index) in Object.values(administrativo[topic])" :key="index">
                     <div class="panel two-cols">
                       <span class="diferencia" v-if="topic != 'GastosPagos'">{{val.diferencia | number}}</span>
-                      <span class="diferencia" v-if="topic == 'GastosPagos'">{{val.diferencia | money}}</span>
+                      <span class="diferencia" v-if="topic == 'GastosPagos'">{{val.diferencia | number}}</span>
                       <div class="status">
                         <span v-if="val.status"><i class="material-icons indigo-text text-darken-2">check_circle</i></span>
                         <span v-if="!val.status"><i class="material-icons red-text text-darken-2">cancel</i></span>
@@ -280,6 +297,8 @@ export default {
     loadingProduccion: true,
     loadingGerente: true,
     loadingAdmin: true,
+    loadingSupervisor: true,
+    supervisor: {},
     weekdays: [],
     ventas: [],
     ventasNames: [],
@@ -299,6 +318,7 @@ export default {
       this.fetchVentas(),
       this.fetchProduccion(),
       this.fetchGerente(),
+      this.fetchSupervisor(),
       this.fetchAdmin(),
     ]);
   },
@@ -323,6 +343,11 @@ export default {
       const rGerente = await axios.post(`${env.REPORTES_CONCENTRADO}?option=gerente`, { fecha: this.fecha, suc: this.suc });
       this.gerente = rGerente.data;
       this.loadingGerente=false;
+    },
+    async fetchSupervisor(){
+      const rSupervisor = await axios.post(`${env.REPORTES_CONCENTRADO}?option=supervisor`, { fecha: this.fecha, suc: this.suc });
+      this.supervisor = rSupervisor.data;
+      this.loadingSupervisor=false;
     },
     async fetchAdmin(){
       const rAdministrativo = await axios.post(`${env.REPORTES_CONCENTRADO}?option=administrativo`, { fecha: this.fecha, suc: this.suc });
@@ -395,14 +420,13 @@ export default {
       const val = Object.values(this.ventas).reduce((total, item) => {
         if (item[vendedor] && item[vendedor][name]) {
           total.real += item[vendedor][name].real;
-          if (name == 'ventasApp') {
+          if (name == 'ventasApp' || name == 'productividad') {
             total.meta += item[vendedor][name].meta;
           } else if (name == 'kmxlitro'){
             total.meta = item[vendedor][name].meta
           } else {
             total.meta = item[vendedor][name].meta * 6;
           }
-
         }
         return { ...total };
       }, {
@@ -432,6 +456,15 @@ export default {
       // val.real /= 7;
       // val.meta /= 7;
       return val;
+    },
+    getStateClass(valor) {
+      if(valor > 89) {
+        return 'bueno';
+      }
+      if(valor > 74) {
+        return 'regular';
+      }
+      return 'malo';
     }
   },
   components: {
