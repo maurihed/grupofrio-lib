@@ -646,13 +646,39 @@ export default {
   }
   table {
     border-collapse: collapse;
-    thead tr th {
-      text-align: center;
-      background: #adbacf;
-      color: #FFF;
-      font-family: "axiforma bold";
-      font-weight: bold;
+    background: #e6eaf3;
+    thead{
+      tr {
+        border: none;
+        th {
+        text-align: center;
+        background: #adbacf;
+        color: #FFF;
+        font-family: "axiforma bold";
+        font-weight: bold;
+          &:first-child {
+            color: #a6afbc;
+            background: #e4ebf3;
+            font-family: "axiforma bold";
+            font-weight: bold;
+            width: 20%;
+            text-align: center;
+            text-transform: uppercase;
+          }
+        }
+      }
     }
+    tbody tr td {
+      &:first-child {
+        background: #f3f4f8;
+        color: #b9babe;
+        font-family: "axiforma bold";
+        font-weight: bold;
+        width: 20%;
+        text-align: center;
+      }
+    }
+
   }
   .collapsible-body {
     padding: 0;
