@@ -56,7 +56,7 @@ export default {
       display: flex;
       justify-content: space-between;
       border-radius: 1rem;
-      color: #444444;
+      color: #6a6a6a;
       font-family: "axiforma bold";
       font-weight: bold;
       background: #FFF;

@@ -568,31 +568,27 @@ export default {
     margin-bottom: .5rem;
   }
   .acumulado-text {
-    color: #444444;
+    color: #6A6A6A;
     font-family: "axiforma bold";
     font-weight: bold;
   }
   .bueno {
     border: 2px solid #84d0c1;
     background: #c9fef6;
-    color: #444444;
     border-radius: 5px;
   }
   .malo {
     border: 2px solid #f5b0b6;
     background: #ffd7e1;
-    color: #444444;
     border-radius: 5px;
   }
   .regular {
     border: 2px solid #c7cbd0;
     background: #f9f2d0;
-    color: #444444;
     border-radius: 5px;
   }
   .neutro {
     border: 2px solid #c7cbd0;
-    color: #6A6A6A;
     border-radius: 5px;
   }
   .collapsible-header {
