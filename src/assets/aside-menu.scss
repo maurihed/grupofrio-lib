@@ -35,6 +35,9 @@
       img {
         width: 40px;
         height: 40px;
+        &.img-active {
+          display: none;
+        }
       }
     }
     .menu-item-name {
@@ -99,6 +102,12 @@
       .menu-item-icon {
         background: #FFF;
         border-radius: 25px 0px 0px 25px;
+        img {
+          display: none;
+          &.img-active {
+            display: block;
+          }
+        }
       }
       .menu-item-name {
         background: #FFF;
@@ -108,4 +117,40 @@
       }
     }
   }
+  .menu-footer {
+    position: absolute;
+    width: 100%;
+    margin: 0;
+    bottom: 0;
+    a {
+      display: block;
+      width: 100%;
+      line-height: 45px;
+      padding: 0 0 0 95px;
+      color: #FFF !important;
+      font-weight: bold;
+      cursor: pointer;
+      &:hover {
+        background: #FFF;
+        color: #001052 !important;
+        border-radius: 25px 0px 0px 25px;
+      }
+    }
+}
+.btn-side-menu {
+  display: none;
+  background: rgba(0,0,0,.6);
+  border: 0;
+  padding: 3px 6px;
+  border-radius: 18px;
+  color: #fafafa;
+  position: fixed;
+  left: 2%;
+  bottom: 2%;
+  z-index: 1;
+  cursor: pointer;
+  &.show {
+    display: block;
+  }
+}
 }
