@@ -9,9 +9,9 @@
       <span class="cell-name">META:</span>
       <span class="cell-value">{{value.meta | number}}</span>
     </div>
-    <div class="cell">
+    <div class="cell" :class="getClass(porcentaje)">
       <span class="cell-name">%:</span>
-      <span class="cell-value" :class="getClass(porcentaje)">{{porcentaje | number}} %</span>
+      <span class="cell-value">{{porcentaje | number}} %</span>
     </div>
   </div>
   <div class="center" v-if="typeof value != 'object'">
@@ -62,15 +62,18 @@ export default {
       font-weight: bold;
       background: #FFF;
       margin-bottom: .5rem;
+    }
       .bueno {
-        color: #84d0c1;
+        border: 2px solid #84d0c1;
+        background: #c9fef6;
       }
       .malo {
-        color: #f5b0b6;
+        border: 2px solid #f5b0b6;
+        background: #ffd7e1;
       }
       .regular {
-        color: #ecd9a4;
+        border: 2px solid #c7cbd0;
+        background: #f9f2d0;
       }
-    }
   }
 </style>
