@@ -25,7 +25,7 @@ export default {
   methods: {
     getClass(porcentaje) {
       if(porcentaje > 90){
-        return 'buemo';
+        return 'bueno';
       }
       if(porcentaje > 60){
         return 'regular';
