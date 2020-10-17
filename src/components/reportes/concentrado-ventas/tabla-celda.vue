@@ -49,7 +49,8 @@ export default {
 </script>
 <style lang="scss" scoped>
   .cell-container {
-    width: 90%;
+    width: 100%;
+    padding: 0 7.5%;
     text-align: center;
     .cell {
       padding: 0.5rem 1rem;
