@@ -250,7 +250,7 @@
         </div>
       </li>
       <li>
-        <div class="collapsible-header"><span class="line start"></span>METAS&nbsp;<b>ADMINISTRATIVO</b> <span class="line"></span><i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
+        <div class="collapsible-header" ><span class="line start"></span>METAS&nbsp;<b>ADMINISTRATIVO</b> <span class="line"></span><i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
         <div class="collapsible-body">
           <progress-indicator :show="loadingAdmin"></progress-indicator>
           <div v-if="!loadingAdmin">
@@ -265,7 +265,7 @@
                 <tr v-for="(topic, index) in Object.keys(administrativo)" :key="'administrativo-'+index">
                   <td>{{topic}}</td>
                   <td v-for="(val, index) in Object.values(administrativo[topic])" :key="index">
-                    <div class="panel two-cols">
+                    <div style="cursor: pointer;" role="button" v-on:click="goToArqueo(val.fecha || '')" class="panel two-cols">
                       <span class="diferencia" v-if="topic != 'GastosPagos'">{{val.diferencia | number}}</span>
                       <span class="diferencia" v-if="topic == 'GastosPagos'">{{val.diferencia | number}}</span>
                       <div class="status">
@@ -465,6 +465,12 @@ export default {
         return 'regular';
       }
       return 'malo';
+    },
+    goToArqueo(fecha) {
+      if (fecha) {
+        const uri = `http://187.237.145.198/HLApp/GrupoFrio/views/reportes/arqueo.php?fecha=${fecha}&suc=${this.suc}`;
+        window.open(uri, '_blank');
+      }
     }
   },
   components: {
