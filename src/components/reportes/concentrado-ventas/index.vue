@@ -106,6 +106,7 @@
                   </div>
                 </li>
                 <li>
+                  <div class="title-acumulado">Acumulado</div>
                   <table>
                     <thead>
                       <tr>
@@ -167,6 +168,7 @@
                 </div>
               </li>
               <li>
+                <div class="title-acumulado">Acumulado</div>
                 <table>
                   <thead>
                     <tr>
@@ -688,5 +690,13 @@ export default {
   }
   .collapsible-body {
     padding: 0;
+  }
+  .title-acumulado {
+    text-transform: uppercase;
+    color: #FFF;
+    height: 42px;
+    line-height: 42px;
+    text-align: center;
+    background: #96a7c2;
   }
 </style>
