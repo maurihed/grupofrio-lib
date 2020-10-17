@@ -435,6 +435,7 @@ export default {
       });
       if (name == 'kmxlitro') {
         val.real /= this.workedDays[vendedor];
+        val.real = Math.ceil(val.real*10)/10;
       }
       return val;
     },
