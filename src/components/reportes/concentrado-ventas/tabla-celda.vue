@@ -40,7 +40,7 @@ export default {
         if (!meta) {
           return 0;
         }
-        return porcentaje ? porcentaje : ((real / meta) * 100).toFixed(2);
+        return Math.floor(porcentaje ? porcentaje : ((real / meta) * 100));
       }
       return 0;
     }
