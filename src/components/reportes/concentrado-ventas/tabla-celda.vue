@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="cell-container" v-if="typeof value == 'object'">
-    <div class="cell">
+    <div class="cell dashed">
       <span class="cell-name">REAL:</span>
       <span class="cell-value">{{value.real | number}}</span>
     </div>
@@ -57,6 +57,7 @@ export default {
       display: flex;
       justify-content: space-between;
       border-radius: 1rem;
+      border: 1px dashed #2e3b8d;
       color: #6a6a6a;
       font-family: "axiforma bold";
       font-weight: bold;
@@ -74,6 +75,9 @@ export default {
       .regular {
         border: 2px solid #c7cbd0;
         background: #f9f2d0;
+      }
+      .dashed {
+        border: 1px solid #2e3b8d;
       }
   }
 </style>
