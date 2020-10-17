@@ -1,6 +1,7 @@
 .menu {
   position: absolute;
-  width: 0%;
+  width: 20%;
+  left: -20%;
   height: calc(100% - 120px);
   background: #162a71;
   display: block;
@@ -17,7 +18,7 @@
     background: #001052;
   }
   &.open {
-    width: 20%;
+    left: 0;
   }
   .menu-item {
     min-height: 45px;
@@ -64,6 +65,11 @@
           padding: 0 30px;
           line-height: 45px;
           font-weight: bold;
+          i {
+            position: absolute;
+            right: 0;
+            top: 10px;
+          }
         }
         .collapsible-body {
           padding: 0;
