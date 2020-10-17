@@ -11,7 +11,7 @@
     </div>
     <div class="cell">
       <span class="cell-name">%:</span>
-      <span class="cell-value" :class="getClass(porcentaje)">{{value.porcentaje | number}} %</span>
+      <span class="cell-value" :class="getClass(porcentaje)">{{porcentaje | number}} %</span>
     </div>
   </div>
   <div class="center" v-if="typeof value != 'object'">
