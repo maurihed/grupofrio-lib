@@ -57,7 +57,7 @@ export default {
       display: flex;
       justify-content: space-between;
       border-radius: 1rem;
-      border: 1px dashed #2e3b8d;
+      border: 2px dashed #2e3b8d;
       color: #6a6a6a;
       font-family: "axiforma bold";
       font-weight: bold;

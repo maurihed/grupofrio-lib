@@ -1,0 +1,111 @@
+.menu {
+  position: absolute;
+  width: 0%;
+  height: calc(100% - 120px);
+  background: #162a71;
+  display: block;
+  overflow: auto;
+  padding: 10px 0;
+  &:before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50px;
+    height: 100%;
+    background: #001052;
+  }
+  &.open {
+    width: 20%;
+  }
+  .menu-item {
+    min-height: 45px;
+    width: 100%;
+    display: flex;
+    margin-bottom: 10px;
+    position: relative;
+    .menu-item-icon {
+      height: 45px;
+      width: 50px;
+      background: #001052;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      img {
+        width: 40px;
+        height: 40px;
+      }
+    }
+    .menu-item-name {
+      flex: 1;
+      height: 100%;
+      span {
+        padding: 0 30px;
+        display: block;
+        line-height: 45px;
+        font-weight: bold;
+        color: #FFF !important;
+      }
+      .collapsible {
+        margin: 0;
+        height: 100%;
+        border: 0;
+        box-shadow: none;
+        .collapsible-header {
+          height: 100%;
+          background: #182a71;
+          box-shadow: none;
+          color: #FFF;
+          border: 0;
+          padding: 0 30px;
+          line-height: 45px;
+          font-weight: bold;
+        }
+        .collapsible-body {
+          padding: 0;
+          background: #2b4091;
+          border: 0;
+          color: #FFF;
+          ul li > a {
+            display: block;
+            width: 100%;
+            line-height: 45px;
+            color: #FFF !important;
+            padding: 0 30px;
+            &:hover {
+              background: #182a71;
+            }
+          }
+        }
+        .active {
+          & + .menu-item-icon {
+            background: #FFF;
+          }
+          .collapsible-header {
+            background: #FFF;
+            color: #001052;
+          }
+        }
+      }
+    }
+    &.active, &:hover {
+      .collapsible {
+        .collapsible-header {
+          background: #FFF;
+          color: #001052;
+        }
+      }
+      .menu-item-icon {
+        background: #FFF;
+        border-radius: 25px 0px 0px 25px;
+      }
+      .menu-item-name {
+        background: #FFF;
+        span {
+          color: #001052 !important;
+        }
+      }
+    }
+  }
+}

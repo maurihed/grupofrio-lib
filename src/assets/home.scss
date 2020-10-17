@@ -194,66 +194,6 @@
   }
  }
 }
-
-.menu {
-  position: absolute;
-  width: 0%;
-  height: calc(100% - 120px);
-  background: #FEFEFE;
-  display: block;
-  overflow: auto;
-  ul {
-    position: relative;
-    li.active {
-      background: rgb(20,20,20,.1);
-      .collapsible-body {
-        padding: 0;
-      }
-    }
-  }
-  li > a:hover {
-    background: rgb(20,20,20,.1);
-  }
-  .menuEl {
-    color: #2E3A8D;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    font-weight: 500;
-    height: 48px;
-    line-height: 48px;
-    padding: 0 32px;
-  }
-  li > a {
-    color: #2E3A8D !important;
-    display: block;
-    font-size: 14px;
-    font-weight: 500;
-    height: 48px;
-    line-height: 48px;
-    padding: 0 32px;
-  }
-  &.open {
-    width: 20%;
-  }
-  .btn-side-menu {
-    display: none;
-    background: rgba(0,0,0,.6);
-    border: 0;
-    padding: 3px 6px;
-    border-radius: 18px;
-    color: #FAFAFA;
-    position: fixed;
-    left: 2%;
-    bottom: 2%;
-    z-index: 1;
-    cursor: pointer;
-    &.show {
-      display: block;
-    }
-  }
-}
 .main {
   position: absolute;
   left: 0;

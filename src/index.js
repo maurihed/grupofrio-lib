@@ -53,3 +53,8 @@ var app = new Vue({
 // init sidebar
 M.Sidenav.init(document.querySelectorAll('.sidenav'),);
 M.Collapsible.init(document.querySelectorAll('.collapsible'),);
+M.Dropdown.init(document.querySelectorAll('.menu-dropdown-name'),{
+  coverTrigger: false,
+  inDuration: 0,
+  outDuration: 0,
+});
