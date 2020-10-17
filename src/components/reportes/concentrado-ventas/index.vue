@@ -265,9 +265,8 @@
                 <tr v-for="(topic, index) in Object.keys(administrativo)" :key="'administrativo-'+index">
                   <td>{{topic}}</td>
                   <td v-for="(val, index) in Object.values(administrativo[topic])" :key="index">
-                    <div style="cursor: pointer;" role="button" v-on:click="goToArqueo(val.fecha || '')" class="panel two-cols">
-                      <span class="diferencia" v-if="topic != 'GastosPagos'">{{val.diferencia | number}}</span>
-                      <span class="diferencia" v-if="topic == 'GastosPagos'">{{val.diferencia | number}}</span>
+                    <div style="cursor: pointer;" role="button" v-on:click="goToArqueo(val.fecha || '', topic == 'GastosPagos')" class="panel two-cols">
+                      <span class="diferencia">{{val.diferencia | number}}</span>
                       <div class="status">
                         <span v-if="val.status"><i class="material-icons indigo-text text-darken-2">check_circle</i></span>
                         <span v-if="!val.status"><i class="material-icons red-text text-darken-2">cancel</i></span>
@@ -467,9 +466,13 @@ export default {
       }
       return 'malo';
     },
-    goToArqueo(fecha) {
+    goToArqueo(fecha, isGastos = '') {
+      console.log(isGastos);
       if (fecha) {
-        const uri = `http://187.237.145.198/HLApp/GrupoFrio/views/reportes/arqueo.php?fecha=${fecha}&suc=${this.suc}`;
+        let uri = `http://187.237.145.198/HLApp/GrupoFrio/views/reportes/arqueo.php?fecha=${fecha}&suc=${this.suc}`;
+        if(isGastos) {
+          uri = `http://187.237.145.198/HLApp/views/reportesVenta/?op=gastos&suc=${this.suc}&day1=${fecha}&day2=${fecha}#gastos`;
+        }
         window.open(uri, '_blank');
       }
     }
