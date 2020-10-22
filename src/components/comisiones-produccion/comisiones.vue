@@ -372,6 +372,7 @@ export default {
       totalKilosBarras: 0,
       totalKilosRolitos: 0,
       totalLitrosAgua: 0,
+      totalKilos: {},
       variables: [],
       variablesCombinadas: [],
       fallas_produccion: [],
@@ -466,6 +467,7 @@ export default {
         this.fetchEficienciaGenerica(),
         this.fetchVariablesCombinadas(),
         this.fetchEmpleados(),
+        this.fetchTotalKilos(),
     ]);
     this.isLoaded = true;
   },
@@ -520,38 +522,19 @@ export default {
     },
     getTotalKilos(tipo, day) {
       let total = 0;
-      let filteredArray = [];
-      switch(tipo) {
-        case 'barra': filteredArray = this.tiposBarra; break;
-        case 'rolito': filteredArray = this.tiposRollito; break;
-        case 'agua': filteredArray = this.tiposAgua; break;
-      }
-      Object.values(this.data).forEach(p => {
-        const c = p.filter(f => new Date(f.DocDate).getDate() == day)
-        if (!!c.length) {
-          if(filteredArray.includes(c[0].id)) {
-            total += c[0].Peso * c[0].TOTAL;
-          }
+      Object.entries(this.totalKilos[tipo]).forEach(([fecha, val]) => {
+        const day2 = fecha.split('-').pop();
+        if(day2 == day) {
+          total = val;
         }
       });
-      return total.toFixed(4);
+      return total;
     },
     sumTotalKilos(tipo) {
-      let filteredArray = [];
-      switch(tipo) {
-        case 'barra': filteredArray = this.tiposBarra; break;
-        case 'rolito': filteredArray = this.tiposRollito; break;
-        case 'agua': filteredArray = this.tiposAgua; break;
-      }
-      let total = 0;
-      Object.values(this.data).forEach(p => {
-        p.forEach( c => {
-          if (filteredArray.includes(c.id)) {
-            total += c.Peso * c.TOTAL;
-          }
-        });
-      });
-      return total.toFixed(4);
+      return Object.values(this.totalKilos[tipo]).reduce((total, value) => {
+        total += (value || 0);
+        return total;
+      }, 0);
     },
     getVariable(id) {
       return this.variables.find(v => v.id == id);
@@ -835,9 +818,6 @@ export default {
     async fetchProduccion() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getProduccion`,{ fecha: this.fecha, suc: this.suc, turno: this.turno });
       this.data = response.data;
-      this.totalKilosBarras = this.sumTotalKilos('barra');
-      this.totalKilosRolitos = this.sumTotalKilos('rolito');
-      this.totalLitrosAgua = this.sumTotalKilos('agua');
       this.productos = Object.keys(this.data);
       this.progres++;
     },
@@ -890,6 +870,16 @@ export default {
     async fetchEmpleados() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getPersonal`, {suc: this.suc, turno: this.turno});
       this.empleados = response.data;
+      this.progres++;
+    },
+    async fetchTotalKilos() {
+      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getTotalKilos`, {suc: this.suc, fecha: this.fecha, turno: this.turno});
+      this.totalKilos = response.data;
+
+      this.totalKilosBarras = this.sumTotalKilos('barra');
+      this.totalKilosRolitos = this.sumTotalKilos('rolito');
+      this.totalLitrosAgua = this.sumTotalKilos('agua');
+      conosle.log('hola');
       this.progres++;
     }
   },
