@@ -2,15 +2,15 @@
 <div>
   <div class="cell-container" v-if="typeof value == 'object'">
     <div class="cell dashed">
-      <span class="cell-name">REAL:</span>
+      <span class="cell-name">{{real}}:</span>
       <span class="cell-value">{{value.real | number}}</span>
     </div>
     <div class="cell">
-      <span class="cell-name">META:</span>
+      <span class="cell-name">{{meta}}:</span>
       <span class="cell-value">{{value.meta | number}}</span>
     </div>
     <div class="cell" :class="getClass(porcentaje)">
-      <span class="cell-name">%:</span>
+      <span class="cell-name">%</span>
       <span class="cell-value">{{porcentaje | number}} %</span>
     </div>
   </div>
@@ -24,10 +24,10 @@ export default {
   props: ['value'],
   methods: {
     getClass(porcentaje) {
-      if(porcentaje > 90){
+      if(porcentaje > 89){
         return 'bueno';
       }
-      if(porcentaje > 60){
+      if(porcentaje > 70){
         return 'regular';
       }
       return 'malo';
@@ -43,6 +43,18 @@ export default {
         return Math.floor(porcentaje ? porcentaje : ((real / meta) * 100));
       }
       return 0;
+    },
+    real() {
+      if (typeof this.value == 'object') {
+        return this.value.aliasReal || 'REAL';
+      }
+      return 'REAL';
+    },
+    meta() {
+      if (typeof this.value == 'object') {
+        return this.value.aliasMeta || 'META';
+      }
+      return 'META';
     }
   }
 }

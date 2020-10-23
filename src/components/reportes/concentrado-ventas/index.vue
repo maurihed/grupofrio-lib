@@ -438,6 +438,24 @@ export default {
         val.real /= this.workedDays[vendedor];
         val.real = Math.ceil(val.real*10)/10;
       }
+      if(name == "kilos") {
+        return {
+          ...val,
+          aliasReal: "VISITADOS",
+        }
+      } else if(name == "productividad") {
+        return {
+          ...val,
+          aliasReal: "VISITADOS",
+          aliasMeta: "AGENDADOS",
+        }
+      } else if(name == "ventasApp") {
+        return {
+          ...val,
+          aliasReal: "APP",
+          aliasMeta: "VENDIDOS",
+        }
+      }
       return val;
     },
     getAcumuladoProduccion(turno, name) {
@@ -455,6 +473,12 @@ export default {
         real: 0,
         meta: 0,
       });
+      if(name == "kilos_barra" || name == "kilos_rolito") {
+        return {
+          ...val,
+          aliasReal: "PRODUCIDO",
+        }
+      }
       // val.real /= 7;
       // val.meta /= 7;
       return val;
@@ -463,7 +487,7 @@ export default {
       if(valor > 89) {
         return 'bueno';
       }
-      if(valor > 74) {
+      if(valor > 70) {
         return 'regular';
       }
       return 'malo';
