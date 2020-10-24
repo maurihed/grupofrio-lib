@@ -154,7 +154,7 @@
                       </thead>
                       <tbody>
                         <tr v-for="(prod, turno) in getProduccionRow(day.date)" :key="'prod-'+turno">
-                          <td>{{turno}}</td>
+                          <td>{{turno.split('-').pop()}}</td>
                           <td v-for="(val, index) in Object.values(prod)" :key="index">
                             <tabla-celda
                               :value="val"
@@ -182,7 +182,7 @@
                   </thead>
                   <tbody>
                       <tr v-for="(turno, index) in getTurnos()" :key="index">
-                      <td>{{turno}}</td>
+                      <td style="cursor: pointer;" @click="goToProduccion(turno)">{{turno.split('-').pop()}}</td>
                       <td v-for="name in produccionNames" :key="name">
                         <tabla-celda
                           :value="getAcumuladoProduccion(turno, name)"
@@ -493,7 +493,6 @@ export default {
       return 'malo';
     },
     goToArqueo(fecha, isGastos = '') {
-      console.log(isGastos);
       if (fecha) {
         let uri = `http://187.237.145.198/HLApp/GrupoFrio/views/reportes/arqueo.php?fecha=${fecha}&suc=${this.suc}`;
         if(isGastos) {
@@ -501,6 +500,11 @@ export default {
         }
         window.open(uri, '_blank');
       }
+    },
+    goToProduccion(turno) {
+      const [id] = turno.split('-');
+      const uri = `http://187.237.145.198/HLApp/GrupoFrio/views/comisiones/index.php?fecha=${this.fecha}&suc=${this.suc}&turno=${id}`;
+      window.open(uri, '_blank');
     }
   },
   components: {

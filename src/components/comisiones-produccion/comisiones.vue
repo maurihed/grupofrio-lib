@@ -181,7 +181,12 @@
                 <tbody>
                   <tr>
                     <td>Consumo litros</td>
-                    <td class="center" v-for="day in days" :key="day">{{getConsumo(day) | number}}</td>
+                    <td class="center" v-for="day in days" :key="day">
+                      <div>
+                        <span class="valor_incial_final">{{getValorIF(day)}}</span>
+                        <span>{{getConsumo(day) | number}}</span>
+                      </div>
+                      </td>
                     <td class="center disabled">{{getConsumoTotal() | number}}</td>
                   </tr>
                   <tr>
@@ -214,7 +219,12 @@
                 <tbody>
                   <tr>
                     <td>Consumo</td>
-                    <td class="center" v-for="day in days" :key="day">{{valorVariable('Multiplicador Kwh') * getConsumo(day,'Electricidad') | number}}</td>
+                    <td class="center" v-for="day in days" :key="day">
+                      <div>
+                        <span class="valor_incial_final">{{getValorIF(day, 'Electricidad', valorVariable('Multiplicador Kwh'))}}</span>
+                        <span>{{valorVariable('Multiplicador Kwh') * getConsumo(day,'Electricidad') | number}}</span>
+                      </div>
+                    </td>
                     <td class="center disabled">{{valorVariable('Multiplicador Kwh') * getConsumoTotal('Electricidad') | number}}</td>
                   </tr>
                   <tr>
@@ -234,7 +244,7 @@
                   </tr>
                   <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
                 </tbody>
-                <thead>               
+                <!-- <thead>               
                   <tr>
                     <td colspan="9" class="center bold">Aceite</td>
                   </tr>
@@ -243,7 +253,7 @@
                   <tr v-for="(compresorName, key) in compresoresNames" :key="key">
                     <td>{{compresorName}}</td>
                     <td class="center" v-for="day in days" :key="day">{{getConsumoCompresor(compresorName, day)| number}}</td>
-                    <td class="center disabled">{{getConsumoTotalCompresor(compresorName)}}</td>
+                    <td class="center disabled">{{getConsumonpmTotalCompresor(compresorName)}}</td>
                   </tr>
                   <tr>
                     <td>Horas trabajadas</td>
@@ -261,16 +271,16 @@
                     <td class="center" v-html="getEficienciaTotalAceite()"></td>
                   </tr>
                   <tr> <td colspan="9" class="bb-0 bg-gray"></td> </tr>
-                </tbody>
+                </tbody> -->
               </table>
-              <eficiencia-generica v-for="(tipo, name) in eficienciaByTipos" :key="name"
+              <!-- <eficiencia-generica v-for="(tipo, name) in eficienciaByTipos" :key="name"
                 :tipo="name"
                 :variables="tipo"
                 :days="fullDays"
                 :esperado="getValorEsperado(name)"
                 :fecha="fecha"
               >
-              </eficiencia-generica>
+              </eficiencia-generica> -->
           </div>
         </li>
       </ul>
@@ -294,19 +304,24 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td class="text-justify">Incidencias</td>
-                    <td v-for="day in days" :key="day">{{getIncidenciasLimpieza(day, 'problemas')}}</td>
-                    <td>{{getTotalIncidencias('problemas')}}</td>
+                    <td class="text-justify">Real</td>
+                    <td v-for="day in days" :key="day">{{getDatoMantenimiento(day, 'real')}}</td>
+                    <td>{{getDatoTotalMantenimiento('real')}}</td>
                   </tr>
                   <tr>
-                    <td class="text-justify">Solucionadas</td>
-                    <td v-for="day in days" :key="day">{{getIncidenciasLimpieza(day, 'soluciones')}}</td>
-                    <td>{{getTotalIncidencias('soluciones')}}</td>
+                    <td class="text-justify">Meta</td>
+                    <td v-for="day in days" :key="day">{{getDatoMantenimiento(day, 'meta')}}</td>
+                    <td>{{getDatoTotalMantenimiento('meta')}}</td>
                   </tr>
                   <tr>
-                    <td class="text-justify">Eficiencia</td>
-                    <td v-for="day in days" :key="day" v-html="getEficienciaDeIncidencias(day)"></td>
-                    <td><span v-html="getEficienciaTotalDeIncidencias()"></span></td>
+                    <td class="text-justify">Porcentaje</td>
+                    <td v-for="day in days" :key="day">
+                      <span class="red-text" v-if="getDatoMantenimiento(day, 'porcentaje') < 50">{{getDatoMantenimiento(day, 'porcentaje')}}%</span>
+                      <span class="green-text" v-if="getDatoMantenimiento(day, 'porcentaje') > 50">{{getDatoMantenimiento(day, 'porcentaje')}}%</span>
+                    </td>
+                    <td>
+                      <span :class="{'red-text': getEficienciaTotalMantenimiento() < 50, 'green-text': getEficienciaTotalMantenimiento() > 50}">{{getEficienciaTotalMantenimiento()}} %</span>
+                    </td>
                   </tr>
                 </tbody>
                 <thead>
@@ -382,6 +397,7 @@ export default {
       eficienciaCompresores: {},
       compresoresNames: 0,
       eficienciaByTipos: [],
+      eficienciaMantenimiento: {},
       empleados: {
         cuberos: [],
         sacadores: [],
@@ -468,6 +484,7 @@ export default {
         this.fetchVariablesCombinadas(),
         this.fetchEmpleados(),
         this.fetchTotalKilos(),
+        this.fetchEficienciaMantenimiento(),
     ]);
     this.isLoaded = true;
   },
@@ -646,6 +663,22 @@ export default {
         return total+Number(value)
         }, 0);
     },
+    getValorIF(day, tipo = "Agua", multiplicador = 1) {
+      const date = this.getDate(day);
+      if(this.rendimientoMerma.length === 0) {
+        return 0;
+      }
+      const variables = this.rendimientoMerma && this.rendimientoMerma[`F${date}`] ? this.rendimientoMerma[`F${date}`].tipos[tipo] : [];
+      const valorIF = variables.reduce((total, item) => {
+        return {
+          inicio: total.inicio + Number(item.valor_inicial),
+          final: total.final + Number(item.valor_final),
+        }
+      }, {inicio: 0, final: 0});
+      valorIF.inicio = new Intl.NumberFormat("es-MX").format(valorIF.inicio * multiplicador);
+      valorIF.final = new Intl.NumberFormat("es-MX").format(valorIF.final * multiplicador);
+      return `I: ${valorIF.inicio} - F: ${valorIF.final}`; 
+    },
     getConsumoTotal(tipo= "Agua") {
       return Object.values(this.rendimientoMerma).reduce((total, fecha) => total + fecha.tipos[tipo].reduce((sub, item)=> {
         const value = item.valor_final ? item.valor_final - item.valor_inicial : item.valor_inicial;
@@ -783,29 +816,62 @@ export default {
         return { day, fullDate: this.formatDay(fullDate) };
       });
     },
+    getDatoMantenimiento(day, tipo) {
+      let response = 0;
+      Object.entries(this.eficienciaMantenimiento).forEach(([fecha, turnos]) => {
+        const dayI = new Date(fecha+' 00:00').getDate();
+        if (dayI == day) {
+            Object.entries(turnos).forEach(([turno, data])=>{
+                const [id] = turno.split('-');
+                if (id == this.turno) {
+                    response = data.mantenimiento[tipo]
+                }
+            })
+        }
+      });
+      return response;
+    },
+    getDatoTotalMantenimiento(tipo) {
+      return Object.values(this.eficienciaMantenimiento).reduce((total, turnos) => {
+        Object.entries(turnos).forEach(([turno, data]) => {
+          const [id] = turno.split('-');
+          if(id == this.turno) {
+            total += data.mantenimiento[tipo];
+          }
+        });
+        return total;
+      }, 0);
+    },
+    getEficienciaTotalMantenimiento() {
+      const totalReal = this.getDatoTotalMantenimiento('real');
+      const totalMeta = this.getDatoTotalMantenimiento('meta');
+      return totalMeta > 0 ? Math.floor((totalReal/totalMeta)*100) : 0;
+    },
     getTotalEficiencia() {
       const eficienciaProduccionRollito = this.getEficienciaTotalProduccion('Rollito');
       const eficienciaProduccionBarra = this.getEficienciaTotalProduccion('Barra');
-      const eficienciaProduccionAgua = this.getEficienciaTotalProduccion('Agua');
-      const eficienciaFallasProduccion = this.totalDataProduccion('eficiencia');
+      // const eficienciaProduccionAgua = this.getEficienciaTotalProduccion('Agua');
+      // const eficienciaFallasProduccion = this.totalDataProduccion('eficiencia');
       const eficienciaAgua = this.getEficienciaTotalAgua(true);
       const eficienciaEnergia = this.getEficienciaTotalElectricidad(true);
-      const eficienciaAceite = this.getEficienciaTotalAceite(true);
-      const eficienciaMermaGenerica = this.getEficienciaTotalMermaGenerica();
-      const eficienciaLimpieza = this.getEficienciaTotalDeIncidencias(true);
-      const eficienciaMecanica = this.getEficienciaTotalDeProblemasMecanicos(true);
+      // const eficienciaAceite = this.getEficienciaTotalAceite(true);
+      // const eficienciaMermaGenerica = this.getEficienciaTotalMermaGenerica();
+      // const eficienciaLimpieza = this.getEficienciaTotalDeIncidencias(true);
+      // const eficienciaMecanica = this.getEficienciaTotalDeProblemasMecanicos(true);
+      const eficienciaMantenimiento = this.getEficienciaTotalMantenimiento();
       
       const eficiencias = [
         eficienciaProduccionRollito
         ,eficienciaProduccionBarra
-        ,eficienciaProduccionAgua
-        ,eficienciaFallasProduccion
+        // ,eficienciaProduccionAgua
+        // ,eficienciaFallasProduccion
         ,eficienciaAgua
         ,eficienciaEnergia
-        ,eficienciaAceite
-        ,...eficienciaMermaGenerica
-        ,eficienciaLimpieza
-        ,eficienciaMecanica
+        // ,eficienciaAceite
+        // ,...eficienciaMermaGenerica
+        // ,eficienciaLimpieza
+        // ,eficienciaMecanica
+        ,eficienciaMantenimiento
       ];
       return (eficiencias.reduce((a, b) => a + b, 0) / eficiencias.length).toFixed(2);
     },
@@ -881,7 +947,11 @@ export default {
       this.totalLitrosAgua = this.sumTotalKilos('agua');
       conosle.log('hola');
       this.progres++;
-    }
+    },
+    async fetchEficienciaMantenimiento(){
+      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=produccion`, { fecha: this.fecha, suc: this.suc });
+        this.eficienciaMantenimiento = response.data;
+    },
   },
   computed: {
     startDay() {
@@ -948,5 +1018,10 @@ export default {
   }
   .collapsible-body {
     overflow: auto;
+  }
+  .valor_incial_final {
+    display: flex;
+    justify-content: center;
+    color: #A0A0A0;
   }
 </style>
