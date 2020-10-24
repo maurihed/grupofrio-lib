@@ -26,6 +26,7 @@ Vue.component('merma-input', require('./components/bitacora-merma/merma-input.vu
 Vue.component('comisiones-produccion', require('./components/comisiones-produccion/comisiones.vue').default)
 // -- Configuracion --
 Vue.component('conf-turnos', require('./components/configuracion/turnos/index.vue').default)
+Vue.component('variables-vendedores', require('./components/configuracion/varaiblesVendedores/index.vue').default)
 Vue.component('turno-empleado', require('./components/configuracion/turnos/turno-empleado.vue').default)
 Vue.component('turno-timer', require('./components/configuracion/turnos/timer.vue').default)
 Vue.component('variables-comisiones-produccion', require('./components/comisiones-produccion/variables.vue').default)

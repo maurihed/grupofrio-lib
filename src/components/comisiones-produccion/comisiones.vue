@@ -643,14 +643,14 @@ export default {
       if (asNumber) {
         return Number(porcentaje);
       }
-      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje} %</span>`;
+      return `<span class="${ porcentaje > 50 ? 'red-text' : 'green-text'}">${porcentaje} %</span>`;
     },
     getEficienciaTotalAgua(asNumber = false) {
       const porcentaje = this.days.reduce((total, day) => total + this.getEficienciaAgua(day, true), 0) / this.days.length;
       if (asNumber) {
         return porcentaje;
       }
-      return `<span class="${ porcentaje < 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
+      return `<span class="${ porcentaje > 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getConsumo(day, tipo = "Agua") {
       const date = this.getDate(day);
@@ -865,7 +865,7 @@ export default {
         ,eficienciaProduccionBarra
         // ,eficienciaProduccionAgua
         // ,eficienciaFallasProduccion
-        ,eficienciaAgua
+        ,(eficienciaAgua - 100) * -1,
         ,eficienciaEnergia
         // ,eficienciaAceite
         // ,...eficienciaMermaGenerica
