@@ -3,7 +3,6 @@
     <br>
     <progress-indicator :show="!isLoaded"></progress-indicator>
     <div v-if="isLoaded">
-      <h5>Lista de vendedores</h5>
         <vendedor-card v-for="vendedor in vendedores" :key="vendedor.ExtEmpNo"
           :vendedor="vendedor"
           :action="actualizarVariable"

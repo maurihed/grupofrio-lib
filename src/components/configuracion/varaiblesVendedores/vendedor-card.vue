@@ -6,7 +6,7 @@
       <label for="sueldo_base">Sueldo base</label>
     </div>
     <div class="input-field">
-      <input id="comision" v-model="comision" type="number" class="validate">
+      <input id="comision" v-model="comision" type="number" min="0.00" max="1" step="0.01" class="validate">
       <label for="comision">Comision</label>
     </div>
     <button class="btn-floating" @click="guardar"><i class="material-icons">save</i></button>
@@ -53,7 +53,7 @@ export default {
     .vendedor-card-nombre {
       width: 30%;
     }
-    input#sueldo_base {
+    .input-field input {
       width: 300px;
     }
   }
