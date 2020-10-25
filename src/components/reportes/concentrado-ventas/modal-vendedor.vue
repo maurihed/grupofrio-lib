@@ -1,28 +1,100 @@
 <template>
-  <div id="modalVendedor" class="modal">
+  <div id="modalVendedor" class="modal modal-vendedor">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
     <progress-indicator :show="!isLoaded"></progress-indicator>
     <div v-if="isLoaded">
+      <div class="modal-header">
+          <div class="modal-header-titulo">
+            <div class="valor">{{vendedor.nombre}}</div>
+            <div class="titulo">NOMBRE DEL VENDEDOR</div>
+          </div>
+          <div class="modal-header-titulo border-around">
+            <div class="valor">{{vendedor.camioneta}}</div>
+            <div class="titulo">UNIDAD</div>
+          </div>
+          <div class="modal-header-titulo">
+            <div class="valor">{{comision*100}}%</div>
+            <div class="titulo">% COMISIÓN</div>
+          </div>
+        </div>
       <div class="modal-content">
-        {{vendedor}} <br>
-        Importe Vendido: {{importeVendido}} <br>
-        Kilos vendidos: {{kilosVendidos.real}} {{getPorcentaje(kilosVendidos.real, kilosVendidos.meta)}} %<br>
-        Productividad: {{productividad}}<br>
-        Cptura App: {{capturaApp}}<br>
-        <br><br><br>
-        rendimiento: {{rendimiento}}<br>
-        kgRecorridos: {{kgRecorridos}}<br>
-        combustible: {{combustible}}<br>
-        <br><br> <br>
-        recuperados: {{recuperados.length}} - ${{recuperados.length * 100}}<br>
-        competencia: {{competencia.length}} - ${{competencia.length * 100}}<br>
-        <br><br><br>
-        Nomina base: {{sueldo_base}}<br>
-        comision: {{comision_total}}<br>
-        comision clientes {{comision_cliente}} <br> <br>
-        <br><br><br>
-        Total: {{total}}
+        <div class="modal-vendedor-card">
+          <div class="card-titulos">
+            <div class="titulo">IMPORTE VENDIDO</div>
+            <div class="titulo">KILOS VENDIDOS</div>
+            <div class="titulo">PRODUCTIVIDAD</div>
+            <div class="titulo">CAPTURA APP</div>
+          </div>
+          <div class="card-valores">
+            <div class="valor">{{importeVendido | money}}</div>
+            <div class="valor">
+              <span>{{kilosVendidos.real | number}}</span>
+              <span>{{getPorcentaje(kilosVendidos.real, kilosVendidos.meta)}} %</span>
+            </div>
+            <div class="valor">
+              <span>{{productividad}}</span>
+            </div>
+            <div class="valor">
+              <span>{{capturaApp}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-vendedor-card">
+          <div class="card-titulos">
+            <div class="titulo">RENDIMIENTO</div>
+            <div class="titulo">KM RECORIDOS</div>
+            <div class="titulo">COMBUSTIBLE</div>
+          </div>
+          <div class="card-valores">
+            <div class="valor">{{rendimiento}}</div>
+            <div class="valor">
+              <span>{{kgRecorridos | number}}</span>
+            </div>
+            <div class="valor">
+              <span>{{productividad}}</span>
+            </div>
+            <div class="valor">
+              <span>{{combustible}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-vendedor-card">
+          <div class="card-titulos">
+            <div class="titulo">CLIENTES POR RECUPERAR</div>
+            <div class="titulo">CLIENTES POR COMPETENCIA</div>
+          </div>
+          <div class="card-valores">
+            <div class="valor">
+              <span>{{recuperados.length | number}}</span>
+            </div>
+            <div class="valor">
+              <span>{{competencia.length | number}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-vendedor-card">
+          <div class="card-titulos">
+            <div class="titulo">NÓMINA BASE</div>
+            <div class="titulo">COMISIÓN</div>
+            <div class="titulo">COMISIÓN CLIENTES</div>
+          </div>
+          <div class="card-valores">
+            <div class="valor">
+              <span>{{sueldo_base | MONEY}}</span>
+            </div>
+            <div class="valor">
+              <span>{{comision_total | MONEY}}</span>
+            </div>
+            <div class="valor">
+              <span>{{comision_cliente | MONEY}}</span>
+            </div>
+          </div>
+          <div class="card-button">
+            <div class="titulo">TOTAL A PAGAR</div>
+            <div class="valor bold">{{total | money}}</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -135,12 +207,94 @@ export default {
       return recumerados*.02 + competencia*.03;
     },
     total() {
-      return this.sueldo_base+this.comision_total+this.comision_cliente-this.combustible;
+      return Math.round(this.sueldo_base+this.comision_total+this.comision_cliente-this.combustible, 2);
     }
   },
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+  .modal-vendedor {
+    border: 2px solid #2d3a8d;
+    border-radius: 10px;
+    overflow: hidden !important;
+    min-height: 360px;
+    align-items: center;
+    .modal-header {
+      background: #bfc7da;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      .modal-header-titulo {
+        padding: 0 30px;
+        .valor {
+          text-align: center;
+          color: #2d3a8d;
+          font-weight: bold;
+          font-family: axiforma bold;
+        }
+        .titulo {
+          text-align: center;
+          color: #FFF;
+          font-weight: bold;
+          font-family: axiforma bold;
+          font-size: .8rem;
+        }
+      }
+      .border-around {
+        border-left: 2px solid #95a3bf;
+        border-right: 2px solid #95a3bf;
+      }
+    }
+    .modal-content {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .modal-vendedor-card {
+      border: 3px solid #2d3a8d;
+      background: #F3F7FF;
+      padding: 0;
+      border-radius: 10px;
+      width: 48%;
+      margin: 1%;
+      display: flex;
+      flex-wrap: wrap;
+      .card-titulos {
+        width: 55%;
+        color: #2d3a8d;
+        text-align: right;
+        margin-right: 5%;
+        .titulo {
+          width: 100%;
+          text-align: right;
+          flex: 1;
+          display: block;
+        }
+      }
+      .card-valores {
+        width: 40%;
+        color: #2d3a8d;
+        text-align: left;
+        font-family: axiforma bold;
+        font-weight: bold;
+        .valor span {
+          margin-right: 1rem;
+        }
+      }
+      .card-button {
+        width: 100%;
+        background: #dfe8f7;
+        border-top: 3px solid #2e3b8d;
+        border-radius: 0 0px 10px 10px;
+        display: flex;
+        justify-content: space-around;
+        padding: .5rem;
+        color: #2d3a8d;
+        .bold {
+          font-weight: bold;
+          font-family: axiforma bold;
+        }
+      }
+    }
+  }
 </style>
