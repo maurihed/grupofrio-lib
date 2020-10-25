@@ -7,7 +7,7 @@
       <div class="modal-content">
         {{vendedor}}
         Importe Vendido: {{importeVendido}} <br>
-        Kilos vendido: {{kilosVendidos.real}} {{getPorcentaje(kilosVendidos.real, kilosVendidos.meta)}} %<br>
+        Kilos vendidos: {{kilosVendidos.real}} {{getPorcentaje(kilosVendidos.real, kilosVendidos.meta)}} %<br>
         Productividad: {{productividad}}<br>
         Cptura App: {{capturaApp}}<br>
         <br><br><br>
@@ -15,8 +15,8 @@
         kgRecorridos: {{kgRecorridos}}<br>
         combustible: {{combustible}}<br>
         <br><br> <br>
-        recuperados: {{recuperados}} - ${{recuperados * 100}}<br>
-        competencia: {{competencia}} - ${{competencia * 100}}<br>
+        recuperados: {{recuperados.length}} - ${{recuperados.length * 100}}<br>
+        competencia: {{competencia.length}} - ${{competencia.length * 100}}<br>
         <br><br><br>
         Nomina base: {{sueldo_base}}<br>
         comision: {{comision_total}}<br>
@@ -130,10 +130,13 @@ export default {
       return 0;
     },
     comision_cliente() {
-      return this.recuperados*100 + this.competencia*50;
+      console.log(this.recuperados);
+      const recumerados = this.recuperados.reduce((total, item)=> total+Number(item.vendido),0);
+      const competencia = this.competencia.reduce((total, item)=> total+Number(item.vendido),0);
+      return recumerados*.02 + competencia*.03;
     },
     total() {
-      return this.sueldo_base+this.comision_total+this.comision_cliente;
+      return this.sueldo_base+this.comision_total+this.comision_cliente-this.combustible;
     }
   },
 }
