@@ -78,13 +78,13 @@
           </div>
           <div class="card-valores">
             <div class="valor">
-              <span>{{sueldo_base | MONEY}}</span>
+              <span>{{sueldo_base | money}}</span>
             </div>
             <div class="valor">
-              <span>{{comision_total | MONEY}}</span>
+              <span>{{comision_total | money}}</span>
             </div>
             <div class="valor">
-              <span>{{comision_cliente | MONEY}}</span>
+              <span>{{comision_cliente | money}}</span>
             </div>
           </div>
           <div class="card-button">
@@ -156,6 +156,7 @@ export default {
       });
       const {real} = response.data;
       this.importeVendido = real || 0;
+      this.importeVendido = Math.round(this.importeVendido);
     },
     async fetchVariablesVendedor() {
       const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getVariablesVendedor`, { vendedor: this.vendedor.clave });
@@ -170,7 +171,7 @@ export default {
       this.competencia = competencia;
     },
     getPorcentaje(real, meta) {
-      return meta > 0 ? Math.floor((real/meta)*100) : 0;
+      return meta > 0 ? Math.round((real/meta)*100, 2) : 0;
     }
   },
   mounted() {
@@ -201,7 +202,7 @@ export default {
     comision_cliente() {
       const recumerados = this.recuperados.reduce((total, item)=> total+Number(item.vendido),0);
       const competencia = this.competencia.reduce((total, item)=> total+Number(item.vendido),0);
-      return recumerados*.02 + competencia*.03;
+      return Math.round(recumerados*.02 + competencia*.03,2);
     },
     total() {
       return Math.round(this.sueldo_base+this.comision_total+this.comision_cliente-this.combustible, 2);
