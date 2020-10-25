@@ -91,8 +91,8 @@ export default {
     async fetchVariablesVendedor() {
       const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getVariablesVendedor`, { vendedor: this.vendedor.clave });
       const {sueldo_base, comision} = response.data;
-      this.sueldo_base = Math.round(sueldo_base*100)/100;
-      this.comision = Math.round(comision*100)/100;
+      this.sueldo_base = Math.round(sueldo_base*1000)/1000;
+      this.comision = Math.round(comision*1000)/1000;
     },
     async fetchClientesRecuperados() {
       const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getClientesRecuperados`, { vendedor: this.vendedor.clave, fecha: this.fecha });

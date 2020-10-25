@@ -6,7 +6,7 @@
       <label for="sueldo_base">Sueldo base</label>
     </div>
     <div class="input-field">
-      <input id="comision" v-model="comision" type="number" min="0.00" max="1" step="0.01" class="validate">
+      <input id="comision" v-model="comision" type="number" min="0.000" max="1" step="0.001" class="validate">
       <label for="comision">Comision</label>
     </div>
     <button class="btn-floating" @click="guardar"><i class="material-icons">save</i></button>
@@ -23,7 +23,7 @@ export default {
   }),
   created() {
     this.sueldo_base = Math.round(Number(this.vendedor.variables.sueldo_base));
-    this.comision = Math.round(Number(this.vendedor.variables.comision)*100)/100;
+    this.comision = Math.round(Number(this.vendedor.variables.comision)*1000)/1000;
   },
   mounted() {
     M.updateTextFields();
