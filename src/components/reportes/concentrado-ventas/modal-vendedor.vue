@@ -5,7 +5,7 @@
     <progress-indicator :show="!isLoaded"></progress-indicator>
     <div v-if="isLoaded">
       <div class="modal-content">
-        {{vendedor}}
+        {{vendedor}} <br>
         Importe Vendido: {{importeVendido}} <br>
         Kilos vendidos: {{kilosVendidos.real}} {{getPorcentaje(kilosVendidos.real, kilosVendidos.meta)}} %<br>
         Productividad: {{productividad}}<br>
@@ -125,12 +125,11 @@ export default {
       const productividad = this.productividad.slice(0,-2);
       const capturaApp = this.capturaApp.slice(0,-2);
       if(kilos >= 89 && productividad >= 89 && capturaApp >= 89) {
-        return this.kilosVendidos.real * .1;
+        return this.importeVendido * this.comision;
       }
       return 0;
     },
     comision_cliente() {
-      console.log(this.recuperados);
       const recumerados = this.recuperados.reduce((total, item)=> total+Number(item.vendido),0);
       const competencia = this.competencia.reduce((total, item)=> total+Number(item.vendido),0);
       return recumerados*.02 + competencia*.03;
