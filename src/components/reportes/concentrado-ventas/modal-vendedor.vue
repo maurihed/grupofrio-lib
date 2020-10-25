@@ -49,13 +49,10 @@
           <div class="card-valores">
             <div class="valor">{{rendimiento}}</div>
             <div class="valor">
-              <span>{{kgRecorridos | number}}</span>
+              <span>{{kgRecorridos | number}} KM</span>
             </div>
             <div class="valor">
-              <span>{{productividad}}</span>
-            </div>
-            <div class="valor">
-              <span>{{combustible}}</span>
+              <span>{{combustible | money}}</span>
             </div>
           </div>
         </div>
@@ -197,7 +194,7 @@ export default {
       const productividad = this.productividad.slice(0,-2);
       const capturaApp = this.capturaApp.slice(0,-2);
       if(kilos >= 89 && productividad >= 89 && capturaApp >= 89) {
-        return this.importeVendido * this.comision;
+        return Math.round(this.importeVendido * this.comision, 2);
       }
       return 0;
     },
