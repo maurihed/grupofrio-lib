@@ -116,7 +116,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="(vendedor, index) in getVendedores()" :key="index">
-                        <td>{{vendedor}}</td>
+                        <td style="cursor: pointer;" @click="openModal(vendedor)" >{{vendedor}}</td>
                         <td v-for="name in ventasNames" :key="name">
                           <tabla-celda
                             :value="getAcumuladoVenta(vendedor, name)"
@@ -282,6 +282,17 @@
         </div>
       </li>
     </ul>
+      <modal-vendedor
+        :isOpen="isVendedorModalOpen"
+        :vendedor="vendedorSelected"
+        :kilosVendidos="modalData.kilosVendidos"
+        :productividad="modalData.productividad"
+        :capturaApp="modalData.capturaApp"
+        :fecha="fecha"
+        :suc="suc"
+        :onClose="onCloseModal"
+      >
+      </modal-vendedor>
   </div>
 </div>
 </template>
@@ -289,10 +300,18 @@
 <script>
 import { getWeekDays } from '../../../assets/js/date-utilities';
 import tablaCeldaVue from './tabla-celda.vue';
+import ModalVendedor from './modal-vendedor.vue';
 
 export default {
   props: ['suc', 'fecha'],
   data: () => ({
+    vendedorSelected: {},
+    modalData: {
+      kilosVendidos: {},
+      productividad: '0%',
+      capturaApp: '0%',
+    },
+    isVendedorModalOpen: false,
     isLoaded: false,
     loadingVentas: true,
     loadingProduccion: true,
@@ -305,9 +324,11 @@ export default {
     ventasNames: [],
     produccion: [],
     gerente: [],
+    modalsVendedor: {},
     administrativo: {},
     workedDays: {},
     acumulado: {},
+    vendedores: [],
     topics: ['Kilos', 'Productividad', 'Captura App', 'Km x litro'],
   }),
   async created() {
@@ -322,6 +343,7 @@ export default {
       this.fetchSupervisor(),
       this.fetchAdmin(),
     ]);
+    this.vendedores = this.getVendedoresObj();
   },
   updated() {
     M.Collapsible.init(document.querySelectorAll('.collapsible'),);
@@ -399,6 +421,19 @@ export default {
         vendedores = vendedores.concat(Object.keys(v));
       });
       return [...new Set(vendedores)];
+    },
+    getVendedoresObj() {
+      const vendedores = this.getVendedores();
+      return vendedores.map((vendedor) => {
+        // EMP0019[U00250] - EDGAR HERNANDEZ PENA
+        const [claveCompuesta, nombre] = vendedor.split(' - ');
+        const [clave, camioneta] = claveCompuesta.split('[');
+        return {
+          clave,
+          nombre,
+          camioneta: camioneta.slice(0,-1),
+        }
+      });
     },
     getVentasNames() {
       const [firstFecha] = Object.values(this.ventas);
@@ -505,10 +540,40 @@ export default {
       const [id] = turno.split('-');
       const uri = `http://187.237.145.198/HLApp/GrupoFrio/views/comisiones/index.php?fecha=${this.fecha}&suc=${this.suc}&turno=${id}`;
       window.open(uri, '_blank');
-    }
+    },
+    openModal(vendedor) {
+      const [claveCompuesta, nombre] = vendedor.split(' - ');
+      const [clave] = claveCompuesta.split('[');
+      this.vendedorSelected = this.vendedores.find((v) => {
+        console.log(v, v.clave, clave, v.clave == clave);
+        return v.clave == clave
+      });
+      if (this.vendedorSelected) {
+        this.modalData.kilosVendidos = this.getKilosVendido(this.vendedorSelected);
+        this.modalData.productividad = this.getPorcentaje(this.vendedorSelected, 'productividad');
+        this.modalData.capturaApp = this.getPorcentaje(this.vendedorSelected, 'ventasApp');
+        this.isVendedorModalOpen = true;
+      }
+    },
+    onCloseModal() {
+      this.isVendedorModalOpen = false;
+      console.log('modal closed!');
+    },
+    getKilosVendido(vendedor) {
+      const formatedName = `${vendedor.clave}[${vendedor.camioneta}] - ${vendedor.nombre}`;
+      const kilos = this.getAcumuladoVenta(formatedName, 'kilos')
+      return kilos;
+    },
+    getPorcentaje(vendedor, tipo) {
+      const formatedName = `${vendedor.clave}[${vendedor.camioneta}] - ${vendedor.nombre}`;
+      const dato = this.getAcumuladoVenta(formatedName, tipo);
+      const porcentaje = dato.meta > 0 ? Math.floor((dato.real/dato.meta)*100) : 0
+      return `${porcentaje} %`;
+    },
   },
   components: {
     'tabla-celda': tablaCeldaVue,
+    'modal-vendedor': ModalVendedor,
   },
 }
 </script>
