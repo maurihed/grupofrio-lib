@@ -48,18 +48,18 @@
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Acumulado</span>
-                      <span class="mb-1 w-100 neutro acumulado-text">{{acumulado.Produccion.rolito.Acumulado | number}}</span>
-                      <span class="w-100 neutro acumulado-text">{{acumulado.Produccion.barra.Acumulado | number}}</span>
+                      <span class="mb-1 w-100 neutro acumulado-text">{{acumulado.Produccion.barra.Acumulado | number}}</span>
+                      <span class="w-100 neutro acumulado-text">{{acumulado.Produccion.rolito.Acumulado | number}}</span>
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Meta</span>
-                      <span class="mb-1 w-100 bueno acumulado-text">{{acumulado.Produccion.rolito.Meta | number}}</span>
-                      <span class="w-100 bueno acumulado-text">{{acumulado.Produccion.barra.Meta | number}}</span>
+                      <span class="mb-1 w-100 bueno acumulado-text">{{acumulado.Produccion.barra.Meta | number}}</span>
+                      <span class="w-100 bueno acumulado-text">{{acumulado.Produccion.rolito.Meta | number}}</span>
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Tendencia</span>
-                      <span class="mb-1 w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.rolito.Tendencia)">{{acumulado.Produccion.rolito.Tendencia | number}}%</span>
-                      <span class="w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.barra.Tendencia)">{{acumulado.Produccion.barra.Tendencia | number}}%</span>
+                      <span class="mb-1 w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.barra.Tendencia)">{{acumulado.Produccion.rolito.Tendencia | number}}%</span>
+                      <span class="w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.rolito.Tendencia)">{{acumulado.Produccion.barra.Tendencia | number}}%</span>
                     </div>
                   </div>
                 </div>
@@ -329,7 +329,7 @@ export default {
     workedDays: {},
     acumulado: {},
     vendedores: [],
-    topics: ['Kilos', 'Productividad', 'Captura App', 'Km x litro'],
+    topics: ['Vendidos', 'Productividad', 'Captura App', 'Km x litro'],
   }),
   async created() {
     this.weekDays = getWeekDays(this.fecha);
@@ -456,10 +456,8 @@ export default {
       const val = Object.values(this.ventas).reduce((total, item) => {
         if (item[vendedor] && item[vendedor][name]) {
           total.real += item[vendedor][name].real;
-          if (name == 'ventasApp' || name == 'productividad') {
+          if (name == 'ventasApp' || name == 'productividad' | name == 'kmxlitro') {
             total.meta += item[vendedor][name].meta;
-          } else if (name == 'kmxlitro'){
-            total.meta = item[vendedor][name].meta
           } else {
             total.meta = item[vendedor][name].meta * 6;
           }
@@ -472,6 +470,8 @@ export default {
       if (name == 'kmxlitro') {
         val.real /= this.workedDays[vendedor];
         val.real = Math.ceil(val.real*10)/10;
+        val.meta /= this.workedDays[vendedor];
+        val.meta = Math.floor(val.meta);
       }
       if(name == "kilos") {
         return {
