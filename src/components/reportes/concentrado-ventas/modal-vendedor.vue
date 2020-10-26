@@ -47,7 +47,7 @@
             <div class="titulo">COMBUSTIBLE</div>
           </div>
           <div class="card-valores">
-            <div class="valor">{{rendimiento}}</div>
+            <div class="valor">{{rendimiento}} Km/Lts.</div>
             <div class="valor">
               <span>{{kgRecorridos | number}} KM</span>
             </div>
