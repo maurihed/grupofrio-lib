@@ -152,9 +152,6 @@ export default {
   },
   computed: {
     totalKilosLider() {
-      if(!this.totalKilosBarras || !this.totalKilosRolitos) {
-        return 0;
-      }
       return Number(this.totalKilosBarras) + Number(this.totalKilosRolitos);
     },
     totalNominaCubero() {
