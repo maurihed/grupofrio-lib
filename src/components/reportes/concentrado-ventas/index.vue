@@ -58,8 +58,8 @@
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Tendencia</span>
-                      <span class="mb-1 w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.barra.Tendencia)">{{acumulado.Produccion.rolito.Tendencia | number}}%</span>
-                      <span class="w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.rolito.Tendencia)">{{acumulado.Produccion.barra.Tendencia | number}}%</span>
+                      <span class="mb-1 w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.barra.Tendencia)">{{acumulado.Produccion.barra.Tendencia | number}}%</span>
+                      <span class="w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.rolito.Tendencia)">{{acumulado.Produccion.rolito.Tendencia | number}}%</span>
                     </div>
                   </div>
                 </div>
