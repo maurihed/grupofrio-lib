@@ -43,7 +43,7 @@
         <div class="modal-vendedor-card">
           <div class="card-titulos">
             <div class="titulo">RENDIMIENTO</div>
-            <div class="titulo">KM RECORIDOS</div>
+            <div class="titulo">KM RECORRIDOS</div>
             <div class="titulo">COMBUSTIBLE</div>
           </div>
           <div class="card-valores">
