@@ -502,7 +502,7 @@ export default {
       const val = Object.values(this.produccion).reduce((total, item) => {
         if (item[turno] && item[turno][name]) {
           total.real += item[turno][name].real;
-          if(name == 'agua') {
+          if(name == 'agua' || name == 'luz') {
             total.meta += item[turno][name].meta;
           } else {
             total.meta = item[turno][name].meta*7;
@@ -513,6 +513,10 @@ export default {
         real: 0,
         meta: 0,
       });
+      if(name == 'luz') {
+        val.real /= 7;
+        val.meta /= 7;
+      }
       if(name == "kilos_barra" || name == "kilos_rolito") {
         return {
           ...val,
