@@ -476,15 +476,17 @@ export default {
       if(name == "kilos") {
         return {
           ...val,
-          aliasReal: "VISITADOS",
+          aliasReal: "VENDIDOS",
         }
-      } else if(name == "productividad") {
+      }
+      if(name == "productividad") {
         return {
           ...val,
           aliasReal: "VISITADOS",
           aliasMeta: "AGENDADOS",
         }
-      } else if(name == "ventasApp") {
+      }
+      if(name == "ventasApp") {
         return {
           ...val,
           aliasReal: "APP",
