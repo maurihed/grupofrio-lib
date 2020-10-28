@@ -863,16 +863,11 @@ export default {
       const eficiencias = [
         eficienciaProduccionRollito
         ,eficienciaProduccionBarra
-        // ,eficienciaProduccionAgua
-        // ,eficienciaFallasProduccion
-        ,((eficienciaAgua - 100) * -1) < 0 ? 0 : ((eficienciaAgua - 100) * -1),
+        ,((eficienciaAgua - 100) * -1) < 0 ? 0 : ((eficienciaAgua - 100) * -1)
         ,eficienciaEnergia
-        // ,eficienciaAceite
-        // ,...eficienciaMermaGenerica
-        // ,eficienciaLimpieza
-        // ,eficienciaMecanica
         ,eficienciaMantenimiento
       ];
+      console.log(eficiencias);
       return (eficiencias.reduce((a, b) => a + b, 0) / eficiencias.length).toFixed(2);
     },
     async fetchVariablesComisiones() {
