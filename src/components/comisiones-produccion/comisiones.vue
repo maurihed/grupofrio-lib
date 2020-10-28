@@ -639,18 +639,18 @@ export default {
     getEficienciaAgua(day, asNumber = false) {
       const consumoMaximoHielo = this.valorVariable('merma agua') * (Number(this.getTotalKilos('rolito', day)) + Number(this.getTotalKilos('barra', day)));
       const consumoHielo = this.getConsumo(day) - Number(this.getTotalKilos('agua', day));
-      const porcentaje = consumoHielo == 0 ? 0 : ((consumoMaximoHielo / consumoHielo) * 100).toFixed(2);
+      const porcentaje = consumoMaximoHielo == 0 ? 0 : ((consumoHielo / consumoMaximoHielo) * 100).toFixed(2);
       if (asNumber) {
         return Number(porcentaje);
       }
-      return `<span class="${ porcentaje > 50 ? 'red-text' : 'green-text'}">${porcentaje} %</span>`;
+      return `<span class="${ porcentaje > 100 ? 'red-text' : 'green-text'}">${porcentaje} %</span>`;
     },
     getEficienciaTotalAgua(asNumber = false) {
       const porcentaje = this.days.reduce((total, day) => total + this.getEficienciaAgua(day, true), 0) / this.days.length;
       if (asNumber) {
         return porcentaje;
       }
-      return `<span class="${ porcentaje > 50 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
+      return `<span class="${ porcentaje > 100 ? 'red-text' : 'green-text'}">${porcentaje.toFixed(2)} %</span>`;
     },
     getConsumo(day, tipo = "Agua") {
       const date = this.getDate(day);
