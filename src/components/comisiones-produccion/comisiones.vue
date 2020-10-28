@@ -865,7 +865,7 @@ export default {
         ,eficienciaProduccionBarra
         // ,eficienciaProduccionAgua
         // ,eficienciaFallasProduccion
-        ,(eficienciaAgua - 100) * -1,
+        ,((eficienciaAgua - 100) * -1) < 0 ? 0 : ((eficienciaAgua - 100) * -1),
         ,eficienciaEnergia
         // ,eficienciaAceite
         // ,...eficienciaMermaGenerica
@@ -945,7 +945,6 @@ export default {
       this.totalKilosBarras = this.sumTotalKilos('barra');
       this.totalKilosRolitos = this.sumTotalKilos('rolito');
       this.totalLitrosAgua = this.sumTotalKilos('agua');
-      conosle.log('hola');
       this.progres++;
     },
     async fetchEficienciaMantenimiento(){
