@@ -158,6 +158,8 @@
                           <td v-for="(val, index) in Object.values(prod)" :key="index">
                             <tabla-celda
                               :value="val"
+                              :names="Object.keys(prod)"
+                              :index-name="index"
                             >
                             </tabla-celda>
                           </td>
@@ -186,6 +188,7 @@
                       <td v-for="name in produccionNames" :key="name">
                         <tabla-celda
                           :value="getAcumuladoProduccion(turno, name)"
+                          :name="name"
                         >
                         </tabla-celda>
                       </td>

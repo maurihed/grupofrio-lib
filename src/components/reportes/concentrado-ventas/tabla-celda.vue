@@ -21,9 +21,15 @@
 </template>
 <script>
 export default {
-  props: ['value'],
+  props: ['value','indexName','names','name'],
   methods: {
     getClass(porcentaje) {
+      if(this.name === 'agua' || this.nameCalculated === 'agua') {
+        if(porcentaje > 100) {
+          return 'malo';
+        }
+        return 'bueno';
+      }
       if(porcentaje > 89){
         return 'bueno';
       }
@@ -55,6 +61,12 @@ export default {
         return this.value.aliasMeta || 'META';
       }
       return 'META';
+    },
+    nameCalculated() {
+      if(this.names && this.names.length && this.indexName) {
+        return this.names[this.indexName] || '';
+      }
+      return '';
     }
   }
 }
