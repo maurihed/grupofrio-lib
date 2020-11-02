@@ -79,7 +79,7 @@
             <progress-indicator :show="loadingVentas"></progress-indicator>
             <div v-if="!loadingVentas">
               <ul class="collapsible expandable">
-                <li v-for="day in weekDays" :key="day.day">
+                <li v-for="(day) in weekDays" :key="day.day">
                   <div class="collapsible-header collapsable-dayName"><span class="dayName center">{{day.dayName}}</span></div>
                   <div class="collapsible-body">
                     <div class="">
@@ -87,7 +87,10 @@
                         <thead>
                           <tr>
                             <th>Nombre del vendedor</th>
-                            <th class="center" v-for="(topic, index) in topics" :key="index" >{{topic}}</th>
+                            <th
+                              class="center"
+                              v-for="(topic, index) in topics"
+                              :key="index" >{{topic}}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -96,6 +99,11 @@
                             <td v-for="(val, index) in Object.values(venta)" :key="index">
                               <tabla-celda
                                 :value="val"
+                                :realClickHandler="onVendedorRealClick"
+                                :fecha="day.date"
+                                :vendedor="vendedor"
+                                :index-name="index"
+                                :cellClickable="3"
                               >
                               </tabla-celda>
                             </td>
@@ -236,7 +244,7 @@
               <thead>
                 <tr>
                   <th>&nbsp;</th>
-                  <th v-for="(week, index) in getWeeks()" :key="index" >{{week}}</th>
+                  <th class="cursor-pointer" @click="openSupervisorModal(index)" v-for="(week, index) in getWeeks()" :key="index" >{{week}}</th>
                 </tr>
               </thead>
               <tbody>
@@ -296,6 +304,21 @@
         :onClose="onCloseModal"
       >
       </modal-vendedor>
+      <modal-gasolina
+        :fecha="fechaSelected"
+        :vendedor="vendedorSelected"
+        :isOpen="isGasolinaModalOpen"
+        :onClose="onCloseGasolinaModal"
+      >
+      </modal-gasolina>
+      <modal-supervisor
+        :isOpen="isSupervisorModalOpen"
+        :week="weekSelected"
+        :suc="suc"
+        :onClose="onCloseGasolinaModal"
+        :fecha="fecha"
+      >
+      </modal-supervisor>
   </div>
 </div>
 </template>
@@ -304,17 +327,23 @@
 import { getWeekDays } from '../../../assets/js/date-utilities';
 import tablaCeldaVue from './tabla-celda.vue';
 import ModalVendedor from './modal-vendedor.vue';
+import ModalGasolina from './modal-gasolina.vue';
+import modalSupervisor from './modal-supervisor.vue';
 
 export default {
   props: ['suc', 'fecha'],
   data: () => ({
     vendedorSelected: {},
+    fechaSelected: null,
+    isGasolinaModalOpen: false,
     modalData: {
       kilosVendidos: {},
       productividad: '0%',
       capturaApp: '0%',
     },
+    weekSelected: {},
     isVendedorModalOpen: false,
+    isSupervisorModalOpen: false,
     isLoaded: false,
     loadingVentas: true,
     loadingProduccion: true,
@@ -346,7 +375,6 @@ export default {
       this.fetchSupervisor(),
       this.fetchAdmin(),
     ]);
-    this.vendedores = this.getVendedoresObj();
   },
   updated() {
     M.Collapsible.init(document.querySelectorAll('.collapsible'),);
@@ -357,6 +385,7 @@ export default {
       this.ventas = response.data;
       this.ventasNames = this.getVentasNames();
       this.setWorkedDay();
+      this.vendedores = this.getVendedoresObj();
       this.loadingVentas = false;
     },
     async fetchProduccion(){
@@ -553,10 +582,7 @@ export default {
     openModal(vendedor) {
       const [claveCompuesta, nombre] = vendedor.split(' - ');
       const [clave] = claveCompuesta.split('[');
-      this.vendedorSelected = this.vendedores.find((v) => {
-        console.log(v, v.clave, clave, v.clave == clave);
-        return v.clave == clave
-      });
+      this.vendedorSelected = this.vendedores.find((v) => v.clave == clave);
       if (this.vendedorSelected) {
         this.modalData.kilosVendidos = this.getKilosVendido(this.vendedorSelected);
         this.modalData.productividad = this.getPorcentaje(this.vendedorSelected, 'productividad');
@@ -564,9 +590,27 @@ export default {
         this.isVendedorModalOpen = true;
       }
     },
+    openSupervisorModal(index) {
+      const newWeekSelected = {};
+      Object.entries(this.supervisor).forEach(([name, val])=>{
+        newWeekSelected[name] = Object.values(val)[index];
+      });
+      this.weekSelected = {...newWeekSelected, index};
+      this.isSupervisorModalOpen = true;
+    },
+    onVendedorRealClick(fecha, vendedor) {
+      this.vendedorSelected = this.vendedores.find((v) => v.clave == vendedor);
+      this.fechaSelected = fecha;
+      this.isGasolinaModalOpen = true;
+    },
     onCloseModal() {
       this.isVendedorModalOpen = false;
-      console.log('modal closed!');
+    },
+    onCloseGasolinaModal() {
+      this.isGasolinaModalOpen = false;
+    },
+    onCloseGasolinaModal() {
+      this.isSupervisorModalOpen = false;
     },
     getKilosVendido(vendedor) {
       const formatedName = `${vendedor.clave}[${vendedor.camioneta}] - ${vendedor.nombre}`;
@@ -583,6 +627,8 @@ export default {
   components: {
     'tabla-celda': tablaCeldaVue,
     'modal-vendedor': ModalVendedor,
+    'modal-gasolina': ModalGasolina,
+    'modal-supervisor': modalSupervisor,
   },
 }
 </script>
@@ -800,5 +846,8 @@ export default {
     line-height: 42px;
     text-align: center;
     background: #96a7c2;
+  }
+  .cursor-pointer {
+    cursor: pointer;
   }
 </style>

@@ -1,15 +1,15 @@
 <template>
 <div>
   <div class="cell-container" v-if="typeof value == 'object'">
-    <div class="cell dashed">
+    <div :class="{'cursor-pointer': !!realClickHandler && indexName == cellClickable}" @click="onRealClick" class="cell dashed">
       <span class="cell-name">{{real}}:</span>
       <span class="cell-value">{{value.real | number}}</span>
     </div>
-    <div class="cell">
+    <div :class="{'cursor-pointer': !!metaClickHandler && indexName == cellClickable}" @click="onMetaClick" class="cell">
       <span class="cell-name">{{meta}}:</span>
       <span class="cell-value">{{value.meta | number}}</span>
     </div>
-    <div class="cell" :class="getClass(porcentaje)">
+    <div @click="onPorcentajeClick" class="cell" :class="getClass(porcentaje)">
       <span class="cell-name">%</span>
       <span class="cell-value">{{porcentaje | number}} %</span>
     </div>
@@ -21,23 +21,43 @@
 </template>
 <script>
 export default {
-  props: ['value','indexName','names','name'],
+  props: ['value','indexName','cellClickable', 'names','name', 'vendedor', 'fecha', 'realClickHandler', 'metaClickHandler', 'porcentajeClickHandler'],
   methods: {
     getClass(porcentaje) {
+      let className = '';
+      if(!!this.porcentajeClickHandler && this.indexName == this.cellClickable) {
+        className = 'cursor-pointer ';
+      }
       if(this.name === 'agua' || this.nameCalculated === 'agua') {
         if(porcentaje > 100) {
-          return 'malo';
+          return className+'malo';
         }
-        return 'bueno';
+        return className+'bueno';
       }
       if(porcentaje > 89){
-        return 'bueno';
+        return className+'bueno';
       }
       if(porcentaje > 70){
-        return 'regular';
+        return className+'regular';
       }
-      return 'malo';
+      return className+'malo';
     },
+    onRealClick() {
+      if(this.realClickHandler) {
+        const [vendedor] = this.vendedor.split('[');
+        this.realClickHandler(this.fecha, vendedor);
+      }
+    },
+    onMetaClick() {
+      if(this.metaClickHandler) {
+        this.metaClickHandler(this.fecha, this.vendedor, this.indexName);
+      }
+    },
+    onPorcentajeClick() {
+      if(this.porcentajeClickHandler) {
+        this.porcentajeClickHandler(this.fecha, this.vendedor, this.indexName);
+      }
+    }
   },
   computed: {
     porcentaje() {

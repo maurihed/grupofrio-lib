@@ -1,17 +1,19 @@
 <template>
-  <div id="modalVendedor" class="modal modal-vendedor">
+  <div id="modalSupervisor" class="modal modal-supervisor">
+    <br v-if="!isLoaded">
+    <br v-if="!isLoaded">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
     <progress-indicator :show="!isLoaded"></progress-indicator>
     <div v-if="isLoaded">
       <div class="modal-header">
           <div class="modal-header-titulo">
-            <div class="valor">{{vendedor.nombre}}</div>
-            <div class="titulo">NOMBRE DEL VENDEDOR</div>
+            <div class="valor">{{supervisor}}</div>
+            <div class="titulo">NOMBRE DEL SUPERVISOR</div>
           </div>
           <div class="modal-header-titulo border-around">
-            <div class="valor">{{vendedor.camioneta}}</div>
-            <div class="titulo">UNIDAD</div>
+            <div class="valor">{{camionetas}}</div>
+            <div class="titulo">UNIDADADES</div>
           </div>
           <div class="modal-header-titulo">
             <div class="valor">{{comision*100}}%</div>
@@ -19,50 +21,51 @@
           </div>
         </div>
       <div class="modal-content">
-        <div class="modal-vendedor-card">
+        <div class="modal-supervisor-card">
           <div class="wrapper">
             <div class="titulo"><span>IMPORTE VENDIDO</span></div>
             <div class="valor">
-              <span>{{importeVendido | money}}</span>
+              <span>{{week.Ingresos.real | money}}</span>
+              <span>{{week.Ingresos.porcentaje}}%</span>
             </div>
           </div>
           <div class="wrapper">
             <div class="titulo">KILOS VENDIDOS</div>
             <div class="valor">
-              <span>{{kilosVendidos.real | number}}</span>
-              <span>{{getPorcentaje(kilosVendidos.real, kilosVendidos.meta)}} %</span>
+              <span>{{week.Kilos.real | money}}</span>
+              <span>{{week.Kilos.porcentaje}}%</span>
             </div>
           </div>
           <div class="wrapper">
             <div class="titulo">PRODUCTIVIDAD</div>
             <div class="valor">
-              <span>{{productividad}}</span>
+              <span>{{week.Productividad.real | number}}</span>
             </div>
           </div>
           <div class="wrapper">
             <div class="titulo">CAPTURA APP</div>
             <div class="valor">
-              <span>{{capturaApp}}</span>
+              <span>{{week['Captura App'].real}}</span>
             </div>
           </div>
         </div>
-        <div class="modal-vendedor-card">
+        <div class="modal-supervisor-card">
           <div class="wrapper">
             <div class="titulo"><span>CLIENTES POR RECUPERAR</span></div>
             <div class="valor">
-              <span>{{recuperados.length | number}}</span>
+              <span>{{recuperados | number}}</span>
             </div>
           </div>
           <div class="wrapper">
             <div class="titulo"><span>CLIENTES POR COMPETENCIA</span></div>
             <div class="valor">
-              <span>{{competencia.length | number}}</span>
+              <span>{{competencia | number}}</span>
             </div>
           </div>
         </div>
-        <div class="modal-vendedor-card">
+        <div class="modal-supervisor-card">
           <div class="wrapper">
-            <div class="titulo"><span>RENDIMIENTO UNIDAD</span></div>
+            <div class="titulo"><span>RENDIMIENTO UNIDADES</span></div>
             <div class="valor">
               <span>{{rendimiento}} Km/Lts.</span>
             </div>
@@ -80,7 +83,7 @@
             </div>
           </div>
         </div>
-        <div class="modal-vendedor-card">
+        <div class="modal-supervisor-card">
           <div class="wrapper">
             <div class="titulo"><span>NÓMINA BASE</span></div>
             <div class="valor">
@@ -90,13 +93,7 @@
           <div class="wrapper">
             <div class="titulo"><span>COMISIÓN</span></div>
             <div class="valor">
-              <span>{{comision_total | money}}</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>COMISIÓN CLIENTES</span></div>
-            <div class="valor">
-              <span>{{comision_cliente | money}}</span>
+              <span>{{week.Kilos.porcentaje > 89 ? comision_total : 0 | money}}</span>
             </div>
           </div>
           <div class="card-button">
@@ -110,19 +107,16 @@
 </template>
 <script>
 export default {
-  name: 'modal-vendedor',
+  name: 'modal-supervisor',
   props: {
     isOpen: {
       type: Boolean,
       default: false,
     },
-    fecha: String,
-    vendedor: Object,
-    onClose: Function,
-    kilosVendidos: Object,
-    productividad: String,
-    capturaApp: String,
+    week: Object,
     suc: String,
+    fecha: String,
+    onClose: Function,
   },
   data: ()=>({
     isLoaded: false,
@@ -134,6 +128,7 @@ export default {
     comision: 0,
     recuperados: 0,
     competencia: 0,
+    camionetas: 0,
   }),
   methods: {
     onModalClose() {
@@ -141,90 +136,67 @@ export default {
       this.onClose();
     },
     async onModalOpen() {
-      if(this.vendedor) {
-        await Promise.allSettled([
-          await this.fetchKmInfo(),
-          await this.fetchVenta(),
-          await this.fetchVariablesVendedor(),
-          await this.fetchClientesRecuperados(),
-        ]);
-        this.isLoaded = true;
-      } else {
-        this.onClose();
-      }
+      await this.fetchSupervisorInfo();
+      this.isLoaded = true;
     },
-    async fetchKmInfo() {
-      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=kmInfo`, {
-        fecha: this.fecha, vendedor: this.vendedor.clave, camioneta: this.vendedor.camioneta,
+    async fetchSupervisorInfo() {
+      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=infoSupervisor`, {
+        fecha: this.fecha, suc: this.suc, week: this.week.index
       });
-      const {kilometraje, combustible, rendimiento} = response.data;
-      this.kgRecorridos = kilometraje || 0;
-      this.rendimiento = rendimiento || 0;
-      this.combustible = combustible || 0;
-    },
-    async fetchVenta() {
-      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getVentaSemanalVendedor`, {
-        fecha: this.fecha, vendedor: this.vendedor.clave, suc: this.suc,
-      });
-      const {real} = response.data;
-      this.importeVendido = real || 0;
-      this.importeVendido = Math.round(this.importeVendido);
-    },
-    async fetchVariablesVendedor() {
-      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getVariablesVendedor`, { vendedor: this.vendedor.clave });
-      const {sueldo_base, comision} = response.data;
-      this.sueldo_base = Math.round(sueldo_base*1000)/1000;
-      this.comision = Math.round(comision*1000)/1000;
-    },
-    async fetchClientesRecuperados() {
-      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getClientesRecuperados`, { vendedor: this.vendedor.clave, fecha: this.fecha });
-      const {recuperados, competencia} = response.data;
+      const {
+        camionetas,
+        gastado,
+        kilometraje,
+        litros,
+        rendimiento,
+        supervisor,
+        recuperados,
+        competencia,
+        sueldo_base,
+        comision
+      } = response.data;
+      this.camionetas = camionetas;
+      this.kgRecorridos = kilometraje;
+      this.combustible = gastado;
+      this.rendimiento = rendimiento;
+      this.supervisor = supervisor;
       this.recuperados = recuperados;
       this.competencia = competencia;
+      this.sueldo_base = sueldo_base;
+      this.comision = comision;
     },
-    getPorcentaje(real, meta) {
-      return meta > 0 ? Math.round((real/meta)*100, 2) : 0;
-    }
   },
   mounted() {
-    M.Modal.init(document.getElementById('modalVendedor'), {
+    M.Modal.init(document.getElementById('modalSupervisor'), {
       onCloseEnd: this.onModalClose,
     });
   },
   watch: {
     isOpen() {
       if (this.isOpen) {
-        M.Modal.getInstance(document.getElementById('modalVendedor')).open()
+        M.Modal.getInstance(document.getElementById('modalSupervisor')).open()
         this.onModalOpen();
       } else {
-        M.Modal.getInstance(document.getElementById('modalVendedor')).close()
+        M.Modal.getInstance(document.getElementById('modalSupervisor')).close()
       }
     },
   },
   computed: {
     comision_total() {
-      const kilos = this.getPorcentaje(this.kilosVendidos.real, this.kilosVendidos.meta);
-      const productividad = this.productividad.slice(0,-2);
-      const capturaApp = this.capturaApp.slice(0,-2);
-      if(kilos >= 89 && productividad >= 89 && capturaApp >= 89) {
-        return Math.round(this.importeVendido * this.comision, 2);
-      }
-      return 0;
-    },
-    comision_cliente() {
-      const recumerados = this.recuperados.reduce((total, item)=> total+Number(item.vendido),0);
-      const competencia = this.competencia.reduce((total, item)=> total+Number(item.vendido),0);
-      return Math.round(recumerados*.02 + competencia*.03,2);
+      return this.week.Ingresos.real * this.comision;
     },
     total() {
-      return Math.round(this.sueldo_base+this.comision_total+this.comision_cliente-this.combustible, 2);
+      if (this.week.Kilos.porcentaje > 89) {
+        return Math.round(this.sueldo_base+this.comision_total, 2);
+      }
+      return this.sueldo_base;
     }
   },
 }
 </script>
 
 <style lang="scss" scoped>
-  .modal-vendedor {
+  .modal-supervisor {
     border: 2px solid #2d3a8d;
     border-radius: 10px;
     overflow: hidden !important;
@@ -285,7 +257,7 @@ export default {
         align-items: center;
       }
     }
-    .modal-vendedor-card {
+    .modal-supervisor-card {
       border: 3px solid #2d3a8d;
       background: #F3F7FF;
       padding: 0;
