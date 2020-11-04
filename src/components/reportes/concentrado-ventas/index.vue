@@ -315,7 +315,7 @@
         :isOpen="isSupervisorModalOpen"
         :week="weekSelected"
         :suc="suc"
-        :onClose="onCloseGasolinaModal"
+        :onClose="onCloseSupervisorModal"
         :fecha="fecha"
       >
       </modal-supervisor>
@@ -609,7 +609,7 @@ export default {
     onCloseGasolinaModal() {
       this.isGasolinaModalOpen = false;
     },
-    onCloseGasolinaModal() {
+    onCloseSupervisorModal() {
       this.isSupervisorModalOpen = false;
     },
     getKilosVendido(vendedor) {
