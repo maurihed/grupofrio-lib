@@ -103,7 +103,7 @@
                                 :fecha="day.date"
                                 :vendedor="vendedor"
                                 :index-name="index"
-                                :cellClickable="3"
+                                :cellClickable="[3]"
                               >
                               </tabla-celda>
                             </td>
@@ -168,6 +168,10 @@
                               :value="val"
                               :names="Object.keys(prod)"
                               :index-name="index"
+                              :realClickHandler="onAguaClick"
+                              :fecha="day.date"
+                              :turno="turno"
+                              :cellClickable="[2,3,4]"
                             >
                             </tabla-celda>
                           </td>
@@ -319,6 +323,27 @@
         :fecha="fecha"
       >
       </modal-supervisor>
+      <modal-agua
+        :isOpen="isAguaModalOpen"
+        :fecha="fechaSelected"
+        :suc="suc"
+        :turno="turnoSelected"
+        :onClose="onModalAguaClose"
+      ></modal-agua>
+      <modal-luz
+        :isOpen="isLuzModalOpen"
+        :fecha="fechaSelected"
+        :suc="suc"
+        :turno="turnoSelected"
+        :onClose="onModalLuzClose"
+      ></modal-luz>
+      <modal-maquinas
+        :isOpen="isMaquinasModalOpen"
+        :fecha="fechaSelected"
+        :suc="suc"
+        :turno="turnoSelected"
+        :onClose="onMaquinasModalClose"
+      ></modal-maquinas>
   </div>
 </div>
 </template>
@@ -329,12 +354,16 @@ import tablaCeldaVue from './tabla-celda.vue';
 import ModalVendedor from './modal-vendedor.vue';
 import ModalGasolina from './modal-gasolina.vue';
 import modalSupervisor from './modal-supervisor.vue';
+import ModalAgual from './modal-agua.vue';
+import ModalLuz from './modal-luz.vue';
+import ModalMaquinas from './modal-maquinas.vue';
 
 export default {
   props: ['suc', 'fecha'],
   data: () => ({
     vendedorSelected: {},
     fechaSelected: null,
+    turnoSelected: null,
     isGasolinaModalOpen: false,
     modalData: {
       kilosVendidos: {},
@@ -342,8 +371,11 @@ export default {
       capturaApp: '0%',
     },
     weekSelected: {},
+    isMaquinasModalOpen: false,
     isVendedorModalOpen: false,
     isSupervisorModalOpen: false,
+    isAguaModalOpen: false,
+    isLuzModalOpen: false,
     isLoaded: false,
     loadingVentas: true,
     loadingProduccion: true,
@@ -598,10 +630,21 @@ export default {
       this.weekSelected = {...newWeekSelected, index};
       this.isSupervisorModalOpen = true;
     },
-    onVendedorRealClick(fecha, vendedor) {
+    onVendedorRealClick(cellName, fecha, vendedor) {
       this.vendedorSelected = this.vendedores.find((v) => v.clave == vendedor);
       this.fechaSelected = fecha;
       this.isGasolinaModalOpen = true;
+    },
+    onAguaClick(indexCell, fecha,_,turno) {
+      this.turnoSelected = turno;
+        this.fechaSelected = fecha;
+      if(indexCell == 2) {
+        this.isAguaModalOpen = true;
+      } else if(indexCell == 3) {
+        this.isLuzModalOpen = true;
+      } else {
+        this.isMaquinasModalOpen = true;
+      }
     },
     onCloseModal() {
       this.isVendedorModalOpen = false;
@@ -611,6 +654,15 @@ export default {
     },
     onCloseSupervisorModal() {
       this.isSupervisorModalOpen = false;
+    },
+    onModalAguaClose() {
+      this.isAguaModalOpen = false;
+    },
+    onModalLuzClose() {
+      this.isLuzModalOpen = false;
+    },
+    onMaquinasModalClose() {
+      this.isMaquinasModalOpen = false;
     },
     getKilosVendido(vendedor) {
       const formatedName = `${vendedor.clave}[${vendedor.camioneta}] - ${vendedor.nombre}`;
@@ -629,6 +681,9 @@ export default {
     'modal-vendedor': ModalVendedor,
     'modal-gasolina': ModalGasolina,
     'modal-supervisor': modalSupervisor,
+    'modal-agua': ModalAgual,
+    'modal-luz': ModalLuz,
+    'modal-maquinas': ModalMaquinas,
   },
 }
 </script>

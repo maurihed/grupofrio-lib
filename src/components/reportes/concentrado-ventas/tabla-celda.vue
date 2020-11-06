@@ -1,11 +1,11 @@
 <template>
 <div>
   <div class="cell-container" v-if="typeof value == 'object'">
-    <div :class="{'cursor-pointer': !!realClickHandler && indexName == cellClickable}" @click="onRealClick" class="cell dashed">
+    <div :class="{'cursor-pointer': !!realClickHandler && cellClickable.includes(indexName)}" @click="onRealClick" class="cell dashed">
       <span class="cell-name">{{real}}:</span>
       <span class="cell-value">{{value.real | number}}</span>
     </div>
-    <div :class="{'cursor-pointer': !!metaClickHandler && indexName == cellClickable}" @click="onMetaClick" class="cell">
+    <div :class="{'cursor-pointer': !!metaClickHandler && cellClickable.includes(indexName)}" @click="onMetaClick" class="cell">
       <span class="cell-name">{{meta}}:</span>
       <span class="cell-value">{{value.meta | number}}</span>
     </div>
@@ -21,11 +21,11 @@
 </template>
 <script>
 export default {
-  props: ['value','indexName','cellClickable', 'names','name', 'vendedor', 'fecha', 'realClickHandler', 'metaClickHandler', 'porcentajeClickHandler'],
+  props: ['value','indexName','cellClickable', 'names','name', 'vendedor','turno', 'fecha', 'realClickHandler', 'metaClickHandler', 'porcentajeClickHandler'],
   methods: {
     getClass(porcentaje) {
       let className = '';
-      if(!!this.porcentajeClickHandler && this.indexName == this.cellClickable) {
+      if(!!this.porcentajeClickHandler && this.cellClickable.includes(this.indexName)) {
         className = 'cursor-pointer ';
       }
       if(this.name === 'agua' || this.nameCalculated === 'agua') {
@@ -44,8 +44,9 @@ export default {
     },
     onRealClick() {
       if(this.realClickHandler) {
-        const [vendedor] = this.vendedor.split('[');
-        this.realClickHandler(this.fecha, vendedor);
+        const [vendedor] = this.vendedor ? this.vendedor.split('[') : [];
+        const [turno] = this.turno ? this.turno.split('-') : [];
+        this.realClickHandler(this.indexName, this.fecha, vendedor, turno);
       }
     },
     onMetaClick() {
