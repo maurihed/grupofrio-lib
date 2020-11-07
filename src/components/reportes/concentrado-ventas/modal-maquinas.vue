@@ -6,16 +6,47 @@
       <br v-if="!isLoaded">
       <br v-if="!isLoaded">
       <progress-indicator :show="!isLoaded"></progress-indicator>
+      <h5 class="center">Maquinas</h5>
       <div class="maquinasContainer">
         <div class="mItem border-right-1">
-          <div v-for="item in primeraParte" :key="item.Nombre" class="maquina">
-            <span>{{item.Nombre}}</span>
+          <div v-for="item in primeraParte" :key="item.descripcion" class="maquina">
+            <span>{{item.descripcion}}</span>
             <span class="status" :class="{bueno: item.evaluaciones, malo: !item.evaluaciones}"></span>
           </div>
         </div>
         <div class="mItem">
-          <div v-for="item in segundaParte" :key="item.Nombre" class="maquina">
-            <span>{{item.Nombre}}</span>
+          <div v-for="item in segundaParte" :key="item.descripcion" class="maquina">
+            <span>{{item.descripcion}}</span>
+            <span class="status" :class="{bueno: item.evaluaciones, malo: !item.evaluaciones}"></span>
+          </div>
+        </div>
+      </div>
+      <h5 class="center">Rendimiento</h5>
+      <div class="maquinasContainer">
+        <div class="mItem border-right-1">
+          <div v-for="item in rendimiento1" :key="item.descripcion" class="maquina">
+            <span>{{item.descripcion}}</span>
+            <span class="status" :class="{bueno: item.evaluaciones, malo: !item.evaluaciones}"></span>
+          </div>
+        </div>
+        <div class="mItem">
+          <div v-for="item in rendimiento2" :key="item.descripcion" class="maquina">
+            <span>{{item.descripcion}}</span>
+            <span class="status" :class="{bueno: item.evaluaciones, malo: !item.evaluaciones}"></span>
+          </div>
+        </div>
+      </div>
+      <h5 class="center">Limpieza</h5>
+      <div class="maquinasContainer">
+        <div class="mItem border-right-1">
+          <div v-for="item in limpieza1" :key="item.descripcion" class="maquina">
+            <span>{{item.descripcion}}</span>
+            <span class="status" :class="{bueno: item.evaluaciones, malo: !item.evaluaciones}"></span>
+          </div>
+        </div>
+        <div class="mItem">
+          <div v-for="item in limpieza2" :key="item.descripcion" class="maquina">
+            <span>{{item.descripcion}}</span>
             <span class="status" :class="{bueno: item.evaluaciones, malo: !item.evaluaciones}"></span>
           </div>
         </div>
@@ -41,6 +72,10 @@ export default {
     isLoaded: false,
     primeraParte: [],
     segundaParte: [],
+    rendimiento1: [],
+    rendimiento2: [],
+    limpieza1: [],
+    limpieza2: [],
   }),
   methods: {
     onModalClose() {
@@ -56,11 +91,21 @@ export default {
     },
     async fetchData() {
       const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=detalleMaquinas`, { suc: this.suc, fecha: this.fecha, turno: this.turno });
-      let maquinasEvaluadas = response.data;
-      if(maquinasEvaluadas){
-        maquinasEvaluadas = maquinasEvaluadas.map(m => ({...m, evaluaciones: Number(m.evaluaciones) > 0}));
-        this.primeraParte = maquinasEvaluadas.slice(0, maquinasEvaluadas.length/2);
-        this.segundaParte = maquinasEvaluadas.slice(maquinasEvaluadas.length/2,maquinasEvaluadas.length);
+      let {maquinas, rendimiento, limpieza} = response.data;
+      if(maquinas) {
+        maquinas = maquinas.map(m => ({...m, evaluaciones: Number(m.evaluaciones) > 0}));
+        this.primeraParte = maquinas.slice(0, maquinas.length/2);
+        this.segundaParte = maquinas.slice(maquinas.length/2,maquinas.length);
+      }
+      if(rendimiento) {
+        rendimiento = rendimiento.map(m => ({...m, evaluaciones: Number(m.evaluaciones) > 0}));
+        this.rendimiento1 = rendimiento.slice(0, rendimiento.length/2);
+        this.rendimiento2 = rendimiento.slice(rendimiento.length/2,rendimiento.length);
+      }
+      if (limpieza) {
+        limpieza = limpieza.map(m => ({...m, evaluaciones: Number(m.noSolucionadas) == 0}));
+        this.limpieza1 = limpieza.slice(0, limpieza.length/2);
+        this.limpieza2 = limpieza.slice(limpieza.length/2,limpieza.length);
       }
     }
   },
