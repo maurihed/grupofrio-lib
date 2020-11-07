@@ -30,19 +30,19 @@
             <div class="titulo">KILOS VENDIDOS</div>
             <div class="valor">
               <span>{{kilosVendidos.real | number}}</span>
-              <span>{{getPorcentaje(kilosVendidos.real, kilosVendidos.meta)}} %</span>
+              <span :class="getClass(getPorcentaje(kilosVendidos.real, kilosVendidos.meta))" >{{getPorcentaje(kilosVendidos.real, kilosVendidos.meta)}} %</span>
             </div>
           </div>
           <div class="wrapper">
             <div class="titulo">PRODUCTIVIDAD</div>
             <div class="valor">
-              <span>{{productividad}}</span>
+              <span :class="getClass(productividad.substr(0,productividad.length -2))">{{productividad}}</span>
             </div>
           </div>
           <div class="wrapper">
             <div class="titulo">CAPTURA APP</div>
             <div class="valor">
-              <span>{{capturaApp}}</span>
+              <span :class="getClass(capturaApp.substr(0,capturaApp.length -2))">{{capturaApp}}</span>
             </div>
           </div>
         </div>
@@ -136,6 +136,15 @@ export default {
     competencia: 0,
   }),
   methods: {
+    getClass(porcentaje) {
+      if(porcentaje > 89) {
+        return 'bueno';
+      }
+      if(porcentaje > 70) {
+        return 'regular';
+      }
+      return 'malo';
+    },
     onModalClose() {
       this.isLoaded = false;
       this.onClose();
@@ -329,6 +338,15 @@ export default {
           font-weight: bold;
           font-family: axiforma bold;
         }
+      }
+      .bueno {
+        color: #84d0c1;
+      }
+      .malo {
+        color: #f5b0b6;
+      }
+      .regular {
+        color: #e6c212;
       }
     }
   }

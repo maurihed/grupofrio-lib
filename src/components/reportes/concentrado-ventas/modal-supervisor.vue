@@ -23,29 +23,31 @@
       <div class="modal-content">
         <div class="modal-supervisor-card">
           <div class="wrapper">
-            <div class="titulo"><span>IMPORTE VENDIDO</span></div>
-            <div class="valor">
-              <span>{{week.Ingresos.real | money}}</span>
-              <span>{{week.Ingresos.porcentaje}}%</span>
-            </div>
-          </div>
-          <div class="wrapper">
             <div class="titulo">KILOS VENDIDOS</div>
             <div class="valor">
               <span>{{week.Kilos.real | money}}</span>
-              <span>{{week.Kilos.porcentaje}}%</span>
+              <span :class="getClass(week.Kilos.porcentaje)">{{week.Kilos.porcentaje}}%</span>
+            </div>
+          </div>
+          <div class="wrapper">
+            <div class="titulo"><span>IMPORTE VENDIDO</span></div>
+            <div class="valor">
+              <span>{{week.Ingresos.real | money}}</span>
+              <span :class="getClass(week.Ingresos.porcentaje)">{{week.Ingresos.porcentaje}}%</span>
             </div>
           </div>
           <div class="wrapper">
             <div class="titulo">PRODUCTIVIDAD</div>
             <div class="valor">
               <span>{{week.Productividad.real | number}}</span>
+              <span :class="getClass(week.Productividad.porcentaje)">{{week.Productividad.porcentaje}}%</span>
             </div>
           </div>
           <div class="wrapper">
             <div class="titulo">CAPTURA APP</div>
             <div class="valor">
               <span>{{week['Captura App'].real}}</span>
+              <span :class="getClass(week['Captura App'].porcentaje)">{{week['Captura App'].porcentaje}}%</span>
             </div>
           </div>
         </div>
@@ -135,6 +137,15 @@ export default {
       this.isLoaded = false;
       this.onClose();
     },
+    getClass(porcentaje) {
+      if(porcentaje > 89) {
+        return 'bueno';
+      }
+      if(porcentaje > 70) {
+        return 'regular';
+      }
+      return 'malo';
+    },
     async onModalOpen() {
       await this.fetchSupervisorInfo();
       this.isLoaded = true;
@@ -191,7 +202,7 @@ export default {
       }
       return this.sueldo_base;
     }
-  },
+  }
 }
 </script>
 
@@ -302,6 +313,15 @@ export default {
           font-family: axiforma bold;
         }
       }
+    }
+    .bueno {
+      color: #84d0c1;
+    }
+    .malo {
+      color: #f5b0b6;
+    }
+    .regular {
+      color: #e6c212;
     }
   }
 </style>
