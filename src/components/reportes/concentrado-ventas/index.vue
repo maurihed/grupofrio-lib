@@ -221,7 +221,7 @@
               <thead>
                 <tr>
                   <th>&nbsp;</th>
-                  <th v-for="(week, index) in getWeeks()" :key="index" >{{week}}</th>
+                  <th class="cursor-pointer" @click="openGerenteModal(index)" v-for="(week, index) in getWeeks()" :key="index" >{{week}}</th>
                 </tr>
               </thead>
               <tbody>
@@ -323,6 +323,14 @@
         :fecha="fecha"
       >
       </modal-supervisor>
+      <modal-gerente
+        :isOpen="isGerenteModalOpen"
+        :week="weekSelected"
+        :suc="suc"
+        :onClose="onCloseGerenteModal"
+        :fecha="fecha"
+      >
+      </modal-gerente>
       <modal-agua
         :isOpen="isAguaModalOpen"
         :fecha="fechaSelected"
@@ -357,6 +365,7 @@ import modalSupervisor from './modal-supervisor.vue';
 import ModalAgual from './modal-agua.vue';
 import ModalLuz from './modal-luz.vue';
 import ModalMaquinas from './modal-maquinas.vue';
+import ModalGerente from './modal-gerente.vue';
 
 export default {
   props: ['suc', 'fecha'],
@@ -374,6 +383,7 @@ export default {
     isMaquinasModalOpen: false,
     isVendedorModalOpen: false,
     isSupervisorModalOpen: false,
+    isGerenteModalOpen: false,
     isAguaModalOpen: false,
     isLuzModalOpen: false,
     isLoaded: false,
@@ -500,9 +510,15 @@ export default {
       });
     },
     getVentasNames() {
-      const [firstFecha] = Object.values(this.ventas);
-      if (firstFecha) {
-        const [firtVendedor] = Object.values(firstFecha);
+      let fecha = null;
+      Object.values(this.ventas).forEach((f) => {
+        if(Object.values(f).length) {
+          fecha = f;
+        }
+      });
+
+      if (fecha) {
+        const [firtVendedor] = Object.values(fecha);
         if (firtVendedor) {
           return Object.keys(firtVendedor);
         }
@@ -630,6 +646,15 @@ export default {
       this.weekSelected = {...newWeekSelected, index};
       this.isSupervisorModalOpen = true;
     },
+    openGerenteModal(index) {
+      const newWeekSelected = {};
+      Object.entries(this.gerente).forEach(([name, val])=>{
+        newWeekSelected[name] = Object.values(val)[index];
+      });
+      this.weekSelected = {...newWeekSelected, index};
+      this.isGerenteModalOpen = true;
+      console.log(this.weekSelected);
+    },
     onVendedorRealClick(cellName, fecha, vendedor) {
       this.vendedorSelected = this.vendedores.find((v) => v.clave == vendedor);
       this.fechaSelected = fecha;
@@ -655,6 +680,9 @@ export default {
     onCloseSupervisorModal() {
       this.isSupervisorModalOpen = false;
     },
+    onCloseGerenteModal() {
+      this.isGerenteModalOpen = false;
+    },
     onModalAguaClose() {
       this.isAguaModalOpen = false;
     },
@@ -679,6 +707,7 @@ export default {
   components: {
     'tabla-celda': tablaCeldaVue,
     'modal-vendedor': ModalVendedor,
+    'modal-gerente': ModalGerente,
     'modal-gasolina': ModalGasolina,
     'modal-supervisor': modalSupervisor,
     'modal-agua': ModalAgual,

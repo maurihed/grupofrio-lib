@@ -1,5 +1,5 @@
 <template>
-  <div id="modalSupervisor" class="modal modal-supervisor">
+  <div id="modalGerente" class="modal modal-gerente">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
@@ -8,8 +8,8 @@
     <div v-if="isLoaded">
       <div class="modal-header">
           <div class="modal-header-titulo">
-            <div class="valor">{{supervisor}}</div>
-            <div class="titulo">NOMBRE DEL SUPERVISOR</div>
+            <div class="valor">{{gerente}}</div>
+            <div class="titulo">NOMBRE DEL GERENTE</div>
           </div>
           <div class="modal-header-titulo border-around">
             <div class="valor">{{camionetas}}</div>
@@ -21,7 +21,7 @@
           </div>
         </div>
       <div class="modal-content">
-        <div class="modal-supervisor-card">
+        <div class="modal-gerente-card">
           <div class="wrapper">
             <div class="titulo">KILOS VENDIDOS</div>
             <div class="valor">
@@ -51,41 +51,41 @@
             </div>
           </div>
         </div>
-        <div class="modal-supervisor-card">
+        <div class="modal-gerente-card">
           <div class="wrapper">
-            <div class="titulo"><span>CLIENTES POR RECUPERAR</span></div>
+            <div class="titulo"><span>RENDIMIENTO DE LUZ</span></div>
             <div class="valor">
-              <span>{{recuperados | number}}</span>
+              <span :class="getClass(getPorcentaje(week['Rendimiento luz']))">{{getPorcentaje(week['Rendimiento luz'])}}%</span>
             </div>
           </div>
           <div class="wrapper">
-            <div class="titulo"><span>CLIENTES POR COMPETENCIA</span></div>
+            <div class="titulo"><span>RENDIMIENTO DE AGUA</span></div>
             <div class="valor">
-              <span>{{competencia | number}}</span>
-            </div>
-          </div>
-        </div>
-        <div class="modal-supervisor-card">
-          <div class="wrapper">
-            <div class="titulo"><span>RENDIMIENTO UNIDADES</span></div>
-            <div class="valor">
-              <span>{{rendimiento}} Km/Lts.</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>KM RECORRIDOS</span></div>
-            <div class="valor">
-              <span>{{kgRecorridos | number}} KM</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo">COMBUSTIBLE</div>
-            <div class="valor">
-              <span>{{combustible | money}}</span>
+              <span :class="getClass(getPorcentaje(week['Rendimiento agua']))">{{getPorcentaje(week['Rendimiento agua'])}}%</span>
             </div>
           </div>
         </div>
-        <div class="modal-supervisor-card">
+        <div class="modal-gerente-card">
+          <div class="wrapper">
+            <div class="titulo"><span>KG BARRA PRODUCIDOS</span></div>
+            <div class="valor">
+              <span>{{week.Produccion.barra.Acumulado | number}} Kg.</span>
+            </div>
+          </div>
+          <div class="wrapper">
+            <div class="titulo"><span>KG ROLITO PRODUCIDOS</span></div>
+            <div class="valor">
+              <span>{{week.Produccion.rolito.Acumulado | number}} Kg.</span>
+            </div>
+          </div>
+          <div class="wrapper">
+            <div class="titulo">KG TOTAL PRODUCIDOS</div>
+            <div class="valor">
+              <span>{{week.Produccion.real | number}} Kg.</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-gerente-card">
           <div class="wrapper">
             <div class="titulo"><span>NÓMINA BASE</span></div>
             <div class="valor">
@@ -109,7 +109,7 @@
 </template>
 <script>
 export default {
-  name: 'modal-supervisor',
+  name: 'modal-gerente',
   props: {
     isOpen: {
       type: Boolean,
@@ -122,14 +122,9 @@ export default {
   },
   data: ()=>({
     isLoaded: false,
-    kgRecorridos: 0,
-    rendimiento: 0,
-    combustible: 0,
-    importeVendido: 0,
+    gerente: '',
     sueldo_base: 0,
     comision: 0,
-    recuperados: 0,
-    competencia: 0,
     camionetas: 0,
   }),
   methods: {
@@ -146,49 +141,37 @@ export default {
       }
       return 'malo';
     },
+    getPorcentaje(week) {
+      const {real, meta} = week;
+      return meta > 0 ? Math.floor(real/meta) : 0;
+    },
     async onModalOpen() {
-      await this.fetchSupervisorInfo();
+      await this.fetchGerenteInfo();
       this.isLoaded = true;
     },
-    async fetchSupervisorInfo() {
-      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=infoSupervisor`, {
+    async fetchGerenteInfo() {
+      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getDetalleGerente`, {
         fecha: this.fecha, suc: this.suc, week: this.week.index
       });
-      const {
-        camionetas,
-        gastado,
-        kilometraje,
-        litros,
-        rendimiento,
-        supervisor,
-        recuperados,
-        competencia,
-        sueldo_base,
-        comision
-      } = response.data;
-      this.camionetas = camionetas;
-      this.kgRecorridos = kilometraje;
-      this.combustible = gastado;
-      this.rendimiento = rendimiento;
-      this.supervisor = supervisor;
-      this.recuperados = recuperados;
-      this.competencia = competencia;
+      const {gerente, sueldo_base, comision, camionetas} = response.data;
+      this.gerente = gerente;
       this.sueldo_base = sueldo_base;
       this.comision = comision;
+      this.camionetas = camionetas;
     },
   },
   mounted() {
-    M.Modal.init(document.getElementById('modalSupervisor'), {
+    M.Modal.init(document.getElementById('modalGerente'), {
       onCloseEnd: this.onModalClose,
     });
   },
   watch: {
     isOpen() {
       if (this.isOpen) {
-        M.Modal.getInstance(document.getElementById('modalSupervisor')).open()
+        M.Modal.getInstance(document.getElementById('modalGerente')).open()
         this.onModalOpen();
       } else {
-        M.Modal.getInstance(document.getElementById('modalSupervisor')).close()
+        M.Modal.getInstance(document.getElementById('modalGerente')).close()
       }
     },
   },
@@ -197,8 +180,14 @@ export default {
       return this.week.Ingresos.real * this.comision;
     },
     total() {
-      if (this.week.Kilos.porcentaje > 89) {
-        return Math.round(Number(this.sueldo_base)+this.comision_total, 2);
+      if (
+        this.week.Kilos.porcentaje > 89 &&
+        this.week.Productividad.porcentaje > 89 &&
+        this.week['Captura App'].porcentaje > 89 &&
+        this.week.Produccion.porcentaje > 89 &&
+        this.week.Ingresos.porcentaje > 89
+      ) {
+        return Math.round(this.sueldo_base+this.comision_total, 2);
       }
       return this.sueldo_base;
     }
@@ -207,7 +196,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .modal-supervisor {
+  .modal-gerente {
     border: 2px solid #2d3a8d;
     border-radius: 10px;
     overflow: hidden !important;
@@ -268,7 +257,7 @@ export default {
         align-items: center;
       }
     }
-    .modal-supervisor-card {
+    .modal-gerente-card {
       border: 3px solid #2d3a8d;
       background: #F3F7FF;
       padding: 0;
