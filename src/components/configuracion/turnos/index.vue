@@ -18,8 +18,9 @@
                 <label for="m-endTime">Hora final</label>
               </div>
             </div>
-            <div class="col s1 rigth">
-              <button class="btn-floating absolute-center" @click="saveTurno('m-')"><i class="material-icons">save</i></button>
+            <div class="col s1 buttons-area">
+              <button class="btn-floating red darken-4" @click="deleteTurno('m-')"><i class="material-icons">delete_forever</i></button>
+              <button class="btn-floating" @click="saveTurno('m-')"><i class="material-icons">save</i></button>
             </div>
         </div>
         <div class="row vertical-center">
@@ -38,8 +39,30 @@
                 <label for="v-endTime">Hora final</label>
               </div>
             </div>
-            <div class="col s1 rigth">
-              <button class="btn-floating absolute-center" @click="saveTurno('v-')"><i class="material-icons">save</i></button>
+            <div class="col s1 buttons-area">
+              <button class="btn-floating red darken-4" @click="deleteTurno('v-')"><i class="material-icons">delete_forever</i></button>
+              <button class="btn-floating" @click="saveTurno('v-')"><i class="material-icons">save</i></button>
+            </div>
+        </div>
+        <div class="row vertical-center">
+            <div class="col s3 align-center">
+              <span class="title">Turno Nocturno</span>
+            </div>
+            <div class="col s4">
+              <div class="input-field">
+                <input id="n-startTime" type="text" class="timepicker" :value="to12Format(nocturno && nocturno.hora_inicial)">
+                <label for="n-startTime">Hora inicial</label>
+              </div>
+            </div>
+            <div class="col s4">
+              <div class="input-field">
+                <input id="n-endTime" type="text" class="timepicker" :value="to12Format(nocturno && nocturno.hora_final)">
+                <label for="n-endTime">Hora final</label>
+              </div>
+            </div>
+            <div class="col s1 buttons-area">
+              <button class="btn-floating red darken-4" @click="deleteTurno('n-')"><i class="material-icons">delete_forever</i></button>
+              <button class="btn-floating" @click="saveTurno('n-')"><i class="material-icons">save</i></button>
             </div>
         </div>
       </div>
@@ -54,6 +77,7 @@ export default {
       date: '',
       matutino: null,
       vespertino: null,
+      nocturno: null,
     }
   },
   async created() {
@@ -61,8 +85,10 @@ export default {
       const month = String(D.getMonth() + 1).padStart(2,0);
       this.date = `${D.getFullYear()}-${month}-${D.getDate()}`;
       const response = await axios.post(`${env.CONFIGURACION_TURNO}?option=getTurnos`, { suc: this.suc });
+      console.log(response.data);
       this.matutino = response.data.find((turno) => turno.nombre === 'MATUTINO')
       this.vespertino = response.data.find((turno) => turno.nombre === 'VESPERTINO');
+      this.nocturno = response.data.find((turno) => turno.nombre === 'NOCTURNO');
   },
   mounted() {
     const options = {
@@ -107,6 +133,11 @@ export default {
       const meridian = hours < 12 ? 'AM': 'PM'; 
       return `${hours%12}:${minutes} ${meridian}`;
     },
+    async deleteTurno(prefix) {
+      const turno = prefix === 'm-' ? 'MATUTINO' : ( prefix === 'v-' ? 'VESPERTINO' : 'NOCTURNO');
+      const response = await axios.post(`${env.CONFIGURACION_TURNO}?option=deleteTurno`, { turno, suc: this.suc});
+      this.showMessage('Guadado correctamente!');
+    },
     async saveTurno(prefix) {
       let inicial = document.querySelector(`#${prefix}startTime`).value;
       let final = document.querySelector(`#${prefix}endTime`).value;
@@ -119,7 +150,7 @@ export default {
       // if (this.biggerThan(inicial, final)) {
       //   this.showError('La hora final debe ser mas grande que la inicial'); return;
       // }
-      const turno = prefix === 'm-' ? 'MATUTINO' : 'VESPERTINO';
+      const turno = prefix === 'm-' ? 'MATUTINO' : ( prefix === 'v-' ? 'VESPERTINO' : 'NOCTURNO');
       inicial = this.to24Format(inicial);
       final = this.to24Format(final);
       const request = {
@@ -151,5 +182,19 @@ export default {
   .title {
     font-weight: 700;
     color: #989898;
+  }
+  .buttons-area {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .timepicker-digital-display {
+    background: #82b1ff !important;
+  }
+  .timepicker-canvas line {
+    stroke: #82b1ff !important;
+  }
+  .timepicker-canvas-bg {
+    fill: #82b1ff !important;
   }
 </style>
