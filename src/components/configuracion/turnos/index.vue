@@ -136,7 +136,14 @@ export default {
     async deleteTurno(prefix) {
       const turno = prefix === 'm-' ? 'MATUTINO' : ( prefix === 'v-' ? 'VESPERTINO' : 'NOCTURNO');
       const response = await axios.post(`${env.CONFIGURACION_TURNO}?option=deleteTurno`, { turno, suc: this.suc});
-      this.showMessage('Guadado correctamente!');
+      if(turno == 'MATUTINO') {
+        this.matutino = null;
+      } else if (turno == 'VESPERTINO') {
+        this.vespertino = null;
+      } else {
+        this.nocturno = null;
+      }
+      this.showMessage('Eliminado correctamente!');
     },
     async saveTurno(prefix) {
       let inicial = document.querySelector(`#${prefix}startTime`).value;
