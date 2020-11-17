@@ -18,7 +18,10 @@
                         class="canastilla__text"
                         v-if="checkCell(tanque.celdas_scadas, fila, col - 1)"
                       >
-                      {{getUltimaSacada(tanque.celdas_scadas, fila, col - 1) | hora}}
+                      {{ getUltimaSacada(tanque.celdas_scadas, fila, col - 1).hora | hora }}
+                      </span>
+                      <span class="text-circle circle" v-if="checkCell(tanque.celdas_scadas, fila, col - 1)">
+                        {{ getUltimaSacada(tanque.celdas_scadas, fila, col - 1).position }}
                       </span>
                   <div v-for="celda in Number(getCanastillas(tanque))" class="celda" :key="celda"></div>
                 </div>
@@ -64,8 +67,11 @@ export default {
       return !!canastillas.find(c => c.fila == fila && c.columna == col);
     },
     getUltimaSacada(canastillas, fila, col) {
-      const { hora_sacado } = canastillas.find(c => c.fila == fila && c.columna == col);
-      return hora_sacado;
+      canastillas = canastillas
+        .sort((cellA, cellB) => Date.parse(new Date(cellA.hora_sacado)) - Date.parse(new Date(cellB.hora_sacado)))
+        .map((cell, index) => ({...cell, position: index+1}));
+      const { hora_sacado: hora, position } = canastillas.find(c => c.fila == fila && c.columna == col);
+      return { hora, position };
     },
   },
   async created() {
@@ -109,6 +115,18 @@ export default {
 }
 .transparent {
   background: transparent;
+}
+.text-circle {
+  background: #00823c;
+  color: #F0F0F0 !important;
+  padding: 0 4px;
+  position: absolute;
+  right: 5px;
+  color: black;
+  overflow: hidden;
+  padding: 0 10px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .tanque {
   display: flex;
