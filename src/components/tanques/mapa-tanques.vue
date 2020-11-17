@@ -47,6 +47,9 @@ export default {
     tanques: null,
     isLoaded: false,
   }),
+  created() {
+    this.tanques = tanque
+  },
   methods: {
     getTanqueDetalles(tanque) {
       return tanque.detalles[0] || {};
@@ -67,16 +70,19 @@ export default {
       return !!canastillas.find(c => c.fila == fila && c.columna == col);
     },
     getUltimaSacada(canastillas, fila, col) {
-      canastillas = canastillas
-        .sort((cellA, cellB) => Date.parse(new Date(cellA.hora_sacado)) - Date.parse(new Date(cellB.hora_sacado)))
-        .map((cell, index) => ({...cell, position: index+1}));
       const { hora_sacado: hora, position } = canastillas.find(c => c.fila == fila && c.columna == col);
       return { hora, position };
     },
   },
   async created() {
+    console.log('hola');
     const response = await axios.post(`${env.TANQUE_PRODUCCION}?option=detalleTanquesFecha`, { suc: this.suc, fecha: this.fecha });
-    this.tanques = response.data;
+    this.tanques = response.data
+    .map((tanque) => ({...tanque, celdas_scadas: tanque.celdas_scadas
+      .sort((cellA, cellB) => Date.parse(new Date(cellA.hora_sacado)) - Date.parse(new Date(cellB.hora_sacado)))
+      .map((cell, index) => ({...cell, position: index+1}))})
+    );
+    console.log(this.tanques);
     this.isLoaded = true;
   },
   filters: {
@@ -119,12 +125,12 @@ export default {
 .text-circle {
   background: #00823c;
   color: #F0F0F0 !important;
-  padding: 0 4px;
+  padding: 0 5px;
   position: absolute;
   right: 5px;
   color: black;
   overflow: hidden;
-  padding: 0 10px;
+  padding: 0 8px;
   top: 50%;
   transform: translateY(-50%);
 }
