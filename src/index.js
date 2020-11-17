@@ -37,6 +37,7 @@ Vue.component('fallas-produccion', require('./components/produccion/fallas.vue')
 Vue.component('gestion-tanque', require('./components/produccion/gestion-tanque.vue').default);
 Vue.component('v-produccion', require('./components/produccion/index.vue').default);
 Vue.component('mapa-tanques', require('./components/tanques/index.vue').default);
+Vue.component('mapa-tanque', require('./components/tanques/mapa-tanques.vue').default);
 // -- arqueo --
 Vue.component('v-arqueo', require('./components/arqueo/index.vue').default);
 Vue.component('frecuencia-unidades', require('./components/reportes/frecuencias/unidades.vue').default);
