@@ -2,7 +2,7 @@
 <div>
   <span v-if="!isLoaded">Loading...</span>
   <div class="row" v-if="isLoaded">
-    <div class="col l6 m12" v-for="tanque in tanques" :key="tanque.id">
+    <div class="col s12" v-for="tanque in tanques" :key="tanque.id">
       <div v-if="Number(getColumnas(tanque))">
         <div class="mapaTanque__header">
           <h4>{{tanque.Nombre}}</h4>
