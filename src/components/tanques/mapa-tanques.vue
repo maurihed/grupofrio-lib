@@ -13,14 +13,14 @@
             <col-num v-if="col === 1" :filas="getFilas(tanque)"></col-num>
             <div v-if="col !== 1">
               <div v-for="fila in Number(getFilas(tanque))" :key="fila">
-                <div class="canastilla">
+                <div class="canastilla" :class="{'disponible': checkCell(tanque.celdas_scadas, fila, col - 1)}">
                       <span
                         class="canastilla__text"
                         v-if="checkCell(tanque.celdas_scadas, fila, col - 1)"
                       >
                       {{getUltimaSacada(tanque.celdas_scadas, fila, col - 1) | hora}}
                       </span>
-                  <div v-for="celda in Number(getCanastillas(tanque))" class="celda" :class="{'transparent': checkCell(tanque.celdas_scadas, fila, col - 1)}" :key="celda"></div>
+                  <div v-for="celda in Number(getCanastillas(tanque))" class="celda" :key="celda"></div>
                 </div>
               </div>
             </div>
@@ -149,6 +149,17 @@ export default {
     display: flex;
     padding: 5px;
     position: relative;
+    &.disponible {
+    background: #00813d;
+    .celda {
+      background: #01c149;
+    }
+    .canastilla__text {
+        color: #000;
+        font-weight: bold;
+        background: none;
+      }
+  }
     .canastilla__text {
       position: absolute;
       top: 50%;
