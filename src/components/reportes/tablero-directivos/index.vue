@@ -1,6 +1,6 @@
 <template>
 <div>
-  Hola {{nombreData}}
+  Adios {{nombreData}}
   <br>
 <ol>
   <li v-for="usuario in usuarios" :key="usuario.id">
