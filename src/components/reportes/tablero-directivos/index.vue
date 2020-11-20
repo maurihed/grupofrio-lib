@@ -1,21 +1,13 @@
 <template>
 <div>
-  Hola {{nombreData}}
-  <br>
-<ol>
-  <li v-for="usuario in usuarios" :key="usuario.id">
-    {{usuario.Nombre}}
-  </li>
-</ol>
-<span v-if="algo()">no voy a salir</span>
-  <input type="text" v-model="nombreData">
+  <span>la fecha es: {{fecha}}</span>
 </div>
 </template>
 
 <script>
 export default {
   name:'tablero-directivos',
-  props: ['nombre'],
+  props: ['fecha'],
   data() {
     return {
       nombreData: '',
