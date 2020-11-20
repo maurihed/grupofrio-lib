@@ -1,6 +1,6 @@
 <template>
 <div>
-  Adios {{nombreData}}
+  Adios {{fecha}}
   <br>
 <ol>
   <li v-for="usuario in usuarios" :key="usuario.id">
@@ -8,23 +8,23 @@
   </li>
 </ol>
 <span v-if="algo()">no voy a salir</span>
-  <input type="text" v-model="nombreData">
+  <input type="text" v-model="fecha">
 </div>
 </template>
 
 <script>
 export default {
   name:'tablero-directivos',
-  props: ['nombre'],
+  props: ['fecha'],
   data() {
     return {
-      nombreData: '',
+      fecha: '',
       usuarios: [],
     }
   },
   async created() {
     const respuesta = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=index`,{
-      suc: 'SUC07', fecha_inicial: '2020-11-18', fecha_final: '2020-11-18'
+      fecha: this.fecha
     });
     this.usuarios = respuesta.data;
   },
@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     nombreMayusculas() {
-      return `En mayusculas: ${this.nombreData}`;
+      return `En mayusculas: ${this.fecha}`;
     }
   }
 }
