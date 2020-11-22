@@ -23,7 +23,7 @@ export default {
     }
   },
   async created() {
-    const respuesta = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=index`,{
+    const respuesta = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=gerente`,{
       fecha: this.fecha
     });
     this.usuarios = respuesta.data;
