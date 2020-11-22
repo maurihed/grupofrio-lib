@@ -7,7 +7,7 @@
     {{usuario.Nombre}}
   </li>
 </ol>
-<span v-if="algo()">no voy a salir</span>
+<span v-if="algo()">-----</span>
   <input type="text" v-model="fecha">
 </div>
 </template>
