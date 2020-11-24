@@ -1,37 +1,41 @@
 <template>
 <div>
   <br>
-  <!-- <progress-indicator :show="!isLoaded"></progress-indicator> -->
+  <progress-indicator :show="!isLoaded"></progress-indicator>
   <div v-if="isLoaded">
-    <ul class="collapsible expandable">
-      <li>
-        <div class="collapsible-header"><span class="line start"></span>EQUIPO &nbsp;<b> COMERCIAL</b> <span class="line"></span> <i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
-          <div class="collapsible-body"> 
-          <progress-indicator :show="loadingComercial"></progress-indicator>
-          <div v-if="!loadingComercial">
-            <table>
-              <thead>
-                <tr>
-                  <th>&nbsp;</th>
-                  <th class="cursor-pointer" v-for="(week, index) in getWeeks()" :key="index" >{{week}}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(topic, index) in Object.keys(comercial)" :key="'comercial-'+index">
-                  <td>{{topic}}</td>
-                  <td v-for="(val, index) in Object.values(comercial[topic])" :key="index">
-                    <tabla-celda
-                      :value="val"
-                    >
-                    </tabla-celda>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </li>
-    </ul>
+    <div class="row">
+      <div class="col s12">
+        <ul class="collapsible expandable">
+          <li>
+            <div class="collapsible-header"><span class="line start"></span>EQUIPO &nbsp;<b> COMERCIAL</b> <span class="line"></span> <i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
+              <div class="collapsible-body"> 
+              <progress-indicator :show="loadingComercial"></progress-indicator>
+              <div v-if="!loadingComercial">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>&nbsp;</th>
+                      <th class="cursor-pointer" v-for="(week, index) in getWeeks()" :key="index" >{{week}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(topic, index) in Object.keys(comercial)" :key="'comercial-'+index">
+                      <td>{{topic}}</td>
+                      <td v-for="(val, index) in Object.values(comercial[topic])" :key="index">
+                        <tabla-celda
+                          :value="val"
+                        >
+                        </tabla-celda>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </div>
 </template>
