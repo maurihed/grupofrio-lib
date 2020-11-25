@@ -198,7 +198,7 @@
 import tablaCeldaVue from './tabla-celda.vue';
 export default {
   name:'tablero-directivos',
-  props: ['fecha'],
+  props: ['suc','fecha'],
   data() {
     return {
       fecha: '',
@@ -211,7 +211,8 @@ export default {
   },
   async created() {
     const respuesta = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=acumulado`,{
-      fecha: this.fecha
+      fecha: this.fecha,
+      suc: this.suc 
     });
     // this.comercial = respuesta.data;
       this.acumulado = respuesta.data;
