@@ -130,6 +130,34 @@
               </div>
             </div>
           </li>
+
+          <li>
+            <div class="collapsible-header"><span class="line start"></span>EQUIPO&nbsp;<b> ADMINISTRATIVO</b> <span class="line"></span> <i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
+              <div class="collapsible-body"> 
+              <progress-indicator :show="loadingAdministrativo"></progress-indicator>
+              <div v-if="!loadingAdministrativo">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>&nbsp;</th>
+                      <th class="cursor-pointer" v-for="(weeks, index) in getWeeksAdministrativo()" :key="index" >{{weeks}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(topic, index) in Object.keys(administrativo)" :key="'administrativo-'+index">
+                      <td>{{topic}}</td>
+                      <td v-for="(val, index) in Object.values(administrativo[topic])" :key="index">
+                        <tabla-celda
+                          :value="val"
+                        >
+                        </tabla-celda>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </li>
         </ul>
         
       </div>
@@ -149,6 +177,7 @@ export default {
       isLoaded: false,
       loadingComercial: true,
       loadingManufactura: true,
+      loadingAdministrativo: true,
       acumulado: {},
     }
   },
@@ -162,6 +191,7 @@ export default {
       await Promise.allSettled([
       this.fetchComercial(),
       this.fetchManufactura(),
+      this.fetchAdministrativo(),
     ]);
   },
   updated() {
@@ -178,6 +208,11 @@ export default {
       this.manufactura = rManufactura.data;
       this.loadingManufactura=false;
     },
+    async fetchAdministrativo(){
+      const rAdministrativo = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=administrativo`, { fecha: this.fecha});
+      this.administrativo = rAdministrativo.data;
+      this.loadingAdministrativo=false;
+    },
     getWeeks() {
       const [first] = Object.values(this.comercial);
       if (first) {
@@ -187,6 +222,13 @@ export default {
     },
     getWeeksManufactura() {
       const [first] = Object.values(this.manufactura);
+      if (first) {
+        return Object.keys(first);
+      }
+      return [];
+    },
+    getWeeksAdministrativo() {
+      const [first] = Object.values(this.administrativo);
       if (first) {
         return Object.keys(first);
       }
