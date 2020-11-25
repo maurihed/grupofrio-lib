@@ -33,7 +33,36 @@
               </div>
             </div>
           </li>
+
+          <li>
+            <div class="collapsible-header"><span class="line start"></span>EQUIPO DE&nbsp;<b> MANUFACTURA</b> <span class="line"></span> <i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
+              <div class="collapsible-body"> 
+              <progress-indicator :show="loadingManufactura"></progress-indicator>
+              <div v-if="!loadingManufactura">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>&nbsp;</th>
+                      <th class="cursor-pointer" v-for="(weeks, index) in getWeeksManufactura()" :key="index" >{{weeks}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(topic, index) in Object.keys(manufactura)" :key="'manufactura-'+index">
+                      <td>{{topic}}</td>
+                      <td v-for="(val, index) in Object.values(manufactura[topic])" :key="index">
+                        <tabla-celda
+                          :value="val"
+                        >
+                        </tabla-celda>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </li>
         </ul>
+        
       </div>
     </div>
   </div>
@@ -50,6 +79,7 @@ export default {
       fecha: '',
       isLoaded: false,
       loadingComercial: true,
+      loadingManufactura: true,
     }
   },
   async created() {
@@ -60,6 +90,7 @@ export default {
       this.isLoaded = true;
       await Promise.allSettled([
       this.fetchComercial(),
+      this.fetchManufactura(),
     ]);
   },
   updated() {
@@ -71,8 +102,20 @@ export default {
       this.comercial = rComercial.data;
       this.loadingComercial=false;
     },
+     async fetchManufactura(){
+      const rManufactura = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=manufactura`, { fecha: this.fecha});
+      this.manufactura = rManufactura.data;
+      this.loadingManufactura=false;
+    },
     getWeeks() {
       const [first] = Object.values(this.comercial);
+      if (first) {
+        return Object.keys(first);
+      }
+      return [];
+    },
+    getWeeksManufactura() {
+      const [first] = Object.values(this.manufactura);
       if (first) {
         return Object.keys(first);
       }
