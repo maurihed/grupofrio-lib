@@ -5,6 +5,75 @@
   <div v-if="isLoaded">
     <div class="row">
       <div class="col s12">
+        <div class="card">
+          <div class="row mb-0">
+            <div class="col s6">
+              <div class="custom-card">
+                <div class="custom-card-header"><i class="material-icons">attach_money</i> VENTA</div>
+                <div class="custom-card-body" v-if="isLoaded">
+                  <div class="card-row">
+                    <div class="p-1">
+                      <div class="mb-1">&nbsp;</div>
+                      <div class="center mb-2"><span class="text-bold text-primary">$</span></div>
+                      <div class="center"><span class="text-bold text-primary">Kg</span></div>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Acumulado</span>
+                      <span class="mb-1 w-100 neutro acumulado-text">{{acumulado.Venta.dinero.Acumulado | money}}</span>
+                      <span class="w-100 neutro acumulado-text">{{acumulado.Venta.kg.Acumulado | number}}</span>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Meta</span>
+                      <span class="mb-1 w-100 bueno acumulado-text">{{acumulado.Venta.dinero.Meta | money}}</span>
+                      <span class="w-100 bueno acumulado-text">{{acumulado.Venta.kg.Meta | number}}</span>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Tendencia</span>
+                      <span class="mb-1 w-100 acumulado-text" :class="getStateClass(acumulado.Venta.dinero.Tendencia)">{{acumulado.Venta.dinero.Tendencia | number}}%</span>
+                      <span class="w-100 acumulado-text" :class="getStateClass(acumulado.Venta.kg.Tendencia)">{{acumulado.Venta.kg.Tendencia | number}}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col s6">
+              <div class="custom-card">
+                <div class="custom-card-header"><i class="material-icons">attach_money</i> PRODUCCIÓN</div>
+                <div class="custom-card-body" v-if="isLoaded">
+                  <div class="card-row">
+                    <div class="p-1">
+                      <div class="mb-1">&nbsp;</div>
+                      <div class="center mb-2"><span class="text-bold text-primary">Barra</span></div>
+                      <div class="center"><span class="text-bold text-primary">Rolito</span></div>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Acumulado</span>
+                      <span class="mb-1 w-100 neutro acumulado-text">{{acumulado.Produccion.barra.Acumulado | number}}</span>
+                      <span class="w-100 neutro acumulado-text">{{acumulado.Produccion.rolito.Acumulado | number}}</span>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Meta</span>
+                      <span class="mb-1 w-100 bueno acumulado-text">{{acumulado.Produccion.barra.Meta | number}}</span>
+                      <span class="w-100 bueno acumulado-text">{{acumulado.Produccion.rolito.Meta | number}}</span>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Tendencia</span>
+                      <span class="mb-1 w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.barra.Tendencia)">{{acumulado.Produccion.barra.Tendencia | number}}%</span>
+                      <span class="w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.rolito.Tendencia)">{{acumulado.Produccion.rolito.Tendencia | number}}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s6">
+        <slot></slot>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12">
         <ul class="collapsible expandable">
           <li>
             <div class="collapsible-header"><span class="line start"></span>EQUIPO &nbsp;<b> COMERCIAL</b> <span class="line"></span> <i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
@@ -80,13 +149,15 @@ export default {
       isLoaded: false,
       loadingComercial: true,
       loadingManufactura: true,
+      acumulado: {},
     }
   },
   async created() {
-    const respuesta = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=gerente`,{
+    const respuesta = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=acumulado`,{
       fecha: this.fecha
     });
-    this.comercial = respuesta.data;
+    // this.comercial = respuesta.data;
+      this.acumulado = respuesta.data;
       this.isLoaded = true;
       await Promise.allSettled([
       this.fetchComercial(),
@@ -97,12 +168,12 @@ export default {
       M.Collapsible.init(document.querySelectorAll('.collapsible'));
   },
   methods: {
-     async fetchComercial(){
+    async fetchComercial(){
       const rComercial = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=gerente`, { fecha: this.fecha});
       this.comercial = rComercial.data;
       this.loadingComercial=false;
     },
-     async fetchManufactura(){
+    async fetchManufactura(){
       const rManufactura = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=manufactura`, { fecha: this.fecha});
       this.manufactura = rManufactura.data;
       this.loadingManufactura=false;
@@ -120,6 +191,15 @@ export default {
         return Object.keys(first);
       }
       return [];
+    },
+    getStateClass(valor) {
+      if(valor > 89) {
+        return 'bueno';
+      }
+      if(valor > 70) {
+        return 'regular';
+      }
+      return 'malo';
     },
   },
   components: {
