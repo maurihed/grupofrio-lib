@@ -93,6 +93,32 @@
                 </div>
               </div>
             </div>
+
+            <div class="col s6">
+              <div class="custom-card">
+                <div class="custom-card-header"><i class="material-icons">attach_money</i> UTILIDAD</div>
+                <div class="custom-card-body" v-if="isLoaded">
+                  <div class="card-row">
+                    <div class="p-1">
+                      <div class="mb-1">&nbsp;</div>
+                      <div class="center mb-2"><span class="text-bold text-primary">$</span></div>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Venta</span>
+                      <span class="mb-1 w-100 neutro acumulado-text">{{acumulado.Utilidad.dinero.Acumulado | money}}</span>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Gasto</span>
+                      <span class="mb-1 w-100 bueno acumulado-text">{{acumulado.Utilidad.dinero.Meta | money}}</span>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Utilidad</span>
+                      <span class="mb-1 w-100 acumulado-text" :class="getStateClass(acumulado.Utilidad.dinero.Tendencia)">{{acumulado.Utilidad.dinero.Tendencia | money}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
