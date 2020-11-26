@@ -7,10 +7,10 @@
           <input id="filed" v-model="inputValue" type="text" class="validate">
           <label for="first_name">{{inputLabel}}</label>
         </div>
-      </div>
-      <div class="confirmModal__footer">
-          <a href="#" class="actionButton no" @click="closeModal">{{cancelButton}}</a>
-          <a href="#" class="actionButton" @click="confirm">{{confirmButton}}</a>
+        <div class="confirmModal__footer">
+            <a href="#" class="actionButton no" @click="closeModal">{{cancelButton}}</a>
+            <a href="#" class="actionButton" @click="confirm">{{confirmButton}}</a>
+        </div>
       </div>
     </div>
   </div>
@@ -97,9 +97,7 @@ export default {
       }
   }
   &__footer {
-    // display: flex;
-    justify-content: space-evenly;
-    margin-bottom: 40px;
+    text-align: center;
     font-weight: bold;
   }
   .d-flex {

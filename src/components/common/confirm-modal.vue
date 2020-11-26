@@ -97,9 +97,7 @@ export default {
       }
   }
   &__footer {
-    display: flex;
-    justify-content: space-evenly;
-    margin-bottom: 40px;
+    text-align: center;
     font-weight: bold;
   }
 }

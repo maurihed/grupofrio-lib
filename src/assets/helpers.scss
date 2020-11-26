@@ -1,5 +1,78 @@
 .text-bold {
+  font-family: axiforma bold;
   font-size: bold;
+}
+
+.primary {
+  color: #2e3b8d;
+}
+
+.secondary {
+  color: #6a6a6a;
+}
+
+.rounded {
+  border-radius: 5px;
+}
+
+.border {
+  border: 1px solid #e4e4e4;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.m-0 {
+  margin: 0;
+}
+
+.p-0 {
+  padding: 0;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.flex-grow-1 {
+  flex-grow: 1;
+}
+
+.flex-shrink-1 {
+  flex-shrink: 1;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.mx-1 {
+  margin: 0 1rem;
+}
+
+.my-1 {
+  margin: 1rem 0;
+}
+
+.p-1 {
+  padding: 1rem;
+}
+
+.px-1 {
+  padding: 0 1rem;
+}
+
+.py-1 {
+  padding: 1rem 0;
+}
+
+.mb-1 {
+  margin-bottom: 1rem;
 }
 
 .mb-0 {

@@ -42,12 +42,13 @@ Vue.component('mapa-tanque', require('./components/tanques/mapa-tanques.vue').de
 Vue.component('v-arqueo', require('./components/arqueo/index.vue').default);
 Vue.component('frecuencia-unidades', require('./components/reportes/frecuencias/unidades.vue').default);
 Vue.component('frecuencia-sucursales', require('./components/reportes/frecuencias/sucursales.vue').default);
-
 Vue.component('panel-tabla', require('./components/arqueo/panel-table.vue').default);
-
 // reportes
 Vue.component('concentrado-ventas', require('./components/reportes/concentrado-ventas/index.vue').default);
 Vue.component('tablero-directivos', require('./components/reportes/tablero-directivos/index.vue').default);
+// Kpis
+Vue.component('crud-kpis', require('./components/kpis/index.vue').default);
+
 
 var app = new Vue({
   el: '#app',
