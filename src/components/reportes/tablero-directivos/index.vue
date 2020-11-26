@@ -86,8 +86,8 @@
                       <span class="mb-1 w-100 bueno acumulado-text">{{acumulado.Gastos.dinero.Meta | money}}</span>
                     </div>
                     <div class="p-1">
-                      <span class="mb-1 w-100 text-bold text-primary">Tendencia</span>
-                      <span class="mb-1 w-100 acumulado-text" :class="getStateClass(acumulado.Gastos.dinero.Tendencia)">{{acumulado.Gastos.dinero.Tendencia | number}}%</span>
+                      <span class="mb-1 w-100 text-bold text-primary">%</span>
+                      <span class="mb-1 w-100 acumulado-text" :class="getStateClassGastos(acumulado.Gastos.dinero.Tendencia)">{{acumulado.Gastos.dinero.Tendencia | number}}%</span>
                     </div>
                   </div>
                 </div>
@@ -268,6 +268,15 @@ export default {
         return 'bueno';
       }
       if(valor > 70) {
+        return 'regular';
+      }
+      return 'malo';
+    },
+    getStateClassGastos(valor) {
+      if(valor < 90) {
+        return 'bueno';
+      }
+      if(valor >= 90 && valor < 100 ) {
         return 'regular';
       }
       return 'malo';

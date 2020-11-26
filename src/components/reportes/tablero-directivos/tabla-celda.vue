@@ -42,6 +42,19 @@ export default {
       }
       return className+'malo';
     },
+    getClassInversa(porcentaje) {
+      let className = '';
+      if(!!this.porcentajeClickHandler && this.cellClickable.includes(this.indexName)) {
+        className = 'cursor-pointer ';
+      }
+      if(porcentaje < 90){
+        return className+'bueno';
+      }
+      if(porcentaje >= 90 && porcentaje < 100){
+        return className+'regular';
+      }
+      return className+'malo';
+    },
     onRealClick() {
       if(this.realClickHandler) {
         const [vendedor] = this.vendedor ? this.vendedor.split('[') : [];
