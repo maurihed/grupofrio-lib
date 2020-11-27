@@ -14,94 +14,121 @@
             <div class="titulo">UNIDAD</div>
           </div>
           <div class="modal-header-titulo">
-            <div class="valor">{{comision*100}}%</div>
-            <div class="titulo">% COMISIÓN</div>
+            <div class="valor">{{comision ? comision*100 : 0}}%</div>
+            <div class="titulo">%COMISIÓN</div>
           </div>
         </div>
       <div class="modal-content">
-        <div class="modal-vendedor-card">
-          <div class="wrapper">
-            <div class="titulo"><span>IMPORTE VENDIDO</span></div>
-            <div class="valor">
-              <span>{{importeVendido | money}}</span>
-            </div>
+        <div class="flex-column">
+          <div class="modal-vendedor-card">
+            <v-wrapper
+              titulo="Productividad"
+              valor=""
+              :porcentaje="getPorcentaje(dataVendedor.productividad.real, dataVendedor.productividad.meta)+''"
+              puntos=""
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Efectividad"
+              valor=""
+              :porcentaje="efectividad"
+              :puntos="puntosEfectividad"
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Importe Vendido"
+              :valor="importeVendido.real | money"
+              :porcentaje="importeVendido.porcentaje"
+              puntos=""
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Kilos vendidos"
+              :valor="kilosVendidos.real | money"
+              :porcentaje="getPorcentaje(kilosVendidos.real, kilosVendidos.meta)"
+              :puntos="puntosKilosVendidos"
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Captura app"
+              valor=""
+              :porcentaje="productividad.substr(0,productividad.length -2)"
+              :puntos="puntosCapturaApp+''"
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Merma venta"
+              valor="0"
+              porcentaje="0"
+              puntos="0"
+            ></v-wrapper>
           </div>
-          <div class="wrapper">
-            <div class="titulo">KILOS VENDIDOS</div>
-            <div class="valor">
-              <span>{{kilosVendidos.real | number}}</span>
-              <span :class="getClass(getPorcentaje(kilosVendidos.real, kilosVendidos.meta))" >{{getPorcentaje(kilosVendidos.real, kilosVendidos.meta)}} %</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo">PRODUCTIVIDAD</div>
-            <div class="valor">
-              <span :class="getClass(productividad.substr(0,productividad.length -2))">{{productividad}}</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo">CAPTURA APP</div>
-            <div class="valor">
-              <span :class="getClass(capturaApp.substr(0,capturaApp.length -2))">{{capturaApp}}</span>
-            </div>
-          </div>
-        </div>
-        <div class="modal-vendedor-card">
-          <div class="wrapper">
-            <div class="titulo"><span>CLIENTES POR RECUPERAR</span></div>
-            <div class="valor">
-              <span>{{recuperados.length | number}}</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>CLIENTES POR COMPETENCIA</span></div>
-            <div class="valor">
-              <span>{{competencia.length | number}}</span>
-            </div>
-          </div>
-        </div>
-        <div class="modal-vendedor-card">
-          <div class="wrapper">
-            <div class="titulo"><span>RENDIMIENTO UNIDAD</span></div>
-            <div class="valor">
-              <span>{{rendimiento}} Km/Lts.</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>KM RECORRIDOS</span></div>
-            <div class="valor">
-              <span>{{kgRecorridos | number}} KM</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo">COMBUSTIBLE</div>
-            <div class="valor">
-              <span>{{combustible | money}}</span>
-            </div>
+          <div class="modal-vendedor-card">
+            <v-wrapper
+              titulo="Clientes por recuperar"
+              :valor="recuperados.length"
+              porcentaje=""
+              :puntos="puntosClientesRecuperados"
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Clientes por competencia"
+              :valor="competencia.length"
+              porcentaje=""
+              puntos=""
+            ></v-wrapper>
           </div>
         </div>
-        <div class="modal-vendedor-card">
-          <div class="wrapper">
-            <div class="titulo"><span>NÓMINA BASE</span></div>
-            <div class="valor">
-              <span>{{sueldo_base | money}}</span>
-            </div>
+        <div class="flex-column">
+          <div class="modal-vendedor-card">
+            <v-wrapper
+              titulo="Rendimiento unidad"
+              :valor="rendimiento | number"
+              unidades="Km/Lts."
+              :porcentaje="getPorcentaje(dataVendedor.kmxlitro.real, dataVendedor.kmxlitro.real)+''"
+              :puntos="puntosCombustible+''"
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Km recorridos"
+              :valor="kgRecorridos | number"
+              unidades="KM"
+              porcentaje=""
+              puntos=""
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Combustible"
+              :valor="combustible | money"
+              unidades=""
+              porcentaje=""
+              puntos=""
+            ></v-wrapper>
           </div>
-          <div class="wrapper">
-            <div class="titulo"><span>COMISIÓN</span></div>
-            <div class="valor">
-              <span>{{comision_total | money}}</span>
+          <div class="modal-vendedor-card">
+            <v-wrapper
+              titulo="Puntos Acumulados"
+              :valor="totalPuntos"
+              unidades="Pts"
+              porcentaje=""
+              puntos=""
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Comisión venta"
+              :valor="comisionVenta||0 | money"
+              unidades=""
+              porcentaje=""
+              puntos=""
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Compensación Variable"
+              :valor="compensacionVariable | money"
+              unidades=""
+              porcentaje=""
+              puntos=""
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Sueldo base"
+              :valor="sueldo_base||0 | money"
+              porcentaje=""
+              puntos=""
+            ></v-wrapper>
+            <div class="card-button">
+              <div class="titulo">TOTAL A PAGAR</div>
+              <div class="valor bold">{{total | money}}</div>
             </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>COMISIÓN CLIENTES</span></div>
-            <div class="valor">
-              <span>{{comision_cliente | money}}</span>
-            </div>
-          </div>
-          <div class="card-button">
-            <div class="titulo">TOTAL A PAGAR</div>
-            <div class="valor bold">{{total | money}}</div>
           </div>
         </div>
       </div>
@@ -109,7 +136,10 @@
   </div>
 </template>
 <script>
+import vPorcentaje from './v-porcentaje.vue';
+import vWrapperVue from './v-wrapper.vue';
 export default {
+  components: { vPorcentaje },
   name: 'modal-vendedor',
   props: {
     isOpen: {
@@ -123,18 +153,23 @@ export default {
     productividad: String,
     capturaApp: String,
     suc: String,
+    dataVendedor: Object,
   },
   data: ()=>({
     isLoaded: false,
     kgRecorridos: 0,
     rendimiento: 0,
     combustible: 0,
-    importeVendido: 0,
+    importeVendido: {},
     sueldo_base: 0,
     comision: 0,
     recuperados: 0,
     competencia: 0,
+    efectividad: 0,
   }),
+  updated() {
+    console.log(this.dataVendedor);
+  },
   methods: {
     getClass(porcentaje) {
       if(porcentaje > 89) {
@@ -156,6 +191,7 @@ export default {
           await this.fetchVenta(),
           await this.fetchVariablesVendedor(),
           await this.fetchClientesRecuperados(),
+          await this.fetchEfectividad(),
         ]);
         this.isLoaded = true;
       } else {
@@ -175,9 +211,7 @@ export default {
       const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getVentaSemanalVendedor`, {
         fecha: this.fecha, vendedor: this.vendedor.clave, suc: this.suc,
       });
-      const {real} = response.data;
-      this.importeVendido = real || 0;
-      this.importeVendido = Math.round(this.importeVendido);
+      this.importeVendido = response.data;
     },
     async fetchVariablesVendedor() {
       const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getVariablesVendedor`, { vendedor: this.vendedor.clave });
@@ -190,6 +224,12 @@ export default {
       const {recuperados, competencia} = response.data;
       this.recuperados = recuperados;
       this.competencia = competencia;
+    },
+    async fetchEfectividad() {
+      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getEfectividadVendedor`, { vendedor: this.vendedor.clave, fecha: this.fecha, suc: this.suc });
+      const { efectividad, puntos } = response.data;
+      this.efectividad = efectividad;
+      this.puntos = puntos;
     },
     getPorcentaje(real, meta) {
       return meta > 0 ? Math.round((real/meta)*100, 2) : 0;
@@ -211,24 +251,61 @@ export default {
     },
   },
   computed: {
-    comision_total() {
-      const kilos = this.getPorcentaje(this.kilosVendidos.real, this.kilosVendidos.meta);
-      const productividad = this.productividad.slice(0,-2);
-      const capturaApp = this.capturaApp.slice(0,-2);
-      if(kilos >= 89 && productividad >= 89 && capturaApp >= 89) {
-        return Math.round(this.importeVendido * this.comision, 2);
-      }
-      return 0;
-    },
     comision_cliente() {
       const recumerados = this.recuperados.reduce((total, item)=> total+Number(item.vendido),0);
       const competencia = this.competencia.reduce((total, item)=> total+Number(item.vendido),0);
       return Math.round(recumerados*.02 + competencia*.03,2);
     },
     total() {
-      return Math.round(this.sueldo_base+this.comision_total+this.comision_cliente-this.combustible, 2);
+      return Math.round((this.sueldo_base?this.sueldo_base:0)+this.compensacionVariable, 2);
+    },
+    comisionVenta() {
+      return Math.round(this.importeVendido.real * this.comision);
+    },
+    puntosEfectividad() {
+      const eficiencia = this.efectividad * this.puntos.Efectividad / 100;
+      return Math.round(eficiencia * 100, 2) / 100;
+    },
+    puntosKilosVendidos() {
+      const eficiencia = this.getPorcentaje(this.kilosVendidos.real, this.kilosVendidos.meta) * this.puntos['Kilos vendidos'] / 100;
+      return Math.round(eficiencia * 100, 2) / 100;
+    },
+    puntosCapturaApp() {
+      const eficiencia = this.productividad.substr(0,this.productividad.length -2) * this.puntos['Captura app'] / 100;
+      return Math.round(eficiencia * 100, 2) / 100;
+    },
+    puntosCombustible() {
+      const eficiencia = this.getPorcentaje(this.dataVendedor.kmxlitro.real, this.dataVendedor.kmxlitro.real) * this.puntos['Combustible'] / 100;
+      return Math.round(eficiencia * 100, 2) / 100;
+    },
+    puntosClientesRecuperados() {
+      if (this.recuperados.length >= 5) {
+        return 15;
+      }
+      return 0;
+    },
+    puntosMermaVenta() {
+      return 0;
+    },
+    totalPuntos() {
+      return this.puntosEfectividad
+        + this.puntosKilosVendidos
+        + this.puntosCapturaApp
+        + this.puntosCombustible
+        + this.puntosMermaVenta
+        + this.puntosClientesRecuperados;
+    },
+    compensacionVariable() {
+      const productividad = this.productividad.slice(0,-2);
+      if(productividad >= 89) {
+        return Math.round(this.comisionVenta * this.totalPuntos/100);
+      }
+      return 0;
     }
   },
+  components: {
+    'v-wrapper': vWrapperVue,
+  }
 }
 </script>
 
@@ -237,7 +314,7 @@ export default {
     border: 2px solid #2d3a8d;
     border-radius: 10px;
     overflow: hidden !important;
-    min-height: 360px;
+    min-height: 300px;
     align-items: center;
     .modal-header {
       background: #bfc7da;
@@ -267,39 +344,19 @@ export default {
     }
     .modal-content {
       display: flex;
+    }
+    .flex-column {
+      width: 50%;
+      display: flex;
       flex-direction: column;
       flex-wrap: wrap;
-      max-height: 300px;
-    }
-    .wrapper {
-      display: flex;
-      width: 100%;
-      color: #2d3a8d;
-      font-family: axiforma bold;
-      .titulo {
-        width: 55%;
-        justify-content: flex-end;
-        display: flex;
-        align-items: center;
-        span {
-          text-align: right;
-        }
-      }
-      .valor {
-        font-weight: bold;
-        min-width: 135px;
-        padding-left: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
     }
     .modal-vendedor-card {
       border: 3px solid #2d3a8d;
       background: #F3F7FF;
       padding: 0;
       border-radius: 10px;
-      width: 48%;
+      width: 95%;
       margin: 1%;
       display: flex;
       flex-wrap: wrap;
@@ -338,15 +395,6 @@ export default {
           font-weight: bold;
           font-family: axiforma bold;
         }
-      }
-      .bueno {
-        color: #84d0c1;
-      }
-      .malo {
-        color: #f5b0b6;
-      }
-      .regular {
-        color: #e6c212;
       }
     }
   }

@@ -300,6 +300,7 @@
       <modal-vendedor
         :isOpen="isVendedorModalOpen"
         :vendedor="vendedorSelected"
+        :dataVendedor="dataVendedorSelected"
         :kilosVendidos="modalData.kilosVendidos"
         :productividad="modalData.productividad"
         :capturaApp="modalData.capturaApp"
@@ -371,6 +372,7 @@ export default {
   props: ['suc', 'fecha'],
   data: () => ({
     vendedorSelected: {},
+    dataVendedorSelected: {},
     fechaSelected: null,
     turnoSelected: null,
     isGasolinaModalOpen: false,
@@ -532,7 +534,12 @@ export default {
       }
       return [];
     },
+    parseVendedorToKey(vendedor) {
+      // "EMP1716[U00219] - JOSUE JOAB FABIAN ABUNDIO"
+      return `${vendedor.clave}[${vendedor.camioneta}] - ${vendedor.nombre}`;
+    },
     getAcumuladoVenta(vendedor, name) {
+
       const val = Object.values(this.ventas).reduce((total, item) => {
         if (item[vendedor] && item[vendedor][name]) {
           total.real += item[vendedor][name].real;
@@ -627,11 +634,20 @@ export default {
       const uri = `http://187.237.145.198/HLApp/GrupoFrio/views/comisiones/index.php?fecha=${this.fecha}&suc=${this.suc}&turno=${id}`;
       window.open(uri, '_blank');
     },
+    getAcumuladoVentaSelected() {
+      const data = {};
+      const vendedor = this.parseVendedorToKey(this.vendedorSelected);
+      for(let name of this.ventasNames) {
+        data[name] = this.getAcumuladoVenta(vendedor, name);
+      }
+      return { ...data };
+    },
     openModal(vendedor) {
       const [claveCompuesta, nombre] = vendedor.split(' - ');
       const [clave] = claveCompuesta.split('[');
       this.vendedorSelected = this.vendedores.find((v) => v.clave == clave);
       if (this.vendedorSelected) {
+        this.dataVendedorSelected = this.getAcumuladoVentaSelected();
         this.modalData.kilosVendidos = this.getKilosVendido(this.vendedorSelected);
         this.modalData.productividad = this.getPorcentaje(this.vendedorSelected, 'productividad');
         this.modalData.capturaApp = this.getPorcentaje(this.vendedorSelected, 'ventasApp');
@@ -653,7 +669,6 @@ export default {
       });
       this.weekSelected = {...newWeekSelected, index};
       this.isGerenteModalOpen = true;
-      console.log(this.weekSelected);
     },
     onVendedorRealClick(cellName, fecha, vendedor) {
       this.vendedorSelected = this.vendedores.find((v) => v.clave == vendedor);

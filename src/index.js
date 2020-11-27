@@ -48,6 +48,7 @@ Vue.component('concentrado-ventas', require('./components/reportes/concentrado-v
 Vue.component('tablero-directivos', require('./components/reportes/tablero-directivos/index.vue').default);
 // Kpis
 Vue.component('crud-kpis', require('./components/kpis/index.vue').default);
+Vue.component('v-porcentaje', require('./components/reportes/concentrado-ventas/v-porcentaje.vue').default);
 
 
 var app = new Vue({
