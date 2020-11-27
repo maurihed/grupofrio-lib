@@ -1,5 +1,5 @@
 <template>
-  <div id="modalAdministrativo" class="modal modal-administrativo">
+  <div id="modalComercial" class="modal modal-comercial">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
@@ -8,39 +8,63 @@
     <div v-if="isLoaded">
       <div class="modal-header">
           <div class="modal-header-titulo">
-            <div class="valor">{{admin}}</div>
-            <div class="titulo">NOMBRE DEL GERENTE</div>
+            <div class="valor">{{fecha}}</div>
+            <div class="titulo">NOMBRE DEL SUPERVISOR</div>
           </div>
           <div class="modal-header-titulo border-around">
             <!-- <div class="valor">{{camionetas}}</div> -->
             <div class="titulo">SUCURSALES</div>
           </div>
           <div class="modal-header-titulo">
-            <div class="valor">{{comision*100}}%</div>
+            <!-- <div class="valor">{{comision*100}}%</div> -->
             <div class="titulo">% COMISION</div>
           </div>
         </div>
       <div class="modal-content">
-        <div class="modal-administrativo-card">
+        <div class="modal-comercial-card">
           <div class="wrapper">
-            <div class="titulo">GASTOS TOTALES</div>
+            <div class="titulo"><span>PRODUCTIVIDAD</span></div>
             <div class="valor">
-              <span>{{valores.real| money}}</span>
-              <!-- weeks.Acapulco.meta -->
+              <!-- <span :class="getClass(getPorcentaje(week['Rendimiento luz']))">{{getPorcentaje(week['Rendimiento luz'])}}%</span> -->
             </div>
           </div>
           <div class="wrapper">
-            <div class="titulo"><span>PRESUPUESTO TOTAL</span></div>
+            <div class="titulo"><span>IMPORTE VENDIDO</span></div>
             <div class="valor">
               <!-- <span>{{week.Ingresos.real | money}}</span> -->
-              <span>{{valores.meta| money}}</span>
-              <span :class="getClass(getPorcentaje(valores.meta, valores.real))">{{getPorcentaje(valores.meta, valores.real)}}%</span>
-
-              <!-- <span :class="getClass(valores.porcentaje)">{{valores.porcentaje}}%</span> -->
+              <!-- <span :class="getClass(week.Ingresos.porcentaje)">{{week.Ingresos.porcentaje}}%</span> -->
+            </div>
+          </div>
+          <div class="wrapper">
+            <div class="titulo">KILOS VENDIDOS</div>
+            <div class="valor">
+              <!-- <span>{{week.Kilos.real | money}}</span> -->
+              <!-- <span :class="getClass(week.Kilos.porcentaje)">{{week.Kilos.porcentaje}}%</span> -->
+            </div>
+          </div>
+          <div class="wrapper">
+            <div class="titulo">EFECTIVIDAD</div>
+            <div class="valor">
+              <!-- <span>{{week.Productividad.real | number}}</span> -->
+              <!-- <span :class="getClass(week.Productividad.porcentaje)">{{week.Productividad.porcentaje}}%</span> -->
+            </div>
+          </div>
+          <div class="wrapper">
+            <div class="titulo">MERMA VENTA 2 %</div>
+            <div class="valor">
+              <!-- <span>{{week['Captura App'].real}}</span> -->
+              <!-- <span :class="getClass(week['Captura App'].porcentaje)">{{week['Captura App'].porcentaje}}%</span> -->
+            </div>
+          </div>
+          <div class="wrapper">
+            <div class="titulo">COMBUSTIBLE</div>
+            <div class="valor">
+              <!-- <span>{{week['Captura App'].real}}</span> -->
+              <!-- <span :class="getClass(week['Captura App'].porcentaje)">{{week['Captura App'].porcentaje}}%</span> -->
             </div>
           </div>
         </div>
-        <div class="modal-administrativo-card ">
+        <div class="modal-comercial-card ">
           <div class="wrapper">
             <div class="titulo"><span>PUNTOS ACUMULADOS</span></div>
             <div class="valor">
@@ -50,7 +74,7 @@
           <div class="wrapper">
             <div class="titulo"><span>COMISIÓN</span></div>
             <div class="valor">
-              <span>{{ getPorcentaje(valores.meta, valores.real) == 0 && valores.meta >0 ? comision_total : 0  | money}}</span>
+              <!-- <span>{{week.Kilos.porcentaje > 89 ? comision_total : 0 | money}}</span> -->
             </div>
           </div>
           <div class="wrapper">
@@ -62,12 +86,12 @@
           <div class="wrapper">
             <div class="titulo"><span>NÓMINA BASE</span></div>
             <div class="valor">
-              <span>{{sueldo_base | money}}</span>
+              <!-- <span>{{sueldo_base | money}}</span> -->
             </div>
           </div>
           <div class="card-button">
             <div class="titulo">TOTAL A PAGAR</div>
-            <div class="valor bold">{{total | money}}</div>
+            <!-- <div class="valor bold">{{total | money}}</div> -->
           </div>
         </div>
       </div>
@@ -76,26 +100,22 @@
 </template>
 <script>
 export default {
-  name: 'modal-administrativo',
+  name: 'modal-comercial',
   props: {
     isOpen: {
       type: Boolean,
       default: false,
     },
     weeks: Object,
-    valores: Object,
-    suc: String,
-    // nsuc : Number,
-    // pres :Number,
+    // suc: String,
     fecha: String,
     onClose: Function,
   },
   data: ()=>({
     isLoaded: false,
-    // suc:valores.name,
-    admin: '',
-    sueldo_base: 0,
-    comision: 0,
+    // gerente: '',
+    // sueldo_base: 0,
+    // comision: 0,
     // camionetas: 0,
   }),
   methods: {
@@ -112,23 +132,19 @@ export default {
       }
       return 'malo';
     },
-    getPorcentaje(meta, real) {
-      return meta > 0 ? Math.floor((real/meta)*100):0;
+    getPorcentaje(weeks) {
+      const {real, meta} = weeks;
+      return meta > 0 ? Math.floor(real/meta) : 0;
     },
     async onModalOpen() {
-      await this.fetchAdminInfo();
+      // await this.fetchAdminInfo();
       this.isLoaded = true;
     },
     async fetchAdminInfo() {
-      const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=getDetalleAdministrativo`, {
-        fecha: this.fecha,weeks: this.weeks.index, suc: this.suc,
-        // suc: this.suc,
+      const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=getDetalleAdmin`, {
+        fecha: this.fecha,  weeks: this.weeks.index
         // fecha: this.fecha, suc: this.suc, week: this.week.index
       });
-      const {admin, sueldo_base, comision} = response.data;
-      this.admin = admin;
-      this.sueldo_base = sueldo_base;
-      this.comision = comision;
       // const {admin, sueldo_base, comision, camionetas} = response.data;
       // this.admin = admin;
       // this.sueldo_base = sueldo_base;
@@ -136,40 +152,42 @@ export default {
     },
   },
   mounted() {
-    M.Modal.init(document.getElementById('modalAdministrativo'), {
+    M.Modal.init(document.getElementById('modalComercial'), {
       onCloseEnd: this.onModalClose,
     });
   },
   watch: {
     isOpen() {
       if (this.isOpen) {
-        M.Modal.getInstance(document.getElementById('modalAdministrativo')).open()
+        M.Modal.getInstance(document.getElementById('modalComercial')).open()
         this.onModalOpen();
       } else {
-        M.Modal.getInstance(document.getElementById('modalAdministrativo')).close()
+        M.Modal.getInstance(document.getElementById('modalComercial')).close()
       }
     },
   },
   computed: {
-    comision_total() {
-      return this.valores.real * this.comision;
-    },
-    total() {
-      // return "OIIOO", this.comision_total;
-      // if (
-      //   comision_total > 0
-      // ) {
-      //   return Math.round(this.sueldo_base+this.comision_total, 2);
-      // }else{
-        return this.sueldo_base;
-      // }
-    }
+    // comision_total() {
+    //   return this.weeks.Ingresos.real * this.comision;
+    // },
+    // total() {
+    //   if (
+    //     this.week.Kilos.porcentaje > 89 &&
+    //     this.week.Productividad.porcentaje > 89 &&
+    //     this.week['Captura App'].porcentaje > 89 &&
+    //     this.week.Produccion.porcentaje > 89 &&
+    //     this.week.Ingresos.porcentaje > 89
+    //   ) {
+    //     return Math.round(this.sueldo_base+this.comision_total, 2);
+    //   }
+    //   return this.sueldo_base;
+    // }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .modal-administrativo {
+  .modal-comercial {
     border: 2px solid #2d3a8d;
     border-radius: 10px;
     overflow: hidden !important;
@@ -230,7 +248,7 @@ export default {
         align-items: center;
       }
     }
-    .modal-administrativo-card {
+    .modal-comercial-card {
       border: 3px solid #2d3a8d;
       background: #F3F7FF;
       padding: 0;
