@@ -113,7 +113,7 @@
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Utilidad</span>
-                      <span class="mb-1 w-100 acumulado-text" :class="getStateClass(acumulado.Utilidad.dinero.Tendencia)">{{acumulado.Utilidad.dinero.Tendencia | money}}</span>
+                      <span class="mb-1 w-100 acumulado-text" :class="getStateClassUtilidad(acumulado.Utilidad.dinero.Tendencia)">{{acumulado.Utilidad.dinero.Tendencia | money}}</span>
                     </div>
                   </div>
                 </div>
@@ -194,13 +194,14 @@
                   <thead>
                     <tr>
                       <th>&nbsp;</th>
-                      <th class="cursor-pointer" v-for="(weeks, index) in getWeeksAdministrativo()" :key="index" >{{weeks}}</th>
+                      <th v-for="(weeks, index) in getWeeksAdministrativo()" :key="index" >{{weeks}}</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="(topic, index) in Object.keys(administrativo)" :key="'administrativo-'+index">
                       <td>{{topic}}</td>
-                      <td v-for="(val, index) in Object.values(administrativo[topic])" :key="index">
+                      <!-- <td class="cursor-pointer" @click="openAdministrativoModal(index)" v-for="(val, index) in Object.values(administrativo[topic])" :key="index"> -->
+                        <td v-for="(val, index) in Object.values(administrativo[topic])" :key="index">
                         <tabla-celda
                           :value="val"
                         >
@@ -213,7 +214,13 @@
             </div>
           </li>
         </ul>
-        
+        <modal-administrativo
+          :isOpen="isAdministrativoModalOpen"
+          :weeks="weekSelected"
+          :onClose="onCloseAdministrativoModal"
+          :fecha="fecha"
+        >
+        </modal-administrativo>
       </div>
     </div>
   </div>
@@ -221,6 +228,7 @@
 </template>
 
 <script>
+import ModalAdministrativo from './modal-administrativo.vue';
 import tablaCeldaVue from './tabla-celda.vue';
 export default {
   name:'tablero-directivos',
@@ -233,6 +241,8 @@ export default {
       loadingManufactura: true,
       loadingAdministrativo: true,
       acumulado: {},
+      isAdministrativoModalOpen: false,
+      weekSelected: {},
     }
   },
   async created() {
@@ -307,13 +317,34 @@ export default {
       }
       return 'malo';
     },
+    getStateClassUtilidad(valor) {
+      if(valor >= 1) {
+        return 'bueno';
+      }
+      return 'malo';
+    },
+
+    openAdministrativoModal(index) {
+      const newWeekSelected = {};
+      Object.entries(this.administrativo).forEach(([name, val])=>{
+        newWeekSelected[name] = Object.values(val)[index];
+      });
+      this.weekSelected = {...newWeekSelected, index};
+      this.isAdministrativoModalOpen = true;
+      console.log(this.weekSelected);
+    },
+    onCloseAdministrativoModal() {
+      this.isAdministrativoModalOpen = false;
+    },
   },
   components: {
     'tabla-celda': tablaCeldaVue,
+    'modal-administrativo': ModalAdministrativo,
   },
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss"
+    ModalAdministrativo scoped>
   .p-1 {
     padding: .25rem;
   }
