@@ -113,7 +113,7 @@
                     </div>
                     <div class="p-1">
                       <span class="mb-1 w-100 text-bold text-primary">Utilidad</span>
-                      <span class="mb-1 w-100 acumulado-text" :class="getStateClass(acumulado.Utilidad.dinero.Tendencia)">{{acumulado.Utilidad.dinero.Tendencia | money}}</span>
+                      <span class="mb-1 w-100 acumulado-text" :class="getStateClassUtilidad(acumulado.Utilidad.dinero.Tendencia)">{{acumulado.Utilidad.dinero.Tendencia | money}}</span>
                     </div>
                   </div>
                 </div>
@@ -138,13 +138,14 @@
                   <thead>
                     <tr>
                       <th>&nbsp;</th>
-                      <th class="cursor-pointer" v-for="(week, index) in getWeeks()" :key="index" >{{week}}</th>
+                      <th class="cursor-pointer" v-for="(weeks, index) in getWeeks()" :key="index" >{{weeks}}</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="(topic, index) in Object.keys(comercial)" :key="'comercial-'+index">
                       <td>{{topic}}</td>
-                      <td v-for="(val, index) in Object.values(comercial[topic])" :key="index">
+                      <td class="cursor-pointer" @click="openComercialModal(index,val,val.suc)" v-for="(val, index) in Object.values(comercial[topic])" :key="index">
+                      <!-- <td  v-for="(val, index) in Object.values(comercial[topic])" :key="index"> -->
                         <tabla-celda
                           :value="val"
                         >
@@ -172,7 +173,8 @@
                   <tbody>
                     <tr v-for="(topic, index) in Object.keys(manufactura)" :key="'manufactura-'+index">
                       <td>{{topic}}</td>
-                      <td v-for="(val, index) in Object.values(manufactura[topic])" :key="index">
+                      <td class="cursor-pointer" @click="openManufacturaModal(index,val,val.suc)" v-for="(val, index) in Object.values(manufactura[topic])" :key="index">
+                      <!-- <td v-for="(val, index) in Object.values(manufactura[topic])" :key="index"> -->
                         <tabla-celda
                           :value="val"
                         >
@@ -194,13 +196,14 @@
                   <thead>
                     <tr>
                       <th>&nbsp;</th>
-                      <th class="cursor-pointer" v-for="(weeks, index) in getWeeksAdministrativo()" :key="index" >{{weeks}}</th>
+                      <th v-for="(weeks, index) in getWeeksAdministrativo()" :key="index" >{{weeks}}</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="(topic, index) in Object.keys(administrativo)" :key="'administrativo-'+index">
                       <td>{{topic}}</td>
-                      <td v-for="(val, index) in Object.values(administrativo[topic])" :key="index">
+                      <td class="cursor-pointer" @click="openAdministrativoModal(index,val,val.suc)" v-for="(val, index) in Object.values(administrativo[topic])" :key="index">
+                        <!-- <td v-for="(val, index) in Object.values(administrativo[topic])" :key="index"> -->
                         <tabla-celda
                           :value="val"
                         >
@@ -213,7 +216,35 @@
             </div>
           </li>
         </ul>
-        
+        <modal-administrativo
+          :isOpen="isAdministrativoModalOpen"
+          :weeks="weekSelected"
+          :onClose="onCloseAdministrativoModal"
+          :fecha="fecha"
+          :valores="arrValores"
+          :suc="nombreSuc"
+        >
+        </modal-administrativo>
+        <modal-manufactura
+          :isOpen="isManufacturaModalOpen"
+          :weeks="weekSelected"
+          :onClose="onCloseManufacturaModal"
+          :fecha="fecha"
+          :valores="arrValores"
+          :suc="nombreSuc"
+          :index="i"
+        >
+        </modal-manufactura>
+        <modal-comercial
+          :isOpen="isComercialModalOpen"
+          :weeks="weekSelected"
+          :onClose="onCloseComercialModal"
+          :fecha="fecha"
+          :valores="arrValores"
+          :suc="nombreSuc"
+          :index="i"
+        >
+        </modal-comercial>
       </div>
     </div>
   </div>
@@ -221,6 +252,9 @@
 </template>
 
 <script>
+import ModalAdministrativo from './modal-administrativo.vue';
+import ModalManufactura from './modal-manufactura.vue';
+import ModalComercial from './modal-comercial.vue';
 import tablaCeldaVue from './tabla-celda.vue';
 export default {
   name:'tablero-directivos',
@@ -228,11 +262,20 @@ export default {
   data() {
     return {
       fecha: '',
+      // nombreSuc:0,
+      // presupuesto:0,
       isLoaded: false,
       loadingComercial: true,
       loadingManufactura: true,
       loadingAdministrativo: true,
       acumulado: {},
+      isAdministrativoModalOpen: false,
+      isManufacturaModalOpen: false,
+      isComercialModalOpen: false,
+      weekSelected: {},
+      arrValores:{},
+      nombreSuc:'',
+      i:0
     }
   },
   async created() {
@@ -254,7 +297,7 @@ export default {
   },
   methods: {
     async fetchComercial(){
-      const rComercial = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=gerente`, { fecha: this.fecha});
+      const rComercial = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=comercial`, { fecha: this.fecha});
       this.comercial = rComercial.data;
       this.loadingComercial=false;
     },
@@ -307,13 +350,68 @@ export default {
       }
       return 'malo';
     },
+    getStateClassUtilidad(valor) {
+      if(valor >= 1) {
+        return 'bueno';
+      }
+      return 'malo';
+    },
+
+    openAdministrativoModal(index, val, nom) {
+      const newWeekSelected = {};
+      Object.entries(this.administrativo).forEach(([name, val])=>{
+        newWeekSelected[name] = Object.values(val)[index];
+      });
+      this.weekSelected = {...newWeekSelected, index};
+      this.isAdministrativoModalOpen = true;
+      this.arrValores=val; 
+      this.nombreSuc=nom; 
+      // console.log("uuu", this.nombreSuc, "--", this.weekSelected);
+    },
+    onCloseAdministrativoModal() {
+      this.isAdministrativoModalOpen = false;
+    },
+    openManufacturaModal(index, val, nom) {
+      const newWeekSelected = {};
+      Object.entries(this.manufactura).forEach(([name, val])=>{
+        newWeekSelected[name] = Object.values(val)[index];
+      });
+      this.weekSelected = {...newWeekSelected, index};
+      this.isManufacturaModalOpen = true;
+      this.arrValores=val; 
+      this.nombreSuc=nom; 
+      this.i = index;
+      console.log(this.weekSelected);
+    },
+    onCloseManufacturaModal() {
+      this.isManufacturaModalOpen = false;
+    },
+    openComercialModal(index, val, nom) {
+      const newWeekSelected = {};
+      Object.entries(this.comercial).forEach(([name, val])=>{
+        newWeekSelected[name] = Object.values(val)[index];
+      });
+      this.weekSelected = {...newWeekSelected, index};
+      this.isComercialModalOpen = true;
+      this.arrValores=val; 
+      this.nombreSuc=nom; 
+      this.i = index;
+      // console.log("uuu", this.i, "--",this.weekSelected);
+    },
+    onCloseComercialModal() {
+      this.isComercialModalOpen = false;
+    },
   },
   components: {
     'tabla-celda': tablaCeldaVue,
+    'modal-administrativo': ModalAdministrativo,
+    'modal-manufactura': ModalManufactura,
+    'modal-comercial': ModalComercial,
   },
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss"
+    ModalAdministrativo scoped>
   .p-1 {
     padding: .25rem;
   }
