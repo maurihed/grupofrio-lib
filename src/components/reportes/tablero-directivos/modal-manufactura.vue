@@ -107,6 +107,7 @@ export default {
     admin: '',
     sueldo_base: 0,
     comision: 0,
+    puntos: {},
   }),
   methods: {
     onModalClose() {
@@ -126,6 +127,10 @@ export default {
       const {real, meta} = weeks;
       return meta > 0 ? Math.floor(real/meta) : 0;
     },
+    getPuntos(porcentaje, name) {
+      const eficiencia = porcentaje * this.puntos[name] / 100;
+      return Math.round(eficiencia * 100, 2) / 100;
+    },
     async onModalOpen() {
       await this.fetchAdminInfo();
       await this.fetchAllData();
@@ -135,10 +140,13 @@ export default {
       const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=getDetalleAdministrativo`, {
         fecha: this.fecha,  weeks: this.weeks.index,suc: this.suc
       });
-      const {admin, sueldo_base, comision, camionetas} = response.data;
+      const {
+        admin, sueldo_base, comision, camionetas, puntos
+        } = response.data;
       this.admin = admin;
       this.sueldo_base = sueldo_base;
       this.comision = comision;
+      this.puntos = puntos;
     },
     async fetchAllData(){
       const rData = await axios.post(`${env.REPORTES_CONCENTRADO}?option=gerente`, { fecha: this.fecha, suc: this.suc });
@@ -161,6 +169,9 @@ export default {
     },
   },
   computed: {
+    puntosRendimientoAgua() {
+      return this.getPuntos(89, 'Rendimiento Agua');
+    },
     comision_total() {
       return this.valores.real * this.comision;
     },

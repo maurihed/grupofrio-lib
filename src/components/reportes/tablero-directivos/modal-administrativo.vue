@@ -21,53 +21,52 @@
           </div>
         </div>
       <div class="modal-content">
-        <div class="modal-administrativo-card">
-          <div class="wrapper">
-            <div class="titulo">GASTOS TOTALES</div>
-            <div class="valor">
-              <span>{{valores.real| money}}</span>
-              <!-- weeks.Acapulco.meta -->
-            </div>
+        <div class="flex-column">
+          <div class="modal-administrativo-card">
+            <v-wrapper
+                titulo="GASTOS TOTALES"
+                :valor="valores.real| money"
+                :porcentaje="94"
+                :puntos="puntosGastosTotales"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="PRESUPUESTO TOTAL"
+                :valor="valores.meta| money"
+                :porcentaje="getPorcentaje(valores.meta, valores.real)"
+                puntos="34"
+              >
+            </v-wrapper>
           </div>
-          <div class="wrapper">
-            <div class="titulo"><span>PRESUPUESTO TOTAL</span></div>
-            <div class="valor">
-              <!-- <span>{{week.Ingresos.real | money}}</span> -->
-              <span>{{valores.meta| money}}</span>
-              <span :class="getClass(getPorcentaje(valores.meta, valores.real))">{{getPorcentaje(valores.meta, valores.real)}}%</span>
-
-              <!-- <span :class="getClass(valores.porcentaje)">{{valores.porcentaje}}%</span> -->
+          <div class="modal-administrativo-card ">
+            <div class="wrapper">
+              <div class="titulo"><span>PUNTOS ACUMULADOS</span></div>
+              <div class="valor">
+                <!-- <span>{{sueldo_base | money}}</span> -->
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="modal-administrativo-card ">
-          <div class="wrapper">
-            <div class="titulo"><span>PUNTOS ACUMULADOS</span></div>
-            <div class="valor">
-              <!-- <span>{{sueldo_base | money}}</span> -->
+            <div class="wrapper">
+              <div class="titulo"><span>COMISIÓN</span></div>
+              <div class="valor">
+                <span>{{ getPorcentaje(valores.meta, valores.real) == 0 && valores.meta >0 ? comision_total : 0  | money}}</span>
+              </div>
             </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>COMISIÓN</span></div>
-            <div class="valor">
-              <span>{{ getPorcentaje(valores.meta, valores.real) == 0 && valores.meta >0 ? comision_total : 0  | money}}</span>
+            <div class="wrapper">
+              <div class="titulo"><span>COMPENSACIÓN VARIABLE</span></div>
+              <div class="valor">
+                <!-- <span>{{week.Kilos.porcentaje > 89 ? comision_total : 0 | money}}</span> -->
+              </div>
             </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>COMPENSACIÓN VARIABLE</span></div>
-            <div class="valor">
-              <!-- <span>{{week.Kilos.porcentaje > 89 ? comision_total : 0 | money}}</span> -->
+            <div class="wrapper">
+              <div class="titulo"><span>NÓMINA BASE</span></div>
+              <div class="valor">
+                <span>{{sueldo_base | money}}</span>
+              </div>
             </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>NÓMINA BASE</span></div>
-            <div class="valor">
-              <span>{{sueldo_base | money}}</span>
+            <div class="card-button">
+              <div class="titulo">TOTAL A PAGAR</div>
+              <div class="valor bold">{{total | money}}</div>
             </div>
-          </div>
-          <div class="card-button">
-            <div class="titulo">TOTAL A PAGAR</div>
-            <div class="valor bold">{{total | money}}</div>
           </div>
         </div>
       </div>
@@ -75,6 +74,8 @@
   </div>
 </template>
 <script>
+import vWrapperVue from '../concentrado-ventas/v-wrapper.vue';
+
 export default {
   name: 'modal-administrativo',
   props: {
@@ -149,6 +150,9 @@ export default {
     },
   },
   computed: {
+    puntosGastosTotales() {
+      return 0;
+    },
     comision_total() {
       return this.valores.real * this.comision;
     },
@@ -162,6 +166,9 @@ export default {
         return this.sueldo_base;
       // }
     }
+  },
+  components: {
+    'v-wrapper': vWrapperVue,
   }
 }
 </script>
@@ -201,39 +208,18 @@ export default {
     }
     .modal-content {
       display: flex;
+    }
+    .flex-column {
+      width: 50%;
+      display: flex;
       flex-direction: column;
       flex-wrap: wrap;
-      max-height: 300px;
-    }
-    .wrapper {
-      display: flex;
-      width: 100%;
-      color: #2d3a8d;
-      font-family: axiforma bold;
-      .titulo {
-        width: 55%;
-        justify-content: flex-end;
-        display: flex;
-        align-items: center;
-        span {
-          text-align: right;
-        }
-      }
-      .valor {
-        font-weight: bold;
-        min-width: 135px;
-        padding-left: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
     }
     .modal-administrativo-card {
       border: 3px solid #2d3a8d;
       background: #F3F7FF;
       padding: 0;
       border-radius: 10px;
-      width: 48%;
       margin: 1%;
       display: flex;
       flex-wrap: wrap;
