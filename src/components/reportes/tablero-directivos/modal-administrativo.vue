@@ -9,7 +9,7 @@
       <div class="modal-header">
           <div class="modal-header-titulo">
             <div class="valor">{{admin}}</div>
-            <div class="titulo">NOMBRE DEL GERENTE</div>
+            <div class="titulo">NOMBRE DEL DIRECTOR</div>
           </div>
           <div class="modal-header-titulo border-around">
             <!-- <div class="valor">{{camionetas}}</div> -->
@@ -85,8 +85,6 @@ export default {
     weeks: Object,
     valores: Object,
     suc: String,
-    // nsuc : Number,
-    // pres :Number,
     fecha: String,
     onClose: Function,
   },

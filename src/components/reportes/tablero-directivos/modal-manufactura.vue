@@ -8,7 +8,7 @@
     <div v-if="isLoaded">
       <div class="modal-header">
           <div class="modal-header-titulo">
-            <div class="valor">{{fecha}}</div>
+            <div class="valor">{{admin}}</div>
             <div class="titulo">NOMBRE DEL SUPERVISOR</div>
           </div>
           <div class="modal-header-titulo border-around">
@@ -16,7 +16,7 @@
             <div class="titulo">SUCURSALES</div>
           </div>
           <div class="modal-header-titulo">
-            <!-- <div class="valor">{{comision*100}}%</div> -->
+            <div class="valor">{{comision*100}}%</div>
             <div class="titulo">% COMISION</div>
           </div>
         </div>
@@ -63,7 +63,7 @@
           <div class="wrapper">
             <div class="titulo"><span>COMISIÓN</span></div>
             <div class="valor">
-              <!-- <span>{{week.Kilos.porcentaje > 89 ? comision_total : 0 | money}}</span> -->
+              <span>{{ getPorcentaje(valores.meta, valores.real) > 80 >0 ? comision_total : 0  | money}}</span>
             </div>
           </div>
           <div class="wrapper">
@@ -75,12 +75,12 @@
           <div class="wrapper">
             <div class="titulo"><span>NÓMINA BASE</span></div>
             <div class="valor">
-              <!-- <span>{{sueldo_base | money}}</span> -->
+              <span>{{sueldo_base | money}}</span>
             </div>
           </div>
           <div class="card-button">
             <div class="titulo">TOTAL A PAGAR</div>
-            <!-- <div class="valor bold">{{total | money}}</div> -->
+            <div class="valor bold">{{total | money}}</div>
           </div>
         </div>
       </div>
@@ -96,16 +96,17 @@ export default {
       default: false,
     },
     weeks: Object,
-    // suc: String,
+    valores: Object,
+    index:Number,
+    suc: String,
     fecha: String,
     onClose: Function,
   },
   data: ()=>({
     isLoaded: false,
-    // gerente: '',
-    // sueldo_base: 0,
-    // comision: 0,
-    // camionetas: 0,
+    admin: '',
+    sueldo_base: 0,
+    comision: 0,
   }),
   methods: {
     onModalClose() {
@@ -126,18 +127,22 @@ export default {
       return meta > 0 ? Math.floor(real/meta) : 0;
     },
     async onModalOpen() {
-      // await this.fetchAdminInfo();
+      await this.fetchAdminInfo();
+      await this.fetchAllData();
       this.isLoaded = true;
     },
     async fetchAdminInfo() {
-      const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=getDetalleAdmin`, {
-        fecha: this.fecha,  weeks: this.weeks.index
-        // fecha: this.fecha, suc: this.suc, week: this.week.index
+      const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=getDetalleAdministrativo`, {
+        fecha: this.fecha,  weeks: this.weeks.index,suc: this.suc
       });
-      // const {admin, sueldo_base, comision, camionetas} = response.data;
-      // this.admin = admin;
-      // this.sueldo_base = sueldo_base;
-      // this.comision = comision;
+      const {admin, sueldo_base, comision, camionetas} = response.data;
+      this.admin = admin;
+      this.sueldo_base = sueldo_base;
+      this.comision = comision;
+    },
+    async fetchAllData(){
+      const rData = await axios.post(`${env.REPORTES_CONCENTRADO}?option=gerente`, { fecha: this.fecha, suc: this.suc });
+      this.datos = rData.data;
     },
   },
   mounted() {
@@ -156,21 +161,12 @@ export default {
     },
   },
   computed: {
-    // comision_total() {
-    //   return this.weeks.Ingresos.real * this.comision;
-    // },
-    // total() {
-    //   if (
-    //     this.week.Kilos.porcentaje > 89 &&
-    //     this.week.Productividad.porcentaje > 89 &&
-    //     this.week['Captura App'].porcentaje > 89 &&
-    //     this.week.Produccion.porcentaje > 89 &&
-    //     this.week.Ingresos.porcentaje > 89
-    //   ) {
-    //     return Math.round(this.sueldo_base+this.comision_total, 2);
-    //   }
-    //   return this.sueldo_base;
-    // }
+    comision_total() {
+      return this.valores.real * this.comision;
+    },
+    total() {
+        return this.sueldo_base;
+    }
   }
 }
 </script>

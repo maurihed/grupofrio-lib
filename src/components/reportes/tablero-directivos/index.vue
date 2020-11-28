@@ -138,14 +138,14 @@
                   <thead>
                     <tr>
                       <th>&nbsp;</th>
-                      <th class="cursor-pointer" v-for="(week, index) in getWeeks()" :key="index" >{{week}}</th>
+                      <th class="cursor-pointer" v-for="(weeks, index) in getWeeks()" :key="index" >{{weeks}}</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="(topic, index) in Object.keys(comercial)" :key="'comercial-'+index">
                       <td>{{topic}}</td>
-                      <!-- <td class="cursor-pointer" @click="openComercialModal(index)" v-for="(val, index) in Object.values(comercial[topic])" :key="index"> -->
-                      <td  v-for="(val, index) in Object.values(comercial[topic])" :key="index">
+                      <td class="cursor-pointer" @click="openComercialModal(index,val,val.suc)" v-for="(val, index) in Object.values(comercial[topic])" :key="index">
+                      <!-- <td  v-for="(val, index) in Object.values(comercial[topic])" :key="index"> -->
                         <tabla-celda
                           :value="val"
                         >
@@ -173,8 +173,8 @@
                   <tbody>
                     <tr v-for="(topic, index) in Object.keys(manufactura)" :key="'manufactura-'+index">
                       <td>{{topic}}</td>
-                      <!-- <td class="cursor-pointer" @click="openManufacturaModal(index)" v-for="(val, index) in Object.values(manufactura[topic])" :key="index"> -->
-                      <td v-for="(val, index) in Object.values(manufactura[topic])" :key="index">
+                      <td class="cursor-pointer" @click="openManufacturaModal(index,val,val.suc)" v-for="(val, index) in Object.values(manufactura[topic])" :key="index">
+                      <!-- <td v-for="(val, index) in Object.values(manufactura[topic])" :key="index"> -->
                         <tabla-celda
                           :value="val"
                         >
@@ -230,6 +230,9 @@
           :weeks="weekSelected"
           :onClose="onCloseManufacturaModal"
           :fecha="fecha"
+          :valores="arrValores"
+          :suc="nombreSuc"
+          :index="i"
         >
         </modal-manufactura>
         <modal-comercial
@@ -237,6 +240,9 @@
           :weeks="weekSelected"
           :onClose="onCloseComercialModal"
           :fecha="fecha"
+          :valores="arrValores"
+          :suc="nombreSuc"
+          :index="i"
         >
         </modal-comercial>
       </div>
@@ -268,7 +274,8 @@ export default {
       isComercialModalOpen: false,
       weekSelected: {},
       arrValores:{},
-      nombreSuc:''
+      nombreSuc:'',
+      i:0
     }
   },
   async created() {
@@ -290,7 +297,7 @@ export default {
   },
   methods: {
     async fetchComercial(){
-      const rComercial = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=gerente`, { fecha: this.fecha});
+      const rComercial = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=comercial`, { fecha: this.fecha});
       this.comercial = rComercial.data;
       this.loadingComercial=false;
     },
@@ -364,26 +371,32 @@ export default {
     onCloseAdministrativoModal() {
       this.isAdministrativoModalOpen = false;
     },
-    openManufacturaModal(index) {
+    openManufacturaModal(index, val, nom) {
       const newWeekSelected = {};
       Object.entries(this.manufactura).forEach(([name, val])=>{
         newWeekSelected[name] = Object.values(val)[index];
       });
       this.weekSelected = {...newWeekSelected, index};
       this.isManufacturaModalOpen = true;
+      this.arrValores=val; 
+      this.nombreSuc=nom; 
+      this.i = index;
       console.log(this.weekSelected);
     },
     onCloseManufacturaModal() {
       this.isManufacturaModalOpen = false;
     },
-    openComercialModal(index) {
+    openComercialModal(index, val, nom) {
       const newWeekSelected = {};
       Object.entries(this.comercial).forEach(([name, val])=>{
         newWeekSelected[name] = Object.values(val)[index];
       });
       this.weekSelected = {...newWeekSelected, index};
       this.isComercialModalOpen = true;
-      console.log(this.weekSelected);
+      this.arrValores=val; 
+      this.nombreSuc=nom; 
+      this.i = index;
+      // console.log("uuu", this.i, "--",this.weekSelected);
     },
     onCloseComercialModal() {
       this.isComercialModalOpen = false;
