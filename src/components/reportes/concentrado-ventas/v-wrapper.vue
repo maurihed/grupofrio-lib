@@ -10,10 +10,10 @@
         {{valor}} {{unidades ? unidades : ''}}
       </div>
       <div class="p">
-        <v-porcentaje v-if="porcentaje != ''" :valor="porcentaje"></v-porcentaje>
+        <v-porcentaje v-if="porcentaje || porcentaje == 0" :valor="porcentaje"></v-porcentaje>
       </div>
       <div class="pts">
-        {{puntos}} {{puntos ? 'pts' : ''}}
+        {{puntos}} {{puntos || puntos == 0 ? 'pts' : ''}}
       </div>
     </div>
   </div>

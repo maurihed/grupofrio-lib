@@ -25,7 +25,6 @@
               titulo="Productividad"
               valor=""
               :porcentaje="getPorcentaje(dataVendedor.productividad.real, dataVendedor.productividad.meta)+''"
-              puntos=""
             ></v-wrapper>
             <v-wrapper
               titulo="Efectividad"
@@ -36,8 +35,6 @@
             <v-wrapper
               titulo="Importe Vendido"
               :valor="importeVendido.real | money"
-              :porcentaje="importeVendido.porcentaje"
-              puntos=""
             ></v-wrapper>
             <v-wrapper
               titulo="Kilos vendidos"
@@ -53,23 +50,20 @@
             ></v-wrapper>
             <v-wrapper
               titulo="Merma venta"
-              valor="0"
-              porcentaje="0"
-              puntos="0"
+              :valor="mermaVenta.real"
+              :porcentaje="mermaVenta.porcentaje"
+              :puntos="puntosMermaVenta"
             ></v-wrapper>
           </div>
           <div class="modal-vendedor-card">
             <v-wrapper
               titulo="Clientes por recuperar"
               :valor="recuperados.length"
-              porcentaje=""
               :puntos="puntosClientesRecuperados"
             ></v-wrapper>
             <v-wrapper
               titulo="Clientes por competencia"
               :valor="competencia.length"
-              porcentaje=""
-              puntos=""
             ></v-wrapper>
           </div>
         </div>
@@ -86,15 +80,10 @@
               titulo="Km recorridos"
               :valor="kgRecorridos | number"
               unidades="KM"
-              porcentaje=""
-              puntos=""
             ></v-wrapper>
             <v-wrapper
               titulo="Combustible"
               :valor="combustible | money"
-              unidades=""
-              porcentaje=""
-              puntos=""
             ></v-wrapper>
           </div>
           <div class="modal-vendedor-card">
@@ -102,28 +91,18 @@
               titulo="Puntos Acumulados"
               :valor="totalPuntos"
               unidades="Pts"
-              porcentaje=""
-              puntos=""
             ></v-wrapper>
             <v-wrapper
               titulo="Comisión venta"
               :valor="comisionVenta||0 | money"
-              unidades=""
-              porcentaje=""
-              puntos=""
             ></v-wrapper>
             <v-wrapper
               titulo="Compensación Variable"
               :valor="compensacionVariable | money"
-              unidades=""
-              porcentaje=""
-              puntos=""
             ></v-wrapper>
             <v-wrapper
               titulo="Sueldo base"
               :valor="sueldo_base||0 | money"
-              porcentaje=""
-              puntos=""
             ></v-wrapper>
             <div class="card-button">
               <div class="titulo">TOTAL A PAGAR</div>
@@ -166,6 +145,7 @@ export default {
     recuperados: 0,
     competencia: 0,
     efectividad: 0,
+    mermaVenta: {},
   }),
   updated() {
     console.log(this.dataVendedor);
@@ -192,6 +172,7 @@ export default {
           await this.fetchVariablesVendedor(),
           await this.fetchClientesRecuperados(),
           await this.fetchEfectividad(),
+          await this.fetchMermaVentas(),
         ]);
         this.isLoaded = true;
       } else {
@@ -230,6 +211,11 @@ export default {
       const { efectividad, puntos } = response.data;
       this.efectividad = efectividad;
       this.puntos = puntos;
+    },
+    async fetchMermaVentas() {
+      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=mermaCamionetaSemanal`, { camioneta: this.vendedor.camioneta, fecha: this.fecha, suc: this.suc });
+      const { merma } = response.data;
+      this.mermaVenta = merma;
     },
     getPorcentaje(real, meta) {
       return meta > 0 ? Math.round((real/meta)*100, 2) : 0;
@@ -275,7 +261,7 @@ export default {
       return Math.round(eficiencia * 100, 2) / 100;
     },
     puntosCombustible() {
-      const eficiencia = this.getPorcentaje(this.dataVendedor.kmxlitro.real, this.dataVendedor.kmxlitro.real) * this.puntos['Combustible'] / 100;
+      const eficiencia = this.getPorcentaje(this.dataVendedor.kmxlitro.real, this.dataVendedor.kmxlitro.meta) * this.puntos['Combustible'] / 100;
       return Math.round(eficiencia * 100, 2) / 100;
     },
     puntosClientesRecuperados() {
@@ -285,15 +271,16 @@ export default {
       return 0;
     },
     puntosMermaVenta() {
-      return 0;
+      return Number(this.mermaVenta.porcentaje <= 2 ? this.puntos['Merma venta'] : 0);
     },
     totalPuntos() {
-      return this.puntosEfectividad
+      const total = this.puntosEfectividad
         + this.puntosKilosVendidos
         + this.puntosCapturaApp
         + this.puntosCombustible
         + this.puntosMermaVenta
         + this.puntosClientesRecuperados;
+      return Math.round(total * 100, 2) / 100;
     },
     compensacionVariable() {
       const productividad = this.productividad.slice(0,-2);

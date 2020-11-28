@@ -1,5 +1,5 @@
 <template>
-  <div id="modalGerente" class="modal modal-gerente">
+  <div id="modalGerenteCedis" class="modal modal-gerente">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
@@ -9,7 +9,7 @@
       <div class="modal-header">
           <div class="modal-header-titulo">
             <div class="valor">{{gerente}}</div>
-            <div class="titulo">NOMBRE DEL GERENTE</div>
+            <div class="titulo">NOMBRE DEL GERENTE CEDIS</div>
           </div>
           <div class="modal-header-titulo border-around">
             <div class="valor">{{camionetas}}</div>
@@ -28,20 +28,22 @@
               :porcentaje="week.Productividad.porcentaje"
             ></v-wrapper>
             <v-wrapper
-              titulo="Kilos Vendidos"
-              :valor="week.Kilos.real | money"
-              :porcentaje="week.Kilos.porcentaje"
-            ></v-wrapper>
-            <v-wrapper
               titulo="Importe Vendido"
               :valor="week.Ingresos.real | money"
               :porcentaje="week.Ingresos.porcentaje"
               :puntos="puntosImporte"
             ></v-wrapper>
             <v-wrapper
+              titulo="Kilos Vendidos"
+              :valor="week.Kilos.real | money"
+              :porcentaje="week.Kilos.porcentaje"
+              :puntos="puntosKilos"
+            ></v-wrapper>
+            <v-wrapper
               titulo="Captura App"
               :valor="week['Captura App'].real"
               :porcentaje="week['Captura App'].porcentaje"
+              :puntos="puntosCapturaApp"
             ></v-wrapper>
             <v-wrapper
               titulo="Merma venta"
@@ -62,36 +64,29 @@
               :valor="competencia | number"
             >
             </v-wrapper>
-            <v-wrapper
-              titulo="Rendimiento de luz"
-              :porcentaje="getPorcentaje(week['Rendimiento luz'])"
-              :puntos="puntosRendimientoLuz"
-            ></v-wrapper>
-            <v-wrapper
-              titulo="Rendimiento de agua"
-              :porcentaje="getPorcentaje(week['Rendimiento agua'])"
-              :puntos="puntosRendimientoAgua"
-            ></v-wrapper>
           </div>
         </div>
         <div class="flex-column">
           <div class="modal-gerente-card">
             <v-wrapper
-              titulo="Kg Barra Producidos"
-              :valor="week.Produccion.barra.Acumulado | number"
-              :porcentaje="week.Produccion.barra.Tendencia | number"
-            ></v-wrapper>
+              titulo="Rendimiento Unidades"
+              :valor="rendimiento | number"
+              :porcentaje="getPorcentaje({real: kilometraje, meta: rendimiento})"
+              unidad="Km/Lts."
+              :puntos="puntosRendimiento"
+            >
+            </v-wrapper>
             <v-wrapper
-              titulo="Kg Rolito Producidos"
-              :valor="week.Produccion.rolito.Acumulado | number"
-              :porcentaje="week.Produccion.rolito.Tendencia | number"
-            ></v-wrapper>
+              titulo="Km recorridos"
+              :valor="kilometraje | number"
+              unidad="Km."
+            >
+            </v-wrapper>
             <v-wrapper
-              titulo="Kg Total Producidos"
-              :valor="week.Produccion.real | number"
-              :porcentaje="week.Produccion.porcentaje | number"
-              :puntos="puntosTotalProducidos"
-            ></v-wrapper>
+              titulo="Combustible"
+              :valor="combustible | money"
+            >
+            </v-wrapper>
           </div>
           <div class="modal-gerente-card">
             <v-wrapper
@@ -123,7 +118,7 @@
 <script>
 import vWrapperVue from './v-wrapper.vue';
 export default {
-  name: 'modal-gerente',
+  name: 'modal-gerente-cedis',
   props: {
     isOpen: {
       type: Boolean,
@@ -143,6 +138,9 @@ export default {
     mermaVenta: {},
     recuperados: 0,
     competencia: 0,
+    combustible: 0,
+    kilometraje: 0,
+    rendimiento: 0,
     comisionVenta: 2000,
     puntos: {},
   }),
@@ -169,12 +167,12 @@ export default {
       this.isLoaded = true;
     },
     async fetchGerenteInfo() {
-      // todo: actualizar el porcentaje de produccion rolito y barra
-      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getDetalleGerente`, {
+      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getDetalleGerenteCedis`, {
         fecha: this.fecha, suc: this.suc, week: this.week.index
       });
       const {
         gerente, sueldo_base, comision, camionetas, recuperados, competencia, puntos, merma
+        ,gastado , kilometraje, rendimiento
       } = response.data;
       this.gerente = gerente;
       this.sueldo_base = sueldo_base;
@@ -184,6 +182,9 @@ export default {
       this.competencia = competencia;
       this.puntos = puntos;
       this.mermaVenta = merma;
+      this.combustible = gastado;
+      this.kilometraje = kilometraje;
+      this.rendimiento = rendimiento;
     },
     getPuntos(porcentaje, name) {
       const eficiencia = porcentaje * this.puntos[name] / 100;
@@ -191,51 +192,47 @@ export default {
     }
   },
   mounted() {
-    M.Modal.init(document.getElementById('modalGerente'), {
+    M.Modal.init(document.getElementById('modalGerenteCedis'), {
       onCloseEnd: this.onModalClose,
     });
   },
   watch: {
     isOpen() {
       if (this.isOpen) {
-        M.Modal.getInstance(document.getElementById('modalGerente')).open()
+        M.Modal.getInstance(document.getElementById('modalGerenteCedis')).open()
         this.onModalOpen();
       } else {
-        M.Modal.getInstance(document.getElementById('modalGerente')).close()
+        M.Modal.getInstance(document.getElementById('modalGerenteCedis')).close()
       }
     },
   },
   computed: {
     puntosImporte() {
-      return this.getPuntos(this.week.Ingresos.porcentaje, 'Importe vendido');
+      return this.getPuntos(this.week.Ingresos.porcentaje, 'Importe Vendido');
+    },
+    puntosKilos() {
+      return this.getPuntos(this.week.Kilos.porcentaje, 'Kilos Vendidos');
     },
     puntosCapturaApp() {
-      return 0;
-      // return this.getPuntos(this.week['Captura App'].porcentaje, 'Captura app');
+      return this.getPuntos(this.week['Captura App'].porcentaje, 'App');
     },
     puntosMerma() {
-      return this.mermaVenta.porcentaje <= 2 ? this.puntos.Merma : 0;
+      return this.mermaVenta.porcentaje <= 2 ? Number(this.puntos.Merma) : 0;
     },
     puntosClientesR() {
-      return this.recuperados >= 20 ? 15 : 0;
+      return this.recuperados >= 7 ? 15 : 0;
     },
-    puntosRendimientoLuz() {
-      return this.getPuntos(this.getPorcentaje(this.week['Rendimiento luz']), 'Energia electrica');
-    },
-    puntosRendimientoAgua() {
-      return this.getPuntos(this.getPorcentaje(this.week['Rendimiento agua'] < 0 ? this.week['Rendimiento agua'] : 0), 'Agua');
-    },
-    puntosTotalProducidos() {
-      return this.getPuntos(this.week.Produccion.porcentaje, 'Produccion');
+    puntosRendimiento() {
+      return this.getPuntos(this.getPorcentaje({real: this.kilometraje, meta: this.rendimiento}), 'Combustible');
     },
     totalPuntos() {
-      const puntos = this.puntosImporte
+      const puntos =  this.puntosImporte
         + this.puntosCapturaApp
+        + this.puntosKilos
         + this.puntosMerma
         + this.puntosClientesR
-        + this.puntosRendimientoLuz
-        + this.puntosRendimientoAgua
-        + this.puntosTotalProducidos;
+        + this.puntosRendimiento
+
       return Math.round(puntos*10)/10;
     },
     compensacionVariable() {

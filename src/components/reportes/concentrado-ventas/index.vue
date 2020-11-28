@@ -240,6 +240,33 @@
         </div>
       </li>
       <li>
+        <div class="collapsible-header"><span class="line start"></span>METAS&nbsp;<b>GERENTE DE CEDIS</b> <span class="line"></span><i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
+        <div class="collapsible-body"> 
+          <progress-indicator :show="loadingGerente"></progress-indicator>
+          <div v-if="!loadingGerente">
+            <table>
+              <thead>
+                <tr>
+                  <th>&nbsp;</th>
+                  <th class="cursor-pointer" @click="openGerenteCedisModal(index)" v-for="(week, index) in getWeeks()" :key="index" >{{week}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(topic, index) in Object.keys(gerente)" :key="'gerente-'+index">
+                  <td>{{topic}}</td>
+                  <td v-for="(val, index) in Object.values(gerente[topic])" :key="index">
+                    <tabla-celda
+                      :value="val"
+                    >
+                    </tabla-celda>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </li>
+      <li>
         <div class="collapsible-header"><span class="line start"></span>METAS&nbsp;<b>SUPERVISOR DE VENTA</b> <span class="line"></span><i class="material-icons mr-0 ml-1 arrow-down-size">arrow_drop_down</i></div>
         <div class="collapsible-body"> 
           <progress-indicator :show="loadingSupervisor"></progress-indicator>
@@ -332,6 +359,14 @@
         :fecha="fecha"
       >
       </modal-gerente>
+      <modal-gerente-cedis
+        :isOpen="isGerenteCedisModalOpen"
+        :week="weekSelected"
+        :suc="suc"
+        :onClose="onCloseGerenteCedisModal"
+        :fecha="fecha"
+      >
+      </modal-gerente-cedis>
       <modal-agua
         :isOpen="isAguaModalOpen"
         :fecha="fechaSelected"
@@ -367,6 +402,7 @@ import ModalAgual from './modal-agua.vue';
 import ModalLuz from './modal-luz.vue';
 import ModalMaquinas from './modal-maquinas.vue';
 import ModalGerente from './modal-gerente.vue';
+import ModalGerenteCedisVue from './modal-gerenteCedis.vue';
 
 export default {
   props: ['suc', 'fecha'],
@@ -386,6 +422,7 @@ export default {
     isVendedorModalOpen: false,
     isSupervisorModalOpen: false,
     isGerenteModalOpen: false,
+    isGerenteCedisModalOpen: false,
     isAguaModalOpen: false,
     isLuzModalOpen: false,
     isLoaded: false,
@@ -670,6 +707,14 @@ export default {
       this.weekSelected = {...newWeekSelected, index};
       this.isGerenteModalOpen = true;
     },
+    openGerenteCedisModal(index) {
+      const newWeekSelected = {};
+      Object.entries(this.gerente).forEach(([name, val])=>{
+        newWeekSelected[name] = Object.values(val)[index];
+      });
+      this.weekSelected = {...newWeekSelected, index};
+      this.isGerenteCedisModalOpen = true;
+    },
     onVendedorRealClick(cellName, fecha, vendedor) {
       this.vendedorSelected = this.vendedores.find((v) => v.clave == vendedor);
       this.fechaSelected = fecha;
@@ -698,6 +743,10 @@ export default {
     onCloseGerenteModal() {
       this.isGerenteModalOpen = false;
     },
+    onCloseGerenteCedisModal() {
+      this.isGerenteCedisModalOpen = false;
+      console.log('gerente cedis');
+    },
     onModalAguaClose() {
       this.isAguaModalOpen = false;
     },
@@ -723,6 +772,7 @@ export default {
     'tabla-celda': tablaCeldaVue,
     'modal-vendedor': ModalVendedor,
     'modal-gerente': ModalGerente,
+    'modal-gerente-cedis': ModalGerenteCedisVue,
     'modal-gasolina': ModalGasolina,
     'modal-supervisor': modalSupervisor,
     'modal-agua': ModalAgual,

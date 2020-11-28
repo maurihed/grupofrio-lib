@@ -21,86 +21,103 @@
           </div>
         </div>
       <div class="modal-content">
-        <div class="modal-supervisor-card">
-          <div class="wrapper">
-            <div class="titulo">KILOS VENDIDOS</div>
-            <div class="valor">
-              <span>{{week.Kilos.real | money}}</span>
-              <span :class="getClass(week.Kilos.porcentaje)">{{week.Kilos.porcentaje}}%</span>
-            </div>
+        <div class="flex-column">
+          <div class="modal-supervisor-card">
+            <v-wrapper
+              titulo="Productividad"
+              valor=""
+              :porcentaje="week.Productividad.porcentaje"
+            >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Importe vendido"
+              :valor="week.Ingresos.real | money"
+              :porcentaje="week.Ingresos.porcentaje"
+              :puntos="puntosIngresos"
+            >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Kilos Vendidos"
+              :valor="week.Kilos.real | number"
+              :porcentaje="week.Kilos.porcentaje"
+              :puntos="puntosKilos"
+            >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Captura App"
+              :valor="week['Captura App'].real"
+              :porcentaje="week['Captura App'].porcentaje"
+              :puntos="puntosCapturaApp"
+            >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Merma venta"
+              :valor="mermaVenta.real"
+              :porcentaje="mermaVenta.porcentaje"
+              :puntos="puntosMerma"
+            >
+            </v-wrapper>
           </div>
-          <div class="wrapper">
-            <div class="titulo"><span>IMPORTE VENDIDO</span></div>
-            <div class="valor">
-              <span>{{week.Ingresos.real | money}}</span>
-              <span :class="getClass(week.Ingresos.porcentaje)">{{week.Ingresos.porcentaje}}%</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo">PRODUCTIVIDAD</div>
-            <div class="valor">
-              <span>{{week.Productividad.real | number}}</span>
-              <span :class="getClass(week.Productividad.porcentaje)">{{week.Productividad.porcentaje}}%</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo">CAPTURA APP</div>
-            <div class="valor">
-              <span>{{week['Captura App'].real}}</span>
-              <span :class="getClass(week['Captura App'].porcentaje)">{{week['Captura App'].porcentaje}}%</span>
-            </div>
-          </div>
-        </div>
-        <div class="modal-supervisor-card">
-          <div class="wrapper">
-            <div class="titulo"><span>CLIENTES POR RECUPERAR</span></div>
-            <div class="valor">
-              <span>{{recuperados | number}}</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>CLIENTES POR COMPETENCIA</span></div>
-            <div class="valor">
-              <span>{{competencia | number}}</span>
-            </div>
-          </div>
-        </div>
-        <div class="modal-supervisor-card">
-          <div class="wrapper">
-            <div class="titulo"><span>RENDIMIENTO UNIDADES</span></div>
-            <div class="valor">
-              <span>{{rendimiento}} Km/Lts.</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>KM RECORRIDOS</span></div>
-            <div class="valor">
-              <span>{{kgRecorridos | number}} KM</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo">COMBUSTIBLE</div>
-            <div class="valor">
-              <span>{{combustible | money}}</span>
-            </div>
+          <div class="modal-supervisor-card">
+            <v-wrapper
+              titulo="Clientes por recuperar"
+              :valor="recuperados | number"
+              :puntos="puntosClientesR"
+            >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Clientes por competencia"
+              :valor="competencia | number"
+            >
+            </v-wrapper>
           </div>
         </div>
-        <div class="modal-supervisor-card">
-          <div class="wrapper">
-            <div class="titulo"><span>NÓMINA BASE</span></div>
-            <div class="valor">
-              <span>{{sueldo_base | money}}</span>
-            </div>
+        <div class="flex-column">
+          <div class="modal-supervisor-card">
+            <v-wrapper
+              titulo="Rendimiento Unidades"
+              :valor="rendimiento | number"
+              :porcentaje="getPorcentaje(kgRecorridos, rendimiento)"
+              unidad="Km/Lts."
+              :puntos="puntosRendimiento"
+            >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Km recorridos"
+              :valor="kgRecorridos | number"
+              unidad="Km."
+            >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Combustible"
+              :valor="combustible | money"
+            >
+            </v-wrapper>
           </div>
-          <div class="wrapper">
-            <div class="titulo"><span>COMISIÓN</span></div>
-            <div class="valor">
-              <span>{{week.Kilos.porcentaje > 89 ? comision_total : 0 | money}}</span>
+          <div class="modal-supervisor-card">
+            <v-wrapper
+              titulo="Puntos Acumulados"
+              :valor="totalPuntos"
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Comisión venta"
+              :valor="comision_total | money"
+            >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Compensación variable"
+              :valor="compensacionVariable"
+            >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Nómina Base"
+              :valor="sueldo_base | money"
+            >
+            </v-wrapper>
+            <div class="card-button">
+              <div class="titulo">TOTAL A PAGAR</div>
+              <div class="valor bold">{{total | money}}</div>
             </div>
-          </div>
-          <div class="card-button">
-            <div class="titulo">TOTAL A PAGAR</div>
-            <div class="valor bold">{{total | money}}</div>
           </div>
         </div>
       </div>
@@ -108,6 +125,7 @@
   </div>
 </template>
 <script>
+import vWrapperVue from './v-wrapper.vue';
 export default {
   name: 'modal-supervisor',
   props: {
@@ -131,6 +149,8 @@ export default {
     recuperados: 0,
     competencia: 0,
     camionetas: 0,
+    comisionVenta: 1500,
+    mermaVenta: {},
   }),
   methods: {
     onModalClose() {
@@ -147,7 +167,10 @@ export default {
       return 'malo';
     },
     async onModalOpen() {
-      await this.fetchSupervisorInfo();
+      await Promise.all([
+        this.fetchSupervisorInfo(),
+        this.fetchVentaMerma(),
+      ]);
       this.isLoaded = true;
     },
     async fetchSupervisorInfo() {
@@ -176,6 +199,21 @@ export default {
       this.sueldo_base = sueldo_base;
       this.comision = comision;
     },
+    async fetchVentaMerma() {
+      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=ventaMermaSemanal`, {
+        fecha: this.fecha, suc: this.suc
+      });
+      this.puntos = response.data.puntos;
+      this.mermaVenta = response.data.merma;
+    },
+    getPuntos(porcentaje, name) {
+      const eficiencia = porcentaje * this.puntos[name] / 100;
+      return Math.round(eficiencia * 100, 2) / 100;
+    },
+    getPorcentaje(real, meta) {
+      const porcentaje = meta > 0 ? Math.floor(real/meta)*100 : 0;
+      return porcentaje < 0 ? 0 : porcentaje > 100 ? 100 : porcentaje;
+    }
   },
   mounted() {
     M.Modal.init(document.getElementById('modalSupervisor'), {
@@ -193,15 +231,52 @@ export default {
     },
   },
   computed: {
+    puntosIngresos () {
+      return this.getPuntos(this.week.Ingresos.porcentaje, 'Importe Vendido');
+    },
+    puntosKilos () {
+      return this.getPuntos(this.week.Kilos.porcentaje, 'Kilos Vendidos');
+    },
+    puntosCapturaApp () {
+      return this.getPuntos(this.week['Captura App'].porcentaje, 'Captura app');
+    },
+    puntosMerma () {
+      return this.mermaVenta.porcentaje <= 2 ? this.puntos['Merma venta'] : 0;
+    },
+    puntosClientesR () {
+      return this.recuperados >= 20 ? 15: 0;
+    },
+    puntosRendimiento () {
+      return this.getPuntos(this.getPorcentaje(this.kgRecorridos, this.rendimiento), 'Combustible');
+    },
+    totalPuntos() {
+      const total =  this.puntosIngresos
+              + this.puntosKilos
+              + this.puntosCapturaApp
+              + this.puntosMerma
+              + this.puntosClientesR
+              + this.puntosRendimiento;
+      return Math.round(total*100)/100;
+    },
+    compensacionVariable() {
+      if (this.week.Productividad.porcentaje > 89) {
+        return Math.round(this.comisionVenta * this.totalPuntos/100);
+      }
+      return 0;
+    },
     comision_total() {
+      return this.comisionVenta;
       return this.week.Ingresos.real * this.comision;
     },
     total() {
-      if (this.week.Kilos.porcentaje > 89) {
-        return Math.round(Number(this.sueldo_base)+this.comision_total, 2);
+      if (this.week.Productividad.porcentaje > 89) {
+        return Math.round(Number(this.sueldo_base)+this.comision_total+this.compensacionVariable, 2);
       }
-      return this.sueldo_base;
+      return Number(this.sueldo_base);
     }
+  },
+  components: {
+    'v-wrapper': vWrapperVue,
   }
 }
 </script>
@@ -241,39 +316,18 @@ export default {
     }
     .modal-content {
       display: flex;
+    }
+    .flex-column {
+      width: 50%;
+      display: flex;
       flex-direction: column;
       flex-wrap: wrap;
-      max-height: 300px;
-    }
-    .wrapper {
-      display: flex;
-      width: 100%;
-      color: #2d3a8d;
-      font-family: axiforma bold;
-      .titulo {
-        width: 55%;
-        justify-content: flex-end;
-        display: flex;
-        align-items: center;
-        span {
-          text-align: right;
-        }
-      }
-      .valor {
-        font-weight: bold;
-        min-width: 135px;
-        padding-left: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
     }
     .modal-supervisor-card {
       border: 3px solid #2d3a8d;
       background: #F3F7FF;
       padding: 0;
       border-radius: 10px;
-      width: 48%;
       margin: 1%;
       display: flex;
       flex-wrap: wrap;
@@ -313,15 +367,6 @@ export default {
           font-family: axiforma bold;
         }
       }
-    }
-    .bueno {
-      color: #84d0c1;
-    }
-    .malo {
-      color: #f5b0b6;
-    }
-    .regular {
-      color: #e6c212;
     }
   }
 </style>
