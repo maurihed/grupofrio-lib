@@ -23,46 +23,47 @@
       <div class="modal-content">
         <div class="flex-column">
           <div class="modal-administrativo-card">
-            <v-wrapper
+            <!-- <v-wrapper
                 titulo="GASTOS TOTALES"
                 :valor="valores.real| money"
                 :porcentaje="94"
                 :puntos="puntosGastosTotales"
               >
-            </v-wrapper>
+            </v-wrapper> -->
             <v-wrapper
-                titulo="PRESUPUESTO TOTAL"
-                :valor="valores.meta| money"
-                :porcentaje="getPorcentaje(valores.meta, valores.real)"
-                puntos="34"
+                titulo="Gastos Totales"
+                :valor="valores.real| money"
               >
             </v-wrapper>
+            <v-wrapper
+                titulo="Presupuesto Total"
+                :valor="valores.meta| money"
+                :porcentaje="getPorcentaje(valores.meta, valores.real)"
+              >
+            </v-wrapper>
+            <br><br>
           </div>
           <div class="modal-administrativo-card ">
-            <div class="wrapper">
-              <div class="titulo"><span>PUNTOS ACUMULADOS</span></div>
-              <div class="valor">
-                <!-- <span>{{sueldo_base | money}}</span> -->
-              </div>
-            </div>
-            <div class="wrapper">
-              <div class="titulo"><span>COMISIÓN</span></div>
-              <div class="valor">
-                <span>{{ getPorcentaje(valores.meta, valores.real) == 0 && valores.meta >0 ? comision_total : 0  | money}}</span>
-              </div>
-            </div>
-            <div class="wrapper">
-              <div class="titulo"><span>COMPENSACIÓN VARIABLE</span></div>
-              <div class="valor">
-                <!-- <span>{{week.Kilos.porcentaje > 89 ? comision_total : 0 | money}}</span> -->
-              </div>
-            </div>
-            <div class="wrapper">
-              <div class="titulo"><span>NÓMINA BASE</span></div>
-              <div class="valor">
-                <span>{{sueldo_base | money}}</span>
-              </div>
-            </div>
+            <v-wrapper
+              titulo="Puntos Acumulados"
+              :valor=0
+            >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Comisión"
+              :valor="comision_total"
+            >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Compensación Variable"
+              :valor="compensacionVariable | money"
+            >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Nómina base"
+              :valor="sueldo_base | money"
+            >
+            </v-wrapper>
             <div class="card-button">
               <div class="titulo">TOTAL A PAGAR</div>
               <div class="valor bold">{{total | money}}</div>
@@ -91,11 +92,10 @@ export default {
   },
   data: ()=>({
     isLoaded: false,
-    // suc:valores.name,
     admin: '',
     sueldo_base: 0,
     comision: 0,
-    // camionetas: 0,
+    comisionVenta: 3000,
   }),
   methods: {
     onModalClose() {
@@ -121,17 +121,12 @@ export default {
     async fetchAdminInfo() {
       const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=getDetalleAdministrativo`, {
         fecha: this.fecha,weeks: this.weeks.index, suc: this.suc,
-        // suc: this.suc,
-        // fecha: this.fecha, suc: this.suc, week: this.week.index
       });
-      const {admin, sueldo_base, comision} = response.data;
+      const {admin, sueldo_base, comision, variable} = response.data;
       this.admin = admin;
       this.sueldo_base = sueldo_base;
       this.comision = comision;
-      // const {admin, sueldo_base, comision, camionetas} = response.data;
-      // this.admin = admin;
-      // this.sueldo_base = sueldo_base;
-      // this.comision = comision;
+      this.variable = variable;
     },
   },
   mounted() {
@@ -151,20 +146,29 @@ export default {
   },
   computed: {
     puntosGastosTotales() {
+      // return 100;
+    },
+    totalPuntos() {
+      // const puntos = this.puntosGastosTotales;
+      // return Math.round(puntos*10)/10;
+      return 0;
+    },
+    compensacionVariable() {
+      const presupuesto = this.getPorcentaje(this.valores.meta, this.valores.real)
+      if(presupuesto < 100) {
+        return Math.round(this.comisionVenta * this.totalPuntos/100);
+      }
       return 0;
     },
     comision_total() {
+      return this.comisionVenta;
       return this.valores.real * this.comision;
     },
     total() {
-      // return "OIIOO", this.comision_total;
-      // if (
-      //   comision_total > 0
-      // ) {
-      //   return Math.round(this.sueldo_base+this.comision_total, 2);
-      // }else{
-        return this.sueldo_base;
-      // }
+      if (this.getPorcentaje(this.valores.meta, this.valores.real) < 100) {
+        return Math.round(Number(this.sueldo_base)+this.compensacionVariable, 2);
+      }
+      return Number(this.sueldo_base);
     }
   },
   components: {

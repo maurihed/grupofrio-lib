@@ -8,11 +8,10 @@
     <div v-if="isLoaded">
       <div class="modal-header">
           <div class="modal-header-titulo">
-            <div class="valor">{{admin}}</div>
-            <div class="titulo">NOMBRE DEL SUPERVISOR</div>
+            <div class="valor">{{dirManufactura}}</div>
+            <div class="titulo">NOMBRE DIRECTOR MANUFACTURA</div>
           </div>
           <div class="modal-header-titulo border-around">
-            <!-- <div class="valor">{{camionetas}}</div> -->
             <div class="titulo">SUCURSALES</div>
           </div>
           <div class="modal-header-titulo">
@@ -21,66 +20,58 @@
           </div>
         </div>
       <div class="modal-content">
-        <div class="modal-manufactura-card">
-          <div class="wrapper">
-            <div class="titulo"><span>RENDIMIENTO DE LUZ</span></div>
-            <div class="valor">
-              <!-- <span :class="getClass(getPorcentaje(week['Rendimiento luz']))">{{getPorcentaje(week['Rendimiento luz'])}}%</span> -->
-            </div>
+        <div class="flex-column">
+          <div class="modal-manufactura-card">
+            <v-wrapper
+                titulo="Rendimiento de Luz"
+                :porcentaje="datosLuz[index].porcentaje"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="Rendimiento de Agua"
+                :porcentaje="datosAgua[index].porcentaje"
+                :puntos="puntosRendimientoAgua"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="KG Barra Producidos"
+                :valor="datosProduccion[index].barra.Acumulado| number"
+                :porcentaje="datosProduccion[index].barra.Tendencia | number"
+              >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Kg Rolito Producidos"
+              :valor="datosProduccion[index].rolito.Acumulado | number"
+              :porcentaje="datosProduccion[index].rolito.Tendencia | number"
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Kg Total Producidos"
+              :valor="datosProduccion[index].real | number"
+              :porcentaje="datosProduccion[index].porcentaje | number"
+              :puntos="puntosProduccion"
+            ></v-wrapper>
           </div>
-          <div class="wrapper">
-            <div class="titulo"><span>RENDIMIENTO DE AGUA</span></div>
-            <div class="valor">
-              <!-- <span :class="getClass(getPorcentaje(week['Rendimiento agua']))">{{getPorcentaje(week['Rendimiento agua'])}}%</span> -->
+          <div class="modal-manufactura-card ">
+            <v-wrapper
+              titulo="Puntos Acumulados"
+              :valor="totalPuntos"
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Comisión"
+              :valor="comision_total"
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Compensación Variable"
+              :valor="compensacionVariable | money"
+            ></v-wrapper>
+            <v-wrapper
+              titulo="Nómina base"
+              :valor="sueldo_base | money"
+            ></v-wrapper>
+            <div class="card-button">
+              <div class="titulo">TOTAL A PAGAR</div>
+              <div class="valor bold">{{total | money}}</div>
             </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>KG BARRA PRODUCIDOS</span></div>
-            <div class="valor">
-              <!-- <span>{{week.Produccion.barra.Acumulado | number}} Kg.</span> -->
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>KG ROLITO PRODUCIDOS</span></div>
-            <div class="valor">
-              <!-- <span>{{week.Produccion.rolito.Acumulado | number}} Kg.</span> -->
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo">KG TOTAL PRODUCIDOS</div>
-            <div class="valor">
-              <!-- <span>{{week.Produccion.real | number}} Kg.</span> -->
-            </div>
-          </div>
-        </div>
-        <div class="modal-manufactura-card ">
-          <div class="wrapper">
-            <div class="titulo"><span>PUNTOS ACUMULADOS</span></div>
-            <div class="valor">
-              <!-- <span>{{sueldo_base | money}}</span> -->
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>COMISIÓN</span></div>
-            <div class="valor">
-              <span>{{ getPorcentaje(valores.meta, valores.real) > 80 >0 ? comision_total : 0  | money}}</span>
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>COMPENSACIÓN VARIABLE</span></div>
-            <div class="valor">
-              <!-- <span>{{week.Kilos.porcentaje > 89 ? comision_total : 0 | money}}</span> -->
-            </div>
-          </div>
-          <div class="wrapper">
-            <div class="titulo"><span>NÓMINA BASE</span></div>
-            <div class="valor">
-              <span>{{sueldo_base | money}}</span>
-            </div>
-          </div>
-          <div class="card-button">
-            <div class="titulo">TOTAL A PAGAR</div>
-            <div class="valor bold">{{total | money}}</div>
           </div>
         </div>
       </div>
@@ -88,6 +79,7 @@
   </div>
 </template>
 <script>
+import vWrapperVue from '../concentrado-ventas/v-wrapper.vue';
 export default {
   name: 'modal-manufactura',
   props: {
@@ -104,10 +96,11 @@ export default {
   },
   data: ()=>({
     isLoaded: false,
-    admin: '',
+    dirManufactura: '',
     sueldo_base: 0,
     comision: 0,
     puntos: {},
+    comisionVenta: 3000,
   }),
   methods: {
     onModalClose() {
@@ -137,13 +130,13 @@ export default {
       this.isLoaded = true;
     },
     async fetchAdminInfo() {
-      const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=getDetalleAdministrativo`, {
+      const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=getDetalleManufactura`, {
         fecha: this.fecha,  weeks: this.weeks.index,suc: this.suc
       });
       const {
-        admin, sueldo_base, comision, camionetas, puntos
+        dirManufactura, sueldo_base, comision, puntos,
         } = response.data;
-      this.admin = admin;
+      this.dirManufactura = dirManufactura;
       this.sueldo_base = sueldo_base;
       this.comision = comision;
       this.puntos = puntos;
@@ -151,6 +144,9 @@ export default {
     async fetchAllData(){
       const rData = await axios.post(`${env.REPORTES_CONCENTRADO}?option=gerente`, { fecha: this.fecha, suc: this.suc });
       this.datos = rData.data;
+      this.datosLuz = Object.values(this.datos['Rendimiento luz']);
+      this.datosAgua= Object.values(this.datos['Rendimiento agua']);
+      this.datosProduccion= Object.values(this.datos['Produccion']);
     },
   },
   mounted() {
@@ -170,14 +166,43 @@ export default {
   },
   computed: {
     puntosRendimientoAgua() {
-      return this.getPuntos(89, 'Rendimiento Agua');
+      if(this.getPuntos(this.datosAgua[this.index].porcentaje, 'Rendimiento Agua') >= 0){
+        return this.getPuntos(this.datosAgua[this.index].porcentaje, 'Rendimiento Agua');
+      }
+      return 0;
+    },
+    puntosProduccion() {
+      if(this.getPuntos(this.datosProduccion[this.index].porcentaje, 'Produccion') >= 0){
+        return this.getPuntos(this.datosProduccion[this.index].porcentaje, 'Produccion');
+      }
+      return 0;
+    },
+    totalPuntos() {
+      const puntos = 
+      this.puntosRendimientoAgua +
+      this.puntosProduccion;
+      return Math.round(puntos*10)/10;
+    },
+    compensacionVariable() {
+      const electrica = this.datosLuz[this.index].porcentaje
+      if(electrica > 90) {
+        return Math.round(this.comisionVenta * this.totalPuntos/100);
+      }
+      return 0;
     },
     comision_total() {
-      return this.valores.real * this.comision;
+      return this.comisionVenta;
+      // return this.valores.real * this.comision;
     },
     total() {
-        return this.sueldo_base;
+      if (this.datosLuz[this.index].porcentaje  > 90) {
+        return Math.round(Number(this.sueldo_base)+this.compensacionVariable, 2);
+      }
+      return Number(this.sueldo_base);
     }
+  },
+  components: {
+    'v-wrapper': vWrapperVue,
   }
 }
 </script>
@@ -217,39 +242,18 @@ export default {
     }
     .modal-content {
       display: flex;
+    }
+    .flex-column {
+      width: 50%;
+      display: flex;
       flex-direction: column;
       flex-wrap: wrap;
-      max-height: 300px;
-    }
-    .wrapper {
-      display: flex;
-      width: 100%;
-      color: #2d3a8d;
-      font-family: axiforma bold;
-      .titulo {
-        width: 55%;
-        justify-content: flex-end;
-        display: flex;
-        align-items: center;
-        span {
-          text-align: right;
-        }
-      }
-      .valor {
-        font-weight: bold;
-        min-width: 135px;
-        padding-left: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
     }
     .modal-manufactura-card {
       border: 3px solid #2d3a8d;
       background: #F3F7FF;
       padding: 0;
       border-radius: 10px;
-      width: 48%;
       margin: 1%;
       display: flex;
       flex-wrap: wrap;
