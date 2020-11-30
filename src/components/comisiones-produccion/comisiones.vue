@@ -160,19 +160,19 @@
                   <tr>
                     <td>Merma</td>
                     <td class="center" v-for="day in fullDays" :key="day.day">
-                      <span v-if="merma[day.fullDate]">{{merma[day.fullDate].real}}</span>
+                      <span v-if="merma[day.fullDate]">{{merma[day.fullDate].real | number}}</span>
                       </td>
                     <td class="center">
-                      <span>{{merma.totalReal}}</span>
+                      <span>{{merma.totalReal | number}}</span>
                     </td>
                   </tr>
                   <tr>
                     <td>Porcentaje</td>
                     <td class="center" v-for="day in fullDays" :key="day.day">
-                        <span v-if="merma[day.fullDate]">{{merma[day.fullDate].porcentaje}}</span>
+                        <span v-if="merma[day.fullDate]">{{merma[day.fullDate].porcentaje}} %</span>
                       </td>
                     <td class="center">
-                      <span>{{merma.totalPorcentaje}}</span>
+                      <span>{{merma.totalPorcentaje}} %</span>
                     </td>
                   </tr>
                 </tbody>
