@@ -250,19 +250,23 @@ export default {
     },
     puntosEfectividad() {
       const eficiencia = this.efectividad * this.puntos.Efectividad / 100;
-      return Math.round(eficiencia * 100, 2) / 100;
+      const puntos = Math.round(eficiencia * 100, 2) / 100;
+      return puntos > 100 ? this.puntos.Efectividad : puntos;
     },
     puntosKilosVendidos() {
       const eficiencia = this.getPorcentaje(this.kilosVendidos.real, this.kilosVendidos.meta) * this.puntos['Kilos vendidos'] / 100;
-      return Math.round(eficiencia * 100, 2) / 100;
+      const puntos = Math.round(eficiencia * 100, 2) / 100;
+      return puntos > 100 ? this.puntos['Kilos vendidos'] : puntos;
     },
     puntosCapturaApp() {
       const eficiencia = this.productividad.substr(0,this.productividad.length -2) * this.puntos['Captura app'] / 100;
-      return Math.round(eficiencia * 100, 2) / 100;
+      const puntos = Math.round(eficiencia * 100, 2) / 100;
+      return puntos > 100 ? this.puntos['Captura app'] : puntos;
     },
     puntosCombustible() {
       const eficiencia = this.getPorcentaje(this.dataVendedor.kmxlitro.real, this.dataVendedor.kmxlitro.meta) * this.puntos['Combustible'] / 100;
-      return Math.round(eficiencia * 100, 2) / 100;
+      const puntos = Math.round(eficiencia * 100, 2) / 100;
+      return puntos > 100 ? this.puntos.Combustible : puntos;
     },
     puntosClientesRecuperados() {
       if (this.recuperados.length >= 5) {
