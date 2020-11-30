@@ -187,7 +187,8 @@ export default {
     },
     getPuntos(porcentaje, name) {
       const eficiencia = porcentaje * this.puntos[name] / 100;
-      return Math.round(eficiencia * 100, 2) / 100;
+      const puntos = Math.round(eficiencia * 100, 2) / 100;
+      return puntos > 100 ? this.puntos[name] : puntos;
     }
   },
   mounted() {
@@ -251,7 +252,7 @@ export default {
     },
     total() {
       if (this.week.Productividad.porcentaje >= 89) {
-        return Math.round(this.sueldo_base+this.comision_total+this.compensacionVariable, 2);
+        return Math.round(this.sueldo_base+this.compensacionVariable, 2);
       }
       return this.sueldo_base;
     }

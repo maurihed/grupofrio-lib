@@ -208,7 +208,8 @@ export default {
     },
     getPuntos(porcentaje, name) {
       const eficiencia = porcentaje * this.puntos[name] / 100;
-      return Math.round(eficiencia * 100, 2) / 100;
+      const puntos = Math.round(eficiencia * 100, 2) / 100;
+      return puntos > 100 ? this.puntos[name] : puntos;
     },
     getPorcentaje(real, meta) {
       const porcentaje = meta > 0 ? Math.floor(real/meta)*100 : 0;
