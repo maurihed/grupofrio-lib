@@ -1,5 +1,5 @@
 <template>
-  <div id="modalAdministrativo" class="modal modal-administrativo">
+  <div id="modalAdministrativoGeneral" class="modal modal-administrativoGeneral">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
@@ -8,59 +8,30 @@
     <div v-if="isLoaded">
       <div class="modal-header">
           <div class="modal-header-titulo">
-            <div class="valor">{{admin}}</div>
-            <div class="titulo">NOMBRE DEL DIRECTOR</div>
+            <div class="valor">{{""}}</div>
           </div>
           <div class="modal-header-titulo border-around">
-            <!-- <div class="valor">{{camionetas}}</div> -->
-            <div class="titulo">SUCURSALES</div>
+            <div class="valor">{{mesNombre}}</div>
           </div>
           <div class="modal-header-titulo">
-            <div class="valor">{{comision*100}}%</div>
-            <div class="titulo">% COMISION</div>
-          </div>
+            <div class="valor">{{" "}}</div>
         </div>
+      </div>
       <div class="modal-content">
         <div class="flex-column">
-          <div class="modal-administrativo-card">
+          <div class="modal-administrativoGeneral-card">
             <v-wrapper
                 titulo="Gastos Totales"
-                :valor="valores.real| money"
+                :valor="real| money"
               >
             </v-wrapper>
             <v-wrapper
                 titulo="Presupuesto Total"
-                :valor="valores.meta| money"
-                :porcentaje="getPorcentaje(valores.meta, valores.real)"
+                :valor="meta| money"
+                :porcentaje="getPorcentaje(meta,real)"
               >
             </v-wrapper>
             <br><br>
-          </div>
-          <div class="modal-administrativo-card ">
-            <v-wrapper
-              titulo="Puntos Acumulados"
-              :valor=0
-            >
-            </v-wrapper>
-            <v-wrapper
-              titulo="Comisión"
-              :valor="comision_total"
-            >
-            </v-wrapper>
-            <v-wrapper
-              titulo="Compensación Variable"
-              :valor="compensacionVariable | money"
-            >
-            </v-wrapper>
-            <v-wrapper
-              titulo="Nómina base"
-              :valor="sueldo_base | money"
-            >
-            </v-wrapper>
-            <div class="card-button">
-              <div class="titulo">TOTAL A PAGAR</div>
-              <div class="valor bold">{{total | money}}</div>
-            </div>
           </div>
         </div>
       </div>
@@ -71,24 +42,20 @@
 import vWrapperVue from '../concentrado-ventas/v-wrapper.vue';
 
 export default {
-  name: 'modal-administrativo',
+  name: 'modal-administrativoGeneral',
   props: {
     isOpen: {
       type: Boolean,
       default: false,
     },
-    weeks: Object,
-    valores: Object,
-    suc: String,
     fecha: String,
+    mesNombre: String,
     onClose: Function,
   },
   data: ()=>({
     isLoaded: false,
-    admin: '',
-    sueldo_base: 0,
-    comision: 0,
-    comisionVenta: 3000,
+    real: 0,
+    meta: 0,
   }),
   methods: {
     onModalClose() {
@@ -105,64 +72,35 @@ export default {
       return 'malo';
     },
     getPorcentaje(meta, real) {
-      return meta > 0 ? Math.floor((real/meta)*100):0;
+      return meta > 0 ? Math.trunc((real/meta)*100):0;
     },
     async onModalOpen() {
-      await this.fetchAdminInfo();
+      await this.gastosMesAdministrativo();
       this.isLoaded = true;
     },
-    async fetchAdminInfo() {
-      const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=getDetalleAdministrativo`, {
-        fecha: this.fecha,weeks: this.weeks.index, suc: this.suc,
+    async gastosMesAdministrativo() {
+      const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=gastosMesAdministrativo`, {
+        fecha: this.fecha,
       });
-      const {admin, sueldo_base, comision, variable} = response.data;
-      this.admin = admin;
-      this.sueldo_base = sueldo_base;
-      this.comision = comision;
-      this.variable = variable;
+      const {real, meta} = response.data;
+      this.real = real;
+      this.meta = meta;
     },
   },
   mounted() {
-    M.Modal.init(document.getElementById('modalAdministrativo'), {
+    M.Modal.init(document.getElementById('modalAdministrativoGeneral'), {
       onCloseEnd: this.onModalClose,
     });
   },
   watch: {
     isOpen() {
       if (this.isOpen) {
-        M.Modal.getInstance(document.getElementById('modalAdministrativo')).open()
+        M.Modal.getInstance(document.getElementById('modalAdministrativoGeneral')).open()
         this.onModalOpen();
       } else {
-        M.Modal.getInstance(document.getElementById('modalAdministrativo')).close()
+        M.Modal.getInstance(document.getElementById('modalAdministrativoGeneral')).close()
       }
     },
-  },
-  computed: {
-    puntosGastosTotales() {
-      // return 100;
-    },
-    totalPuntos() {
-      // const puntos = this.puntosGastosTotales;
-      // return Math.round(puntos*10)/10;
-      return 0;
-    },
-    compensacionVariable() {
-      const presupuesto = this.getPorcentaje(this.valores.meta, this.valores.real)
-      if(presupuesto < 100) {
-        return Math.round(this.comisionVenta * this.totalPuntos/100);
-      }
-      return 0;
-    },
-    comision_total() {
-      return this.comisionVenta;
-      return this.valores.real * this.comision;
-    },
-    total() {
-      if (this.getPorcentaje(this.valores.meta, this.valores.real) < 100) {
-        return Math.round(Number(this.sueldo_base)+this.compensacionVariable, 2);
-      }
-      return Number(this.sueldo_base);
-    }
   },
   components: {
     'v-wrapper': vWrapperVue,
@@ -171,7 +109,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .modal-administrativo {
+  .modal-administrativoGeneral {
     border: 2px solid #2d3a8d;
     border-radius: 10px;
     overflow: hidden !important;
@@ -212,7 +150,7 @@ export default {
       flex-direction: column;
       flex-wrap: wrap;
     }
-    .modal-administrativo-card {
+    .modal-administrativoGeneral-card {
       border: 3px solid #2d3a8d;
       background: #F3F7FF;
       padding: 0;
