@@ -14,7 +14,7 @@
         </div>
       </div>
       <br>
-      <div>{{(progres * 100 / 14).toFixed(2)}}%</div>
+      <div>{{(progres * 100 / 15).toFixed(2)}}%</div>
     </div>
     <div v-if="isLoaded">
       <ul class="collapsible popout">
@@ -415,6 +415,8 @@
         :cuberos="empleados.cuberos"
         :maquinistas="empleados.maquinistas"
         :jefes-produccion="empleados.jefes_produccion"
+        :eficiencia-produccion="getEficienciaProduccion()"
+        :precioKiloVariable="precioKiloVariable"
       ></salario-comision>
     </div>
   </div>
@@ -446,6 +448,12 @@ export default {
       compresoresNames: 0,
       eficienciaByTipos: [],
       eficienciaMantenimiento: {},
+      precioKiloVariable: {
+        sacador: 0,
+        cubero: 0,
+        maquinista: 0,
+        jefe: 0,
+      },
       merma: {},
       puntos: {},
       empleados: {
@@ -537,6 +545,7 @@ export default {
         this.fetchEficienciaMantenimiento(),
         this.fetchPuntosProduccion(),
         this.fetchMermaProduccion(),
+        this.getPrecioKiloVariable(),
     ]);
     this.isLoaded = true;
   },
@@ -916,6 +925,11 @@ export default {
       const totalMeta = this.getDatoTotalMantenimiento('meta');
       return totalMeta > 0 ? Math.floor((totalReal/totalMeta)*100) : 0;
     },
+    getEficienciaProduccion() {
+      const eficienciaProduccionRollito = this.getEficienciaTotalProduccion('Rollito');
+      const eficienciaProduccionBarra = this.getEficienciaTotalProduccion('Barra');
+      return Math.round((eficienciaProduccionRollito + eficienciaProduccionBarra)/2);
+    },
     getTotalEficiencia() {
       const eficienciaProduccionRollito = this.getEficienciaTotalProduccion('Rollito');
       const eficienciaProduccionBarra = this.getEficienciaTotalProduccion('Barra');
@@ -1067,6 +1081,11 @@ export default {
     async fetchMermaProduccion() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=mermaProduccion`, { fecha: this.fecha, suc: this.suc, turno: this.turno });
       this.merma = response.data;
+      this.progres++;
+    },
+    async getPrecioKiloVariable() {
+      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=precioKiloVariable`, { suc: this.suc });
+      this.precioKiloVariable = response.data;
       this.progres++;
     }
   },

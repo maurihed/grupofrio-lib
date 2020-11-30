@@ -6,7 +6,7 @@
           <div class="name salario-title">Operador Rolito</div>
           <div class="day-value salario-title">Kilos</div>
           <div class="day-value salario-title">Pago por kilo</div>
-          <!-- <div class="day-value salario-title">Comision</div> -->
+          <div class="day-value salario-title">Comision</div>
           <div class="day-value salario-title">Puntos</div>
           <div class="day-value salario-title">Eficiencia</div>
           <div class="day-value salario-title">comision final</div>
@@ -21,6 +21,9 @@
           :kilos="totalKilosRolitos"
           :precioKilo="precioCubero"
           :sueldoBase="sueldoCubero"
+          :puntos="puntosCubero"
+          :eficiencia-produccion="eficienciaProduccion"
+          :precioKiloVariable="precioKiloVariable.cubero"
         />
       </div>
       <div v-if="!!sacadores.length">
@@ -28,7 +31,7 @@
           <div class="name salario-title">Operador Barra</div>
           <div class="day-value salario-title">Kilos</div>
           <div class="day-value salario-title">Pago por kilo</div>
-          <!-- <div class="day-value salario-title">Comision</div> -->
+          <div class="day-value salario-title">Comision</div>
           <div class="day-value salario-title">Puntos</div>
           <div class="day-value salario-title">Eficiencia</div>
           <div class="day-value salario-title">comision final</div>
@@ -43,6 +46,9 @@
           :eficiencia="eficiencia"
           :precioKilo="precioSacador"
           :sueldoBase="sueldoSacador"
+          :puntos="puntosSacador"
+          :eficiencia-produccion="eficienciaProduccion"
+          :precioKiloVariable="precioKiloVariable.sacador"
         />
       </div>
       <div v-if="!!maquinistas.length">
@@ -50,7 +56,7 @@
           <div class="name salario-title">Operador Especialista</div>
           <div class="day-value salario-title">Kilos</div>
           <div class="day-value salario-title">Pago por kilo</div>
-          <!-- <div class="day-value salario-title">Comision</div> -->
+          <div class="day-value salario-title">Comision</div>
           <div class="day-value salario-title">Puntos</div>
           <div class="day-value salario-title">Eficiencia</div>
           <div class="day-value salario-title">comision final</div>
@@ -65,6 +71,9 @@
           :eficiencia="eficiencia"
           :precioKilo="precioMaquinista"
           :sueldoBase="sueldoMaquinista"
+          :puntos="puntosMaquinista"
+          :eficiencia-produccion="eficienciaProduccion"
+          :precioKiloVariable="precioKiloVariable.maquinista"
         />
       </div>
       <div v-if="!!jefesProduccion.length">
@@ -72,7 +81,7 @@
           <div class="name salario-title">Lider de celula de produccion</div>
           <div class="day-value salario-title">Kilos</div>
           <div class="day-value salario-title">Pago por kilo</div>
-          <!-- <div class="day-value salario-title">Comision</div> -->
+          <div class="day-value salario-title">Comision</div>
           <div class="day-value salario-title">Puntos</div>
           <div class="day-value salario-title">Eficiencia</div>
           <div class="day-value salario-title">comision final</div>
@@ -87,6 +96,9 @@
           :eficiencia="eficiencia"
           :precioKilo="precioLider"
           :sueldoBase="sueldoLider"
+          :puntos="puntosJefe"
+          :eficiencia-produccion="eficienciaProduccion"
+          :precioKiloVariable="precioKiloVariable.jefe"
         />
       </div>
     </div>
@@ -125,7 +137,10 @@
 <script>
 import rowSalarioComisionVue from './row-salario-comision.vue';
 export default {
-  props: ['totalKilosBarras', 'totalKilosRolitos','precioCubero', 'precioSacador', 'precioMaquinista', 'precioLider', 'eficiencia', 'sueldoCubero','sueldoSacador','sueldoMaquinista','sueldoLider', 'sacadores', 'cuberos', 'maquinistas', 'jefesProduccion'],
+  props: [
+    'totalKilosBarras', 'totalKilosRolitos','precioCubero', 'precioSacador', 'precioMaquinista',
+    'precioLider', 'eficiencia', 'sueldoCubero','sueldoSacador','sueldoMaquinista','sueldoLider',
+    'sacadores', 'cuberos', 'maquinistas', 'jefesProduccion', 'puntos', 'eficienciaProduccion', 'precioKiloVariable'],
   data() { 
     return {};
   },
@@ -141,6 +156,11 @@ export default {
       const comisionFinal = Number((this.eficiencia / 100) * comision);
       return sueldoBase + comisionFinal;
     },
+    getPuntos(name) {
+      const puntosArray = Object.values(this.puntos[name]);
+      const sum = puntosArray.reduce((total, punto) => total+punto, 0);
+      return Math.round((sum/puntosArray.length)*100)/100;
+    },
   },
   filters: {
     money(value) {
@@ -155,6 +175,18 @@ export default {
     }
   },
   computed: {
+    puntosCubero() {
+      return this.getPuntos('cubero');
+    },
+    puntosSacador() {
+      return this.getPuntos('sacador');
+    },
+    puntosMaquinista() {
+      return this.getPuntos('maquinista');
+    },
+    puntosJefe() { 
+      return this.getPuntos('jefe');
+    },
     totalKilosLider() {
       return Number(this.totalKilosBarras) + Number(this.totalKilosRolitos);
     },
@@ -183,12 +215,15 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
+  .panel {
+    overflow: auto;
+  }
   .comision-row {
     display: grid;
     grid-template-columns:
       [name] 20%
-      repeat(8, 11.4285714286%);
+      repeat(8, 10%);
     font-size: 15px;
     padding: 5px 0;
   }  

@@ -1,11 +1,11 @@
 <template>
   <div class="comision-row text-normal">
-      <div class="name">{{name}}</div>
+      <div class="name text-left">{{name}}</div>
       <div class="day-value">{{kilos | number}}</div>
-      <div class="day-value">{{precioKilo | number}}</div>
-      <!-- <div class="day-value">{{comision | money}}</div> -->
+      <div class="day-value">{{actualPrecioKilo | number}}</div>
+      <div class="day-value">{{comision | money}}</div>
       <div class="day-value">{{puntos | number}}</div>
-      <div class="day-value" :class="(eficiencia < 50) ? 'wrong-item':'success-item'">{{eficiencia}} %</div>
+      <div class="day-value" :class="(eficienciaProduccion < 50) ? 'wrong-item':'success-item'">{{eficienciaProduccion}} %</div>
       <div class="day-value">{{comisionFinal | money}}</div>
       <div class="day-value">{{sueldoBase | money}}</div>
       <div class="day-value">{{nomina | money}}</div>
@@ -13,19 +13,22 @@
 </template>
 <script>
 export default {
-  props:['name', 'kilos', 'precioKilo','eficiencia', 'sueldoBase'],
+  props:['name', 'kilos', 'precioKilo','precioKiloVariable','eficiencia', 'sueldoBase', 'puntos', 'eficienciaProduccion'],
   computed: {
-    puntos() {
-      return 0;
+    actualPrecioKilo() {
+      return this.puntos >= 90 ? this.precioKiloVariable : this.precioKilo;
     },
     comision() {
-      return Number((this.kilos * this.precioKilo).toFixed(2));
+      return Number((this.kilos * this.actualPrecioKilo).toFixed(2));
     },
     comisionFinal() {
-      return Number(((this.eficiencia / 100) * this.comision).toFixed(2));
+      return Number(((this.puntos / 100) * this.comision).toFixed(2));
     },
     nomina() {
-      return Number(this.sueldoBase + this.comisionFinal);
+      if(this.eficienciaProduccion >= 95) {
+        return Number(this.sueldoBase + this.comisionFinal);
+      }
+      return Number(this.sueldoBase);
     }
   },
   filters: {
@@ -50,5 +53,16 @@ export default {
   .text-normal {
     font-weight: normal;
     color: gray;
+  }
+  .text-left {
+    text-align: left;
+  }
+  .wrong-item {
+    background: #FFaaaa;
+    color: #FF4040;
+  }
+  .success-item {
+    background: #cddecd;
+    color: #409940;
   }
 </style>
