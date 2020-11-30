@@ -545,8 +545,14 @@ export default {
         this.fetchEficienciaMantenimiento(),
         this.fetchPuntosProduccion(),
         this.fetchMermaProduccion(),
-        this.getPrecioKiloVariable(),
     ]);
+
+    this.precioKiloVariable = {
+      cubero: this.valorVariable('Precio kilo variable cubero'),
+      sacador: this.valorVariable('Precio kilo variable sacador'),
+      maquinista: this.valorVariable('Precio kilo variable especialista'),
+      jefe: this.valorVariable('Precio kilo variable lider'),
+    }
     this.isLoaded = true;
   },
   updated() {
@@ -1081,11 +1087,6 @@ export default {
     async fetchMermaProduccion() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=mermaProduccion`, { fecha: this.fecha, suc: this.suc, turno: this.turno });
       this.merma = response.data;
-      this.progres++;
-    },
-    async getPrecioKiloVariable() {
-      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=precioKiloVariable`, { suc: this.suc });
-      this.precioKiloVariable = response.data;
       this.progres++;
     }
   },

@@ -1,15 +1,15 @@
 <template>
   <div class="comision-row text-normal">
-      <div class="name text-left">{{name}}</div>
-      <div class="day-value">{{kilos | number}}</div>
-      <div class="day-value">{{actualPrecioKilo | number}}</div>
-      <div class="day-value">{{comision | money}}</div>
-      <div class="day-value">{{puntos | number}}</div>
-      <div class="day-value" :class="(eficienciaProduccion < 50) ? 'wrong-item':'success-item'">{{eficienciaProduccion}} %</div>
-      <div class="day-value">{{comisionFinal | money}}</div>
-      <div class="day-value">{{sueldoBase | money}}</div>
-      <div class="day-value">{{nomina | money}}</div>
-    </div>
+    <div class="name text-left">{{name}}</div>
+    <div class="day-value">{{kilos | number}}</div>
+    <div class="day-value">{{actualPrecioKilo | number}}</div>
+    <div class="day-value">{{comision | money}}</div>
+    <div class="day-value">{{puntos | number}}</div>
+    <div class="day-value" :class="(eficienciaProduccion < 50) ? 'wrong-item':'success-item'">{{eficienciaProduccion}} %</div>
+    <div class="day-value">{{comisionFinal | money}}</div>
+    <div class="day-value">{{sueldoBase | money}}</div>
+    <div class="day-value">{{nomina | money}}</div>
+  </div>
 </template>
 <script>
 export default {
