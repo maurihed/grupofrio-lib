@@ -25,7 +25,6 @@
           <div class="modal-comercial-card">
             <v-wrapper
               titulo="Productividad"
-              :valor="valores.real| money"
               :porcentaje="datosProductividad[index].porcentaje"
               >
             </v-wrapper>
