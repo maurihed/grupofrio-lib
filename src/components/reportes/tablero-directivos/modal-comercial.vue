@@ -55,6 +55,7 @@
             ></v-wrapper>
             <v-wrapper
               titulo="Combustible"
+              :valor="combustible"
               :porcentaje="combustiblePromedio"
               :puntos="puntosCombustible"
             >
@@ -112,6 +113,7 @@ export default {
     mermaVenta: {},
     puntos: {},
     combustiblePromedio: 0,
+    combustible: 0,
     comisionVenta: 3000,
   }),
   methods: {

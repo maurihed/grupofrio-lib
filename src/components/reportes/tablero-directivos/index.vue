@@ -196,7 +196,7 @@
                   <thead>
                     <tr>
                       <th>&nbsp;</th>
-                      <th v-for="(weeks, index) in getWeeksAdministrativo()" :key="index" >{{weeks}}</th>
+                      <th class="cursor-pointer" @click="openAdministrativoGeneralModal(getWeeksAdministrativo())" v-for="(weeks, index) in getWeeksAdministrativo()" :key="index" >{{weeks}}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -225,6 +225,13 @@
           :suc="nombreSuc"
         >
         </modal-administrativo>
+        <modal-administrativoGeneral
+          :isOpen="isAdministrativoGeneralModalOpen"
+          :onClose="onCloseAdministrativoGeneralModal"
+          :fecha="fecha"
+          :mesNombre="mes"
+        >
+        </modal-administrativoGeneral>
         <modal-manufactura
           :isOpen="isManufacturaModalOpen"
           :weeks="weekSelected"
@@ -252,6 +259,7 @@
 </template>
 
 <script>
+import ModalAdministrativoGeneral from './modal-administrativoGeneral.vue';
 import ModalAdministrativo from './modal-administrativo.vue';
 import ModalManufactura from './modal-manufactura.vue';
 import ModalComercial from './modal-comercial.vue';
@@ -262,19 +270,19 @@ export default {
   data() {
     return {
       fecha: '',
-      // nombreSuc:0,
-      // presupuesto:0,
       isLoaded: false,
       loadingComercial: true,
       loadingManufactura: true,
       loadingAdministrativo: true,
       acumulado: {},
       isAdministrativoModalOpen: false,
+      isAdministrativoGeneralModalOpen: false,
       isManufacturaModalOpen: false,
       isComercialModalOpen: false,
       weekSelected: {},
       arrValores:{},
       nombreSuc:'',
+      mes:'',
       i:0
     }
   },
@@ -371,6 +379,14 @@ export default {
     onCloseAdministrativoModal() {
       this.isAdministrativoModalOpen = false;
     },
+    openAdministrativoGeneralModal(valor) {
+      this.mes=valor[0]; 
+      // console.log("uuu", this.mes, "--");
+      this.isAdministrativoGeneralModalOpen = true;
+    },
+    onCloseAdministrativoGeneralModal() {
+      this.isAdministrativoGeneralModalOpen = false;
+    },
     openManufacturaModal(index, val, nom) {
       const newWeekSelected = {};
       Object.entries(this.manufactura).forEach(([name, val])=>{
@@ -404,6 +420,7 @@ export default {
   },
   components: {
     'tabla-celda': tablaCeldaVue,
+    'modal-administrativoGeneral': ModalAdministrativoGeneral,
     'modal-administrativo': ModalAdministrativo,
     'modal-manufactura': ModalManufactura,
     'modal-comercial': ModalComercial,
