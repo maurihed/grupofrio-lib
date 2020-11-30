@@ -6,7 +6,8 @@
           <div class="name salario-title">Operador Rolito</div>
           <div class="day-value salario-title">Kilos</div>
           <div class="day-value salario-title">Pago por kilo</div>
-          <div class="day-value salario-title">Comision</div>
+          <!-- <div class="day-value salario-title">Comision</div> -->
+          <div class="day-value salario-title">Puntos</div>
           <div class="day-value salario-title">Eficiencia</div>
           <div class="day-value salario-title">comision final</div>
           <div class="day-value salario-title">Sueldo base</div>
@@ -27,7 +28,8 @@
           <div class="name salario-title">Operador Barra</div>
           <div class="day-value salario-title">Kilos</div>
           <div class="day-value salario-title">Pago por kilo</div>
-          <div class="day-value salario-title">Comision</div>
+          <!-- <div class="day-value salario-title">Comision</div> -->
+          <div class="day-value salario-title">Puntos</div>
           <div class="day-value salario-title">Eficiencia</div>
           <div class="day-value salario-title">comision final</div>
           <div class="day-value salario-title">Sueldo base</div>
@@ -48,7 +50,8 @@
           <div class="name salario-title">Operador Especialista</div>
           <div class="day-value salario-title">Kilos</div>
           <div class="day-value salario-title">Pago por kilo</div>
-          <div class="day-value salario-title">Comision</div>
+          <!-- <div class="day-value salario-title">Comision</div> -->
+          <div class="day-value salario-title">Puntos</div>
           <div class="day-value salario-title">Eficiencia</div>
           <div class="day-value salario-title">comision final</div>
           <div class="day-value salario-title">Sueldo base</div>
@@ -69,7 +72,8 @@
           <div class="name salario-title">Lider de celula de produccion</div>
           <div class="day-value salario-title">Kilos</div>
           <div class="day-value salario-title">Pago por kilo</div>
-          <div class="day-value salario-title">Comision</div>
+          <!-- <div class="day-value salario-title">Comision</div> -->
+          <div class="day-value salario-title">Puntos</div>
           <div class="day-value salario-title">Eficiencia</div>
           <div class="day-value salario-title">comision final</div>
           <div class="day-value salario-title">Sueldo base</div>
@@ -78,7 +82,7 @@
         <row-salario-comision
           v-for="jefeProduccion in jefesProduccion"
           :key="jefeProduccion.UserId"
-          name=""
+          :name="nombrePersonal(jefeProduccion)"
           :kilos="totalKilosLider"
           :eficiencia="eficiencia"
           :precioKilo="precioLider"

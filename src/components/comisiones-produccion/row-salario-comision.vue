@@ -3,7 +3,8 @@
       <div class="name">{{name}}</div>
       <div class="day-value">{{kilos | number}}</div>
       <div class="day-value">{{precioKilo | number}}</div>
-      <div class="day-value">{{comision | money}}</div>
+      <!-- <div class="day-value">{{comision | money}}</div> -->
+      <div class="day-value">{{puntos | number}}</div>
       <div class="day-value" :class="(eficiencia < 50) ? 'wrong-item':'success-item'">{{eficiencia}} %</div>
       <div class="day-value">{{comisionFinal | money}}</div>
       <div class="day-value">{{sueldoBase | money}}</div>
@@ -14,6 +15,9 @@
 export default {
   props:['name', 'kilos', 'precioKilo','eficiencia', 'sueldoBase'],
   computed: {
+    puntos() {
+      return 0;
+    },
     comision() {
       return Number((this.kilos * this.precioKilo).toFixed(2));
     },
