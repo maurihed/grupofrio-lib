@@ -160,7 +160,7 @@
                   <tr>
                     <td>Merma</td>
                     <td class="center" v-for="day in fullDays" :key="day.day">
-                      <span v-if="merma[day.fullDate]">{{merma[day.fullDate].real | number}}</span>
+                      <span v-if="merma[day.fullDate]">{{merma[day.fullDate].real | number}} Kg.</span>
                       </td>
                     <td class="center">
                       <span>{{merma.totalReal | number}}</span>

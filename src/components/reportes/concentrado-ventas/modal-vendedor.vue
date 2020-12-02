@@ -14,7 +14,7 @@
             <div class="titulo">UNIDAD</div>
           </div>
           <div class="modal-header-titulo">
-            <div class="valor">{{comision ? comision*100 : 0}}%</div>
+            <div class="valor">{{comision ? Math.round(comision*1000)/10 : 0}}%</div>
             <div class="titulo">%COMISIÓN</div>
           </div>
         </div>
@@ -45,7 +45,7 @@
             <v-wrapper
               titulo="Captura app"
               valor=""
-              :porcentaje="productividad.substr(0,productividad.length -2)"
+              :porcentaje="capturaApp.substr(0,capturaApp.length -2)"
               :puntos="puntosCapturaApp+''"
             ></v-wrapper>
             <v-wrapper
@@ -259,7 +259,7 @@ export default {
       return Number(puntos > this.puntos['Kilos vendidos'] ? this.puntos['Kilos vendidos'] : puntos);
     },
     puntosCapturaApp() {
-      const eficiencia = this.productividad.substr(0,this.productividad.length -2) * this.puntos['Captura app'] / 100;
+      const eficiencia = this.capturaApp.substr(0,this.capturaApp.length -2) * this.puntos['Captura app'] / 100;
       const puntos = Math.round(eficiencia * 100, 2) / 100;
       return Number(puntos > this.puntos['Captura app'] ? this.puntos['Captura app'] : puntos);
     },
