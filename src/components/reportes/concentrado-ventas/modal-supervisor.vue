@@ -201,7 +201,7 @@ export default {
     },
     async fetchVentaMerma() {
       const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=ventaMermaSemanal`, {
-        fecha: this.fecha, suc: this.suc, week: this.week
+        fecha: this.fecha, suc: this.suc, week: this.week.index
       });
       this.puntos = response.data.puntos;
       this.mermaVenta = response.data.merma;
