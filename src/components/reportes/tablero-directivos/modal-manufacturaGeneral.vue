@@ -1,28 +1,28 @@
 <template>
-  <div id="modalManufactura" class="modal modal-manufactura">
+  <div id="modalManufacturaGeneral" class="modal modal-manufacturaGeneral">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
     <progress-indicator :show="!isLoaded"></progress-indicator>
     <div v-if="isLoaded">
-      <div class="modal-header">
+    <div class="modal-header">
           <div class="modal-header-titulo">
-            <div class="valor">{{dirManufactura}}</div>
+            <!-- <div class="valor">{{dirManufactura}}</div> -->
             <div class="titulo">NOMBRE DIRECTOR MANUFACTURA</div>
           </div>
           <div class="modal-header-titulo border-around">
-            <div class="valor">{{valores.name}}</div>
-            <div class="titulo">SUCURSAL</div>
+            <div class="valor">{{"Todas"}}</div>
+            <div class="titulo">SUCURSALES</div>
           </div>
           <div class="modal-header-titulo">
-            <div class="valor">{{comision*100}}%</div>
+            <!-- <div class="valor">{{comision*100}}%</div> -->
             <div class="titulo">% COMISION</div>
           </div>
         </div>
       <div class="modal-content">
         <div class="flex-column">
-          <div class="modal-manufactura-card">
+          <div class="modal-manufacturaGeneral-card">
             <v-wrapper
                 titulo="Rendimiento de Luz"
                 :porcentaje="datosLuz[index].porcentaje"
@@ -36,30 +36,34 @@
             </v-wrapper>
             <v-wrapper
                 titulo="KG Barra Producidos"
-                :valor="datosProduccion[index].barra.Acumulado| number"
-                :porcentaje="datosProduccion[index].barra.Tendencia | number"
+                :valor="datosProduccionG[index].barra.Acumulado| number"
+                :porcentaje="datosProduccionG[index].barra.Tendencia | number"
               >
             </v-wrapper>
             <v-wrapper
               titulo="Kg Rolito Producidos"
-              :valor="datosProduccion[index].rolito.Acumulado | number"
-              :porcentaje="datosProduccion[index].rolito.Tendencia | number"
+              :valor="datosProduccionG[index].rolito.Acumulado| number"
+              :porcentaje="datosProduccionG[index].rolito.Tendencia | number"
             ></v-wrapper>
             <v-wrapper
               titulo="Kg Total Producidos"
-              :valor="datosProduccion[index].real | number"
-              :porcentaje="datosProduccion[index].porcentaje | number"
+              :valor="datosProduccionG[index].real| number"
+              :porcentaje="datosProduccionG[index].porcentaje| number"
               :puntos="puntosProduccion"
             ></v-wrapper>
+            <!-- <v-wrapper
+              titulo="Kg Total Producidos"
+              :valor="datos | number"
+            ></v-wrapper> -->
           </div>
-          <div class="modal-manufactura-card ">
+          <div class="modal-manufacturaGeneral-card ">
             <v-wrapper
               titulo="Puntos Acumulados"
               :valor="totalPuntos"
             ></v-wrapper>
             <v-wrapper
               titulo="Comisión"
-              :valor="comision_total"
+              :valor="comision_total| money"
             ></v-wrapper>
             <v-wrapper
               titulo="Compensación Variable"
@@ -82,26 +86,24 @@
 <script>
 import vWrapperVue from '../concentrado-ventas/v-wrapper.vue';
 export default {
-  name: 'modal-manufactura',
+  name: 'modal-manufacturaGeneral',
   props: {
     isOpen: {
       type: Boolean,
       default: false,
     },
-    weeks: Object,
-    valores: Object,
     index:Number,
-    suc: String,
     fecha: String,
     onClose: Function,
   },
   data: ()=>({
     isLoaded: false,
-    dirManufactura: '',
-    sueldo_base: 0,
+    // dirManufacturaGeneral: '',
+    sueldo_base: 5000,
     comision: 0,
     puntos: {},
     comisionVenta: 3000,
+    datos:{},
   }),
   methods: {
     onModalClose() {
@@ -127,42 +129,44 @@ export default {
       return Number(puntos > this.puntos[name] ? this.puntos[name] : puntos);
     },
     async onModalOpen() {
-      await this.fetchAdminInfo();
+      // await this.fetchAdminInfo();
       await this.fetchAllData();
       this.isLoaded = true;
     },
-    async fetchAdminInfo() {
-      const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=getDetalleManufactura`, {
-        fecha: this.fecha,  weeks: this.weeks.index,suc: this.suc
-      });
-      const {
-        dirManufactura, sueldo_base, comision, puntos,
-        } = response.data;
-      this.dirManufactura = dirManufactura;
-      this.sueldo_base = sueldo_base;
-      this.comision = comision;
-      this.puntos = puntos;
-    },
+    // async fetchAdminInfo() {
+    //   const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=getDetalleManufacturaGeneral`, {
+    //     fecha: this.fecha,  weeks: this.weeks.index,suc: this.suc
+    //   });
+    //   const {
+    //     dirManufacturaGeneral, sueldo_base, comision, puntos,
+    //     } = response.data;
+    //   this.dirManufacturaGeneral = dirManufactura;
+    //   this.sueldo_base = sueldo_base;
+    //   this.comision = comision;
+    //   this.puntos = puntos;
+    // },
     async fetchAllData(){
-      const rData = await axios.post(`${env.REPORTES_CONCENTRADO}?option=gerente`, { fecha: this.fecha, suc: this.suc });
+      const rData = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=manufacturaGeneral`, { fecha: this.fecha });
       this.datos = rData.data;
-      this.datosLuz = Object.values(this.datos['Rendimiento luz']);
-      this.datosAgua= Object.values(this.datos['Rendimiento agua']);
-      this.datosProduccion= Object.values(this.datos['Produccion']);
+      this.datosProduccionG= Object.values(this.datos['ProduccionGeneral']);
+      this.datosLuz= Object.values(this.datos['RendimientoLuz']);
+      this.datosAgua= Object.values(this.datos['RendimientoAgua']);
+      this.puntos=this.puntos =  this.datos.puntos;
+      // console.log(this.puntos =  this.datos.puntos);
     },
   },
   mounted() {
-    M.Modal.init(document.getElementById('modalManufactura'), {
+    M.Modal.init(document.getElementById('modalManufacturaGeneral'), {
       onCloseEnd: this.onModalClose,
     });
   },
   watch: {
     isOpen() {
       if (this.isOpen) {
-        M.Modal.getInstance(document.getElementById('modalManufactura')).open()
+        M.Modal.getInstance(document.getElementById('modalManufacturaGeneral')).open()
         this.onModalOpen();
       } else {
-        M.Modal.getInstance(document.getElementById('modalManufactura')).close()
+        M.Modal.getInstance(document.getElementById('modalManufacturaGeneral')).close()
       }
     },
   },
@@ -174,8 +178,8 @@ export default {
       return 0;
     },
     puntosProduccion() {
-      if(this.getPuntos(this.datosProduccion[this.index].porcentaje, 'Produccion') >= 0){
-        return this.getPuntos(this.datosProduccion[this.index].porcentaje, 'Produccion');
+      if(this.getPuntos(this.datosProduccionG[this.index].porcentaje, 'Produccion') >= 0){
+        return this.getPuntos(this.datosProduccionG[this.index].porcentaje, 'Produccion');
       }
       return 0;
     },
@@ -210,7 +214,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .modal-manufactura {
+  .modal-manufacturaGeneral {
     border: 2px solid #2d3a8d;
     border-radius: 10px;
     overflow: hidden !important;
@@ -251,7 +255,7 @@ export default {
       flex-direction: column;
       flex-wrap: wrap;
     }
-    .modal-manufactura-card {
+    .modal-manufacturaGeneral-card {
       border: 3px solid #2d3a8d;
       background: #F3F7FF;
       padding: 0;

@@ -12,8 +12,8 @@
             <div class="titulo">NOMBRE DEL DIRECTOR</div>
           </div>
           <div class="modal-header-titulo border-around">
-            <!-- <div class="valor">{{camionetas}}</div> -->
-            <div class="titulo">SUCURSALES</div>
+            <div class="valor">{{valores.name}}</div>
+            <div class="titulo">SUCURSAL</div>
           </div>
           <div class="modal-header-titulo">
             <div class="valor">{{comision*100}}%</div>
@@ -23,6 +23,54 @@
       <div class="modal-content">
         <div class="flex-column">
           <div class="modal-administrativo-card">
+            <v-wrapper
+                titulo="Costos"
+                :valor="costos.real| money"
+                :porcentaje="getPorcentaje(costos.meta, costos.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="Gastos Fijos"
+                :valor="gastosFijos.real| money"
+                :porcentaje="getPorcentaje(gastosFijos.meta, gastosFijos.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="Gastos de Operación"
+                :valor="gastosOperativos.real| money"
+                :porcentaje="getPorcentaje(gastosOperativos.meta, gastosOperativos.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="  Planta"
+                :valor="planta.real| money"
+                :porcentaje="getPorcentaje(planta.meta, planta.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="Distribución"
+                :valor="distribucion.real| money"
+                :porcentaje="getPorcentaje(distribucion.meta, distribucion.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="Administrativos"
+                :valor="administrativos.real| money"
+                :porcentaje="getPorcentaje(administrativos.meta, administrativos.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="Gastos Financieros"
+                :valor="financieros.real| money"
+                :porcentaje="getPorcentaje(financieros.meta, financieros.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="Gastos Impuestos"
+                :valor="impuestos.real| money"
+                :porcentaje="getPorcentaje(impuestos.meta, impuestos.real)"
+              >
+            </v-wrapper>
             <v-wrapper
                 titulo="Gastos Totales"
                 :valor="valores.real| money"
@@ -44,7 +92,7 @@
             </v-wrapper>
             <v-wrapper
               titulo="Comisión"
-              :valor="comision_total"
+              :valor="comision_total| money"
             >
             </v-wrapper>
             <v-wrapper
@@ -89,6 +137,15 @@ export default {
     sueldo_base: 0,
     comision: 0,
     comisionVenta: 3000,
+    costos:0,
+    gastosFijos:0,
+    distribucion:0,
+    administrativos:0,
+    financieros:0,
+    planta:0,
+    financieros:0,
+    impuestos:0,
+    gastosOperativos:0,
   }),
   methods: {
     onModalClose() {
@@ -109,7 +166,9 @@ export default {
     },
     async onModalOpen() {
       await this.fetchAdminInfo();
+      await this.gastos();
       this.isLoaded = true;
+      // console.log(this.valores);
     },
     async fetchAdminInfo() {
       const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=getDetalleAdministrativo`, {
@@ -121,6 +180,25 @@ export default {
       this.comision = comision;
       this.variable = variable;
     },
+    async gastos() {
+      const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=gastosPorCategoria`, {
+        fecha: this.fecha,suc: this.suc,
+      });
+      const {costos, gastosFijos, distribucion, administrativos, planta, financieros, impuestos, gastosOperativos} = response.data;
+      this.datos = response.data;
+      this.costos = costos;
+      this.gastosFijos = gastosFijos;
+      this.distribucion = distribucion;
+      this.administrativos = administrativos;
+      this.planta = planta;
+      this.financieros = financieros;
+      this.impuestos = impuestos;
+      this.gastosOperativos = gastosOperativos;
+      // console.log(this.datos);
+      // this.costos= Object.values(this.datos['costos']);
+      // console.log(this.costos.meta);
+    },
+
   },
   mounted() {
     M.Modal.init(document.getElementById('modalAdministrativo'), {

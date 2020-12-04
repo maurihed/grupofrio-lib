@@ -13,7 +13,8 @@
           </div>
           <div class="modal-header-titulo border-around">
             <!-- <div class="valor">{{camionetas}}</div> -->
-            <div class="titulo">SUCURSALES</div>
+            <div class="valor">{{valores.name}}</div>
+            <div class="titulo">SUCURSAL</div>
           </div>
           <div class="modal-header-titulo">
             <div class="valor">{{comision*100}}%</div>
@@ -49,13 +50,13 @@
             </v-wrapper>
             <v-wrapper
               titulo="Merma venta 2 %"
-              :valor="mermaVenta.real"
+              :valor="mermaVenta.real| number"
               :porcentaje="mermaVenta.porcentaje"
               :puntos="puntosMermaVenta"
             ></v-wrapper>
             <v-wrapper
               titulo="Combustible"
-              :valor="combustible"
+              :valor="combustible| money"
               :porcentaje="combustiblePromedio"
               :puntos="puntosCombustible"
             >
@@ -68,7 +69,7 @@
             ></v-wrapper>
             <v-wrapper
               titulo="Comisión"
-              :valor="comision_total"
+              :valor="comision_total| money"
             ></v-wrapper>
             <v-wrapper
               titulo="Compensación Variable"
@@ -135,7 +136,8 @@ export default {
     },
     getPuntos(porcentaje, name) {
       const eficiencia = porcentaje * this.puntos[name] / 100;
-      return Math.round(eficiencia * 100, 2) / 100;
+      const puntos =  Math.round(eficiencia * 100, 2) / 100;
+      return Number(puntos > this.puntos[name] ? this.puntos[name] : puntos);
     },
     async onModalOpen() {
       await this.fetchdirComercialInfo();
@@ -220,8 +222,11 @@ export default {
       return 0;
     },
     puntosMermaVenta() {
-      if(this.getPuntos(this.mermaVenta.porcentaje, 'Merma') >= 0){
-        return this.getPuntos(this.mermaVenta.porcentaje, 'Merma');
+      const porc= this.mermaVenta.porcentaje;
+      if(porc <=2){
+        if(this.getPuntos(porc, 'Merma') >= 0){
+          return this.getPuntos(100, 'Merma');
+        }
       }
       return 0;
     },

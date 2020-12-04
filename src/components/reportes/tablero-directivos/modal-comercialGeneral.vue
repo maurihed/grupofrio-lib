@@ -1,69 +1,84 @@
 <template>
-  <div id="modalManufactura" class="modal modal-manufactura">
+  <div id="modalComercialGeneral" class="modal modal-comercialGeneral">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
     <br v-if="!isLoaded">
     <progress-indicator :show="!isLoaded"></progress-indicator>
     <div v-if="isLoaded">
-      <div class="modal-header">
+    <div class="modal-header">
           <div class="modal-header-titulo">
-            <div class="valor">{{dirManufactura}}</div>
+            <!-- <div class="valor">{{dirManufactura}}</div> -->
             <div class="titulo">NOMBRE DIRECTOR MANUFACTURA</div>
           </div>
           <div class="modal-header-titulo border-around">
-            <div class="valor">{{valores.name}}</div>
-            <div class="titulo">SUCURSAL</div>
+            <div class="valor">{{"Todas"}}</div>
+            <div class="titulo">SUCURSALES</div>
           </div>
           <div class="modal-header-titulo">
-            <div class="valor">{{comision*100}}%</div>
+            <!-- <div class="valor">{{comision*100}}%</div> -->
             <div class="titulo">% COMISION</div>
           </div>
         </div>
       <div class="modal-content">
         <div class="flex-column">
-          <div class="modal-manufactura-card">
-            <v-wrapper
-                titulo="Rendimiento de Luz"
-                :porcentaje="datosLuz[index].porcentaje"
-              >
-            </v-wrapper>
-            <v-wrapper
-                titulo="Rendimiento de Agua"
-                :porcentaje="datosAgua[index].porcentaje"
-                :puntos="puntosRendimientoAgua"
-              >
-            </v-wrapper>
-            <v-wrapper
-                titulo="KG Barra Producidos"
-                :valor="datosProduccion[index].barra.Acumulado| number"
-                :porcentaje="datosProduccion[index].barra.Tendencia | number"
-              >
-            </v-wrapper>
-            <v-wrapper
-              titulo="Kg Rolito Producidos"
-              :valor="datosProduccion[index].rolito.Acumulado | number"
-              :porcentaje="datosProduccion[index].rolito.Tendencia | number"
-            ></v-wrapper>
-            <v-wrapper
+          <div class="modal-comercialGeneral-card">
+            <!-- <v-wrapper
               titulo="Kg Total Producidos"
-              :valor="datosProduccion[index].real | number"
-              :porcentaje="datosProduccion[index].porcentaje | number"
+              :valor="datosProduccionG[index].real| number"
+              :porcentaje="datosProduccionG[index].porcentaje| number"
               :puntos="puntosProduccion"
+            ></v-wrapper> -->
+            <v-wrapper
+              titulo="Productividad"
+              :porcentaje="datosProductividad[index].porcentaje"
+              >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Importe Vendido"
+              :valor="datosIngresos[index].real| money"
+              :porcentaje="datosIngresos[index].porcentaje"
+              :puntos="puntosImporte"
+              >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Kilos Vendidos"
+              :valor="datosKilos[index].real| number"
+              :porcentaje="datosKilos[index].porcentaje"
+              :puntos="puntosKilos"
+              >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Efectividad"
+              :porcentaje="datosEfectividad[index].porcentaje"
+              >
+            </v-wrapper>
+            <v-wrapper
+              titulo="Merma venta 2 %"
+              :valor="datosMerma[index].real| number"
+              :porcentaje="datosMerma[index].porcentaje"
+              :puntos="puntosMermaVenta"
             ></v-wrapper>
+            <v-wrapper
+              titulo="Combustible"
+              :valor="datosCombustible[index].gastado| money"
+              :porcentaje="datosCombustible[index].promedio"
+              :puntos="puntosCombustible"
+            >
+            </v-wrapper>
           </div>
-          <div class="modal-manufactura-card ">
+          <div class="modal-comercialGeneral-card ">
             <v-wrapper
               titulo="Puntos Acumulados"
               :valor="totalPuntos"
             ></v-wrapper>
             <v-wrapper
               titulo="Comisión"
-              :valor="comision_total"
+              :valor="comision_total| money"
             ></v-wrapper>
             <v-wrapper
               titulo="Compensación Variable"
-              :valor="compensacionVariable | money"
+              :valor="compensacionVariable | money| money"
             ></v-wrapper>
             <v-wrapper
               titulo="Nómina base"
@@ -82,26 +97,24 @@
 <script>
 import vWrapperVue from '../concentrado-ventas/v-wrapper.vue';
 export default {
-  name: 'modal-manufactura',
+  name: 'modal-comercialGeneral',
   props: {
     isOpen: {
       type: Boolean,
       default: false,
     },
-    weeks: Object,
-    valores: Object,
     index:Number,
-    suc: String,
     fecha: String,
     onClose: Function,
   },
   data: ()=>({
     isLoaded: false,
-    dirManufactura: '',
-    sueldo_base: 0,
+    // dirManufacturaGeneral: '',
+    sueldo_base: 5000,
     comision: 0,
     puntos: {},
     comisionVenta: 3000,
+    datos:{},
   }),
   methods: {
     onModalClose() {
@@ -127,67 +140,77 @@ export default {
       return Number(puntos > this.puntos[name] ? this.puntos[name] : puntos);
     },
     async onModalOpen() {
-      await this.fetchAdminInfo();
+      // await this.fetchAdminInfo();
       await this.fetchAllData();
       this.isLoaded = true;
     },
-    async fetchAdminInfo() {
-      const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=getDetalleManufactura`, {
-        fecha: this.fecha,  weeks: this.weeks.index,suc: this.suc
-      });
-      const {
-        dirManufactura, sueldo_base, comision, puntos,
-        } = response.data;
-      this.dirManufactura = dirManufactura;
-      this.sueldo_base = sueldo_base;
-      this.comision = comision;
-      this.puntos = puntos;
-    },
     async fetchAllData(){
-      const rData = await axios.post(`${env.REPORTES_CONCENTRADO}?option=gerente`, { fecha: this.fecha, suc: this.suc });
+      const rData = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=comercialGeneral`, { fecha: this.fecha });
       this.datos = rData.data;
-      this.datosLuz = Object.values(this.datos['Rendimiento luz']);
-      this.datosAgua= Object.values(this.datos['Rendimiento agua']);
-      this.datosProduccion= Object.values(this.datos['Produccion']);
+      this.datosProductividad= Object.values(this.datos['ProductividadGeneral']);
+      this.datosCombustible= Object.values(this.datos['combustibleGeneral']);
+      this.datosIngresos= Object.values(this.datos['ingresosGeneral']);
+      this.datosKilos= Object.values(this.datos['kilosGeneral']);
+      this.datosEfectividad= Object.values(this.datos['efectividadGeneral']);
+      this.datosMerma= Object.values(this.datos['mermaGeneral']);
+      this.puntos=this.puntos =  this.datos.puntos;
+      // console.log(this.puntos =  this.datos.puntos);
     },
   },
   mounted() {
-    M.Modal.init(document.getElementById('modalManufactura'), {
+    M.Modal.init(document.getElementById('modalComercialGeneral'), {
       onCloseEnd: this.onModalClose,
     });
   },
   watch: {
     isOpen() {
       if (this.isOpen) {
-        M.Modal.getInstance(document.getElementById('modalManufactura')).open()
+        M.Modal.getInstance(document.getElementById('modalComercialGeneral')).open()
         this.onModalOpen();
       } else {
-        M.Modal.getInstance(document.getElementById('modalManufactura')).close()
+        M.Modal.getInstance(document.getElementById('modalComercialGeneral')).close()
       }
     },
   },
   computed: {
-    puntosRendimientoAgua() {
-      if(this.getPuntos(this.datosAgua[this.index].porcentaje, 'Rendimiento Agua') >= 0){
-        return this.getPuntos(this.datosAgua[this.index].porcentaje, 'Rendimiento Agua');
+    puntosImporte() {
+      if(this.getPuntos(this.datosIngresos[this.index].porcentaje, 'Importe') >= 0){
+        return this.getPuntos(this.datosIngresos[this.index].porcentaje, 'Importe');
       }
       return 0;
     },
-    puntosProduccion() {
-      if(this.getPuntos(this.datosProduccion[this.index].porcentaje, 'Produccion') >= 0){
-        return this.getPuntos(this.datosProduccion[this.index].porcentaje, 'Produccion');
+    puntosKilos() {
+      if(this.getPuntos(this.datosKilos[this.index].porcentaje, 'Kilos') >= 0){
+        return this.getPuntos(this.datosKilos[this.index].porcentaje, 'Kilos');
+      }
+      return 0;
+    },
+    puntosCombustible() {
+      if(this.getPuntos(this.datosCombustible[this.index].promedio, 'Combustible') >= 0){
+        return this.getPuntos(this.datosCombustible[this.index].promedio, 'Combustible');
+      }
+      return 9;
+      return 0;
+    },
+    puntosMermaVenta() {
+      if(this.datosMerma[this.index].porcentaje <= 2 ){
+        if(this.getPuntos(this.datosMerma[this.index].porcentaje, 'Merma') >= 0 ){
+          return this.getPuntos(100, 'Merma');
+        }
       }
       return 0;
     },
     totalPuntos() {
       const puntos = 
-      this.puntosRendimientoAgua +
-      this.puntosProduccion;
+      this.puntosImporte +
+      this.puntosKilos +
+      this.puntosCombustible +
+      this.puntosMermaVenta;
       return Math.round(puntos*10)/10;
     },
     compensacionVariable() {
-      const electrica = this.datosLuz[this.index].porcentaje
-      if(electrica > 90) {
+      const productividad = this.datosProductividad[this.index].porcentaje;
+      if(productividad > 95) {
         return Math.round(this.comisionVenta * this.totalPuntos/100);
       }
       return 0;
@@ -197,7 +220,7 @@ export default {
       // return this.valores.real * this.comision;
     },
     total() {
-      if (this.datosLuz[this.index].porcentaje  > 90) {
+      if (this.datosProductividad[this.index].porcentaje > 95) {
         return Math.round(Number(this.sueldo_base)+this.compensacionVariable, 2);
       }
       return Number(this.sueldo_base);
@@ -210,7 +233,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .modal-manufactura {
+  .modal-comercialGeneral {
     border: 2px solid #2d3a8d;
     border-radius: 10px;
     overflow: hidden !important;
@@ -251,7 +274,7 @@ export default {
       flex-direction: column;
       flex-wrap: wrap;
     }
-    .modal-manufactura-card {
+    .modal-comercialGeneral-card {
       border: 3px solid #2d3a8d;
       background: #F3F7FF;
       padding: 0;

@@ -8,10 +8,11 @@
     <div v-if="isLoaded">
       <div class="modal-header">
           <div class="modal-header-titulo">
-            <div class="valor">{{""}}</div>
+            <div class="valor">{{mesNombre}}</div>
           </div>
           <div class="modal-header-titulo border-around">
-            <div class="valor">{{mesNombre}}</div>
+            <div class="valor">{{"Todas"}}</div>
+            <div class="titulo">SUCURSALES</div>
           </div>
           <div class="modal-header-titulo">
             <div class="valor">{{" "}}</div>
@@ -20,6 +21,54 @@
       <div class="modal-content">
         <div class="flex-column">
           <div class="modal-administrativoGeneral-card">
+            <v-wrapper
+                titulo="Costos"
+                :valor="costos.real| money"
+                :porcentaje="getPorcentaje(costos.meta, costos.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="Gastos Fijos"
+                :valor="gastosFijos.real| money"
+                :porcentaje="getPorcentaje(gastosFijos.meta, gastosFijos.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="Gastos de Operación"
+                :valor="gastosOperativos.real| money"
+                :porcentaje="getPorcentaje(gastosOperativos.meta, gastosOperativos.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="  Planta"
+                :valor="planta.real| money"
+                :porcentaje="getPorcentaje(planta.meta, planta.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="Distribución"
+                :valor="distribucion.real| money"
+                :porcentaje="getPorcentaje(distribucion.meta, distribucion.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="Administrativos"
+                :valor="administrativos.real| money"
+                :porcentaje="getPorcentaje(administrativos.meta, administrativos.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="Gastos Financieros"
+                :valor="financieros.real| money"
+                :porcentaje="getPorcentaje(financieros.meta, financieros.real)"
+              >
+            </v-wrapper>
+            <v-wrapper
+                titulo="Gastos Impuestos"
+                :valor="impuestos.real| money"
+                :porcentaje="getPorcentaje(impuestos.meta, impuestos.real)"
+              >
+            </v-wrapper>
             <v-wrapper
                 titulo="Gastos Totales"
                 :valor="real| money"
@@ -56,6 +105,7 @@ export default {
     isLoaded: false,
     real: 0,
     meta: 0,
+    suc:'',
   }),
   methods: {
     onModalClose() {
@@ -76,6 +126,7 @@ export default {
     },
     async onModalOpen() {
       await this.gastosMesAdministrativo();
+      await this.gastos();
       this.isLoaded = true;
     },
     async gastosMesAdministrativo() {
@@ -85,6 +136,21 @@ export default {
       const {real, meta} = response.data;
       this.real = real;
       this.meta = meta;
+    },
+    async gastos() {
+      const response = await axios.post(`${env.TABLERO_DIRECTIVOS}?option=gastosPorCategoria`, {
+        fecha: this.fecha,suc: this.suc,
+      });
+      const {costos, gastosFijos, distribucion, administrativos, planta, financieros, impuestos, gastosOperativos} = response.data;
+      this.datos = response.data;
+      this.costos = costos;
+      this.gastosFijos = gastosFijos;
+      this.distribucion = distribucion;
+      this.administrativos = administrativos;
+      this.planta = planta;
+      this.financieros = financieros;
+      this.impuestos = impuestos;
+      this.gastosOperativos = gastosOperativos;
     },
   },
   mounted() {

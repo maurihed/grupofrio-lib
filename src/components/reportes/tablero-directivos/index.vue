@@ -138,7 +138,8 @@
                   <thead>
                     <tr>
                       <th>&nbsp;</th>
-                      <th class="cursor-pointer" v-for="(weeks, index) in getWeeks()" :key="index" >{{weeks}}</th>
+                      <th class="cursor-pointer"  @click="openComercialGeneralModal(index)" v-for="(weeks, index) in getWeeks()" :key="index" >{{weeks}}</th>
+                      <!-- <th class="cursor-pointer" v-for="(weeks, index) in getWeeks()" :key="index" >{{weeks}}</th> -->
                     </tr>
                   </thead>
                   <tbody>
@@ -167,7 +168,7 @@
                   <thead>
                     <tr>
                       <th>&nbsp;</th>
-                      <th class="cursor-pointer" v-for="(weeks, index) in getWeeksManufactura()" :key="index" >{{weeks}}</th>
+                      <th class="cursor-pointer" @click="openManufacturaGeneralModal(index)"  v-for="(weeks, index) in getWeeksManufactura()" :key="index" >{{weeks}}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -242,6 +243,13 @@
           :index="i"
         >
         </modal-manufactura>
+        <modal-manufacturaGeneral
+          :isOpen="isManufacturaGeneralModalOpen"
+          :onClose="onCloseManufacturaGeneralModal"
+          :fecha="fecha"
+          :index="i"
+        >
+        </modal-manufacturaGeneral>
         <modal-comercial
           :isOpen="isComercialModalOpen"
           :weeks="weekSelected"
@@ -252,6 +260,13 @@
           :index="i"
         >
         </modal-comercial>
+        <modal-comercialGeneral
+          :isOpen="isComercialGeneralModalOpen"
+          :onClose="onCloseComercialGeneralModal"
+          :fecha="fecha"
+          :index="i"
+        >
+        </modal-comercialGeneral>
       </div>
     </div>
   </div>
@@ -262,7 +277,9 @@
 import ModalAdministrativoGeneral from './modal-administrativoGeneral.vue';
 import ModalAdministrativo from './modal-administrativo.vue';
 import ModalManufactura from './modal-manufactura.vue';
+import ModalManufacturaGeneral from './modal-manufacturaGeneral.vue';
 import ModalComercial from './modal-comercial.vue';
+import ModalComercialGeneral from './modal-comercialGeneral.vue';
 import tablaCeldaVue from './tabla-celda.vue';
 export default {
   name:'tablero-directivos',
@@ -278,7 +295,9 @@ export default {
       isAdministrativoModalOpen: false,
       isAdministrativoGeneralModalOpen: false,
       isManufacturaModalOpen: false,
+      isManufacturaGeneralModalOpen: false,
       isComercialModalOpen: false,
+      isComercialGeneralModalOpen: false,
       weekSelected: {},
       arrValores:{},
       nombreSuc:'',
@@ -402,6 +421,14 @@ export default {
     onCloseManufacturaModal() {
       this.isManufacturaModalOpen = false;
     },
+    openManufacturaGeneralModal(index) {
+      this.isManufacturaGeneralModalOpen = true;
+      this.i = index;
+      // console.log("uuuu", this.i);
+    },
+    onCloseManufacturaGeneralModal() {
+      this.isManufacturaGeneralModalOpen = false;
+    },
     openComercialModal(index, val, nom) {
       const newWeekSelected = {};
       Object.entries(this.comercial).forEach(([name, val])=>{
@@ -417,13 +444,23 @@ export default {
     onCloseComercialModal() {
       this.isComercialModalOpen = false;
     },
+    openComercialGeneralModal(index) {
+      this.isComercialGeneralModalOpen = true;
+      this.i = index;
+      console.log("uuuu", this.i);
+    },
+    onCloseComercialGeneralModal() {
+      this.isComercialGeneralModalOpen = false;
+    },
   },
   components: {
     'tabla-celda': tablaCeldaVue,
     'modal-administrativoGeneral': ModalAdministrativoGeneral,
     'modal-administrativo': ModalAdministrativo,
     'modal-manufactura': ModalManufactura,
+    'modal-manufacturaGeneral': ModalManufacturaGeneral,
     'modal-comercial': ModalComercial,
+    'modal-comercialGeneral': ModalComercialGeneral,
   },
 }
 </script>
