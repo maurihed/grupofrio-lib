@@ -7,7 +7,7 @@
       <div class="col s12">
         <div class="card">
           <div class="row mb-0">
-            <div class="col s6">
+            <div class="col s6 mb-1">
               <div class="custom-card">
                 <div class="custom-card-header"><i class="material-icons">attach_money</i> VENTA</div>
                 <div class="custom-card-body" v-if="isLoaded">
@@ -36,7 +36,7 @@
                 </div>
               </div>
             </div>
-            <div class="col s6">
+            <div class="col s6 mb-1">
               <div class="custom-card">
                 <div class="custom-card-header"><i class="material-icons">attach_money</i> PRODUCCIÓN</div>
                 <div class="custom-card-body" v-if="isLoaded">
@@ -60,6 +60,32 @@
                       <span class="mb-1 w-100 text-bold text-primary">Tendencia</span>
                       <span class="mb-1 w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.barra.Tendencia)">{{acumulado.Produccion.barra.Tendencia | number}}%</span>
                       <span class="w-100 acumulado-text" :class="getStateClass(acumulado.Produccion.rolito.Tendencia)">{{acumulado.Produccion.rolito.Tendencia | number}}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col s6">
+              <div class="custom-card">
+                <div class="custom-card-header"><i class="material-icons">attach_money</i> GASTOS</div>
+                <progress-indicator :show="loadingGastos"></progress-indicator>
+                <div class="custom-card-body" v-if="!loadingGastos">
+                  <div class="card-row">
+                    <div class="p-1">
+                      <div class="mb-1">&nbsp;</div>
+                      <div class="center mb-2"><span class="text-bold text-primary">$</span></div>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Acumulado</span>
+                      <span class="mb-1 w-100 neutro acumulado-text">{{gastos.Acumulado | money}}</span>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">Meta</span>
+                      <span class="mb-1 w-100 bueno acumulado-text">{{gastos.Meta | money}}</span>
+                    </div>
+                    <div class="p-1">
+                      <span class="mb-1 w-100 text-bold text-primary">%</span>
+                      <span class="mb-1 w-100 acumulado-text" :class="getStateClass(calcularPorcentaje(gastos.Acumulado, gastos.Meta))">{{calcularPorcentaje(gastos.Acumulado, gastos.Meta) | number}}%</span>
                     </div>
                   </div>
                 </div>
@@ -430,6 +456,7 @@ export default {
     loadingProduccion: true,
     loadingGerente: true,
     loadingAdmin: true,
+    loadingGastos: true,
     loadingSupervisor: true,
     supervisor: {},
     weekdays: [],
@@ -443,6 +470,7 @@ export default {
     acumulado: {},
     vendedores: [],
     topics: ['Vendidos', 'Productividad', 'Captura App', 'Km x litro'],
+    gastos: {},
   }),
   async created() {
     this.weekDays = getWeekDays(this.fecha);
@@ -455,6 +483,7 @@ export default {
       this.fetchGerente(),
       this.fetchSupervisor(),
       this.fetchAdmin(),
+      this.fetchGastos(),
     ]);
   },
   updated() {
@@ -489,6 +518,11 @@ export default {
       const rAdministrativo = await axios.post(`${env.REPORTES_CONCENTRADO}?option=administrativo`, { fecha: this.fecha, suc: this.suc });
       this.administrativo = rAdministrativo.data;
       this.loadingAdmin=false;
+    },
+    async fetchGastos(){
+      const rAdministrativo = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getGastosSucursal`, { fecha: this.fecha, suc: this.suc });
+      this.gastos = rAdministrativo.data;
+      this.loadingGastos=false;
     },
     getVentasRow(fecha) {
       return this.ventas[fecha];
@@ -770,6 +804,15 @@ export default {
       const porcentaje = dato.meta > 0 ? Math.floor((dato.real/dato.meta)*100) : 0
       return `${porcentaje} %`;
     },
+    calcularPorcentaje(real, meta) {
+      meta = Number(meta);
+      real = Number(real);
+      if ((meta) <= 0) {
+        return 0;
+      }
+      const porcentaje = real / meta;
+      return Math.round(porcentaje);
+    }
   },
   components: {
     'tabla-celda': tablaCeldaVue,
