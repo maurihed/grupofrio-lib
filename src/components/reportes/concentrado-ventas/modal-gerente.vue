@@ -230,13 +230,13 @@ export default {
       return this.getPuntos(this.week.Produccion.porcentaje, 'Produccion');
     },
     totalPuntos() {
-      const puntos = this.puntosImporte
-        + this.puntosCapturaApp
-        + this.puntosMerma
-        + this.puntosClientesR
-        + this.puntosRendimientoLuz
-        + this.puntosRendimientoAgua
-        + this.puntosTotalProducidos;
+      const puntos = Number(this.puntosImporte)
+        + Number(this.puntosCapturaApp)
+        + Number(this.puntosMerma)
+        + Number(this.puntosClientesR)
+        + Number(this.puntosRendimientoLuz)
+        + Number(this.puntosRendimientoAgua)
+        + Number(this.puntosTotalProducidos);
       return Math.round(puntos*10)/10;
     },
     compensacionVariable() {

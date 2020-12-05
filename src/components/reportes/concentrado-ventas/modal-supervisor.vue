@@ -251,12 +251,12 @@ export default {
       return this.getPuntos(this.getPorcentaje(this.kgRecorridos, this.rendimiento), 'Combustible');
     },
     totalPuntos() {
-      const total =  this.puntosIngresos
-              + this.puntosKilos
-              + this.puntosCapturaApp
-              + this.puntosMerma
-              + this.puntosClientesR
-              + this.puntosRendimiento;
+      const total =  Number(this.puntosIngresos)
+              + Number(this.puntosKilos)
+              + Number(this.puntosCapturaApp)
+              + Number(this.puntosMerma)
+              + Number(this.puntosClientesR)
+              + Number(this.puntosRendimiento);
       return Math.round(total*100)/100;
     },
     compensacionVariable() {

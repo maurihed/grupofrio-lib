@@ -73,7 +73,7 @@
               titulo="Rendimiento unidad"
               :valor="rendimiento | number"
               unidades="Km/Lts."
-              :porcentaje="getPorcentaje(dataVendedor.kmxlitro.real, dataVendedor.kmxlitro.real)+''"
+              :porcentaje="getPorcentaje(dataVendedor.kmxlitro.real, dataVendedor.kmxlitro.meta)+''"
               :puntos="puntosCombustible+''"
             ></v-wrapper>
             <v-wrapper
@@ -278,12 +278,12 @@ export default {
       return Number(this.mermaVenta.porcentaje <= 2 ? this.puntos['Merma venta'] : 0);
     },
     totalPuntos() {
-      const total = this.puntosEfectividad
-        + this.puntosKilosVendidos
-        + this.puntosCapturaApp
-        + this.puntosCombustible
-        + this.puntosMermaVenta
-        + this.puntosClientesRecuperados;
+      const total = Number(this.puntosEfectividad)
+        + Number(this.puntosKilosVendidos)
+        + Number(this.puntosCapturaApp)
+        + Number(this.puntosCombustible)
+        + Number(this.puntosMermaVenta)
+        + Number(this.puntosClientesRecuperados);
       return Math.round(total * 100, 2) / 100;
     },
     compensacionVariable() {
