@@ -16,6 +16,7 @@ module.exports = ({ mode }, defines) => {
     REPORTES_CONCENTRADO: JSON.stringify(`${BASE_URL}/reportes/concentrado.php`),
     TABLERO_DIRECTIVOS: JSON.stringify(`${BASE_URL}/reportes/directivos/index.php`),
     CRUD_KPI: JSON.stringify(`${BASE_URL}/reportes/crudPuntos.php`),
+    CONFIGURACION_TURNO_VARIABLES: JSON.stringify(`${BASE_URL}/configuracion/turnoVariableComision.php`),
   };
   
   return {

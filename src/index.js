@@ -15,6 +15,14 @@ Vue.filter('number', function (value) {
   if (!value) return 0;
   return new Intl.NumberFormat("es-MX").format(value);
 })
+Vue.filter('hour', function (value) {
+  if (!value) return '';
+  const [hours, minutes] = value.split(':');
+  const meridian = hours < 12 ? 'AM': 'PM'; 
+  let hour = hours%12;
+  hour = hour == 0 ? 12 : hour;
+  return `${hour}:${minutes} ${meridian}`;
+})
 // Vue components
 Vue.component('vue-button', require('./button.vue').default)
 Vue.component('progress-indicator', require('./components/common/progress-indicator.vue').default)
@@ -31,6 +39,7 @@ Vue.component('turno-empleado', require('./components/configuracion/turnos/turno
 Vue.component('turno-timer', require('./components/configuracion/turnos/timer.vue').default)
 Vue.component('variables-comisiones-produccion', require('./components/comisiones-produccion/variables.vue').default)
 Vue.component('comisiones-produccion', require('./components/comisiones-produccion/comisiones.vue').default)
+Vue.component('turnos-variables', require('./components/configuracion/turnos-variables/index.vue').default)
 // --Fallas produccion--
 Vue.component('fallas-produccion', require('./components/produccion/fallas.vue').default);
 // -- Produccion --
