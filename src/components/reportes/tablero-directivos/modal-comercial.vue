@@ -178,7 +178,7 @@ export default {
       this.combustiblePromedio = promedio;
     },
     async fetchMerma() {
-      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getDetalleGerente`, {
+      const response = await axios.post(`${env.REPORTES_CONCENTRADO}?option=getDetalleGerenteDirectivos`, {
         fecha: this.fecha, suc: this.suc, week: this.weeks.index
       });
       const {
