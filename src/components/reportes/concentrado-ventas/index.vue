@@ -626,9 +626,6 @@ export default {
         meta: 0,
       });
       if (name == 'kmxlitro') {
-        if(vendedor == 'EMP1716[U00219] - JOSUE JOAB FABIAN ABUNDIO') {
-          console.log(this.ventas, val, this.workedDays[vendedor]);
-        }
         val.real /= this.workedDays[vendedor];
         val.real = Math.ceil(val.real*10)/10;
         val.meta /= this.workedDays[vendedor];
@@ -807,10 +804,10 @@ export default {
     calcularPorcentaje(real, meta) {
       meta = Number(meta);
       real = Number(real);
-      if ((meta) <= 0) {
+      if (meta <= 0) {
         return 0;
       }
-      const porcentaje = real / meta;
+      const porcentaje = real / meta * 100;
       return Math.round(porcentaje);
     }
   },
