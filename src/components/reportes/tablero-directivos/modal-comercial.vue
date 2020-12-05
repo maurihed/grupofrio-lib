@@ -158,7 +158,7 @@ export default {
       this.puntos = puntos;
     },
     async fetchAllData(){
-      const rData = await axios.post(`${env.REPORTES_CONCENTRADO}?option=gerente`, { fecha: this.fecha, suc: this.suc });
+      const rData = await axios.post(`${env.REPORTES_CONCENTRADO}?option=gerenteDirectivos`, { fecha: this.fecha, suc: this.suc });
       this.datos = rData.data;
       // console.log(Object.values(this.datos.Ingresos));
       this.datosIngresos = Object.values(this.datos.Ingresos);

@@ -416,7 +416,7 @@ export default {
       this.arrValores=val; 
       this.nombreSuc=nom; 
       this.i = index;
-      console.log(this.weekSelected);
+      // console.log(this.weekSelected);
     },
     onCloseManufacturaModal() {
       this.isManufacturaModalOpen = false;
@@ -447,7 +447,7 @@ export default {
     openComercialGeneralModal(index) {
       this.isComercialGeneralModalOpen = true;
       this.i = index;
-      console.log("uuuu", this.i);
+      // console.log("uuuu", this.i);
     },
     onCloseComercialGeneralModal() {
       this.isComercialGeneralModalOpen = false;
