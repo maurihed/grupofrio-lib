@@ -19,7 +19,7 @@ export default {
   name: 'turnos-variables',
   props: ['suc'],
   data: ()=>({
-    turnosPosibles: ['MATUTINO', 'VESPERTINO', 'NOCTURNO'],
+    turnosPosibles: ['BARRA - MATUTINO', 'BARRA - VESPERTINO', 'BARRA - NOCTURNO', 'ROLITO - MATUTINO', 'ROLITO - VESPERTINO', 'ROLITO - NOCTURNO'],
     turnos: [],
     isLoaded: false,
   }),
