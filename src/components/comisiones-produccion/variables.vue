@@ -28,9 +28,9 @@ export default {
       variables: [],
     }
   },
-  props: ['fecha', 'suc'],
+  props: ['fecha', 'suc', 'turno'],
   async created() {
-    const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getVariables`, { suc: this.suc });
+    const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getVariables`, { suc: this.suc, turno: this.turno });
     this.variables = response.data;
     this.variables.forEach(v => v.valor = Number(Number(v.valor).toFixed(3)));
   },
@@ -45,7 +45,7 @@ export default {
         });
         return;
       }
-      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=updateVariableValue`, {...variable, fecha: this.fecha});
+      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=updateVariableValue`, {...variable, fecha: this.fecha, turno: this.turno});
       const data = response.data;
       M.toast({
         html: "El valor fue actualizado correctamente.",
