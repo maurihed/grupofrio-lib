@@ -300,7 +300,7 @@
                   <tr v-for="(compresorName, key) in compresoresNames" :key="key">
                     <td>{{compresorName}}</td>
                     <td class="center" v-for="day in days" :key="day">{{getConsumoCompresor(compresorName, day)| number}}</td>
-                    <td class="center disabled">{{getConsumonpmTotalCompresor(compresorName)}}</td>
+                    <td class="center disabled">{{getConsumoTotalCompresor(compresorName)}}</td>
                   </tr>
                   <tr>
                     <td>Horas trabajadas</td>
