@@ -204,9 +204,9 @@
                     <tr v-for="(topic, index) in Object.keys(administrativo)" :key="'administrativo-'+index">
                       <td>{{topic}}</td>
                       <td class="cursor-pointer" @click="openAdministrativoModal(index,val,val.suc)" v-for="(val, index) in Object.values(administrativo[topic])" :key="index">
-                        <!-- <td v-for="(val, index) in Object.values(administrativo[topic])" :key="index"> -->
                         <tabla-celda
                           :value="val"
+                          :tipos="tipo"
                         >
                         </tabla-celda>
                       </td>
@@ -302,7 +302,8 @@ export default {
       arrValores:{},
       nombreSuc:'',
       mes:'',
-      i:0
+      i:0,
+      tipo:'admin',
     }
   },
   async created() {
@@ -389,6 +390,7 @@ export default {
       Object.entries(this.administrativo).forEach(([name, val])=>{
         newWeekSelected[name] = Object.values(val)[index];
       });
+      // console.log(val.tipo);
       this.weekSelected = {...newWeekSelected, index};
       this.isAdministrativoModalOpen = true;
       this.arrValores=val; 

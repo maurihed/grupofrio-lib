@@ -12,6 +12,9 @@
       <div class="p">
         <v-porcentaje v-if="porcentaje || porcentaje == 0" :valor="porcentaje"></v-porcentaje>
       </div>
+      <div class="p">
+        <v-porcentajeGastos v-if="porcentajeGastos || porcentajeGastos == 0" :valor="porcentajeGastos"></v-porcentajeGastos>
+      </div>
       <div class="pts">
         {{puntos}} {{puntos || puntos == 0 ? 'pts' : ''}}
       </div>
@@ -22,7 +25,7 @@
 <script>
 export default {
   name: 'v-wrapper',
-  props: ['titulo', 'valor', 'porcentaje', 'puntos', 'unidades'],
+  props: ['titulo', 'valor', 'porcentaje', 'porcentajeGastos', 'puntos', 'unidades'],
 }
 </script>
 

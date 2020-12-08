@@ -24,49 +24,49 @@
             <v-wrapper
                 titulo="Costos"
                 :valor="costos.real| money"
-                :porcentaje="getPorcentaje(costos.meta, costos.real)"
+                :porcentajeGastos="getPorcentaje(costos.meta, costos.real)"
               >
             </v-wrapper>
             <v-wrapper
                 titulo="Gastos Fijos"
                 :valor="gastosFijos.real| money"
-                :porcentaje="getPorcentaje(gastosFijos.meta, gastosFijos.real)"
+                :porcentajeGastos="getPorcentaje(gastosFijos.meta, gastosFijos.real)"
               >
             </v-wrapper>
             <v-wrapper
                 titulo="Gastos de Operación"
                 :valor="gastosOperativos.real| money"
-                :porcentaje="getPorcentaje(gastosOperativos.meta, gastosOperativos.real)"
+                :porcentajeGastos="getPorcentaje(gastosOperativos.meta, gastosOperativos.real)"
               >
             </v-wrapper>
             <v-wrapper
                 titulo="  Planta"
                 :valor="planta.real| money"
-                :porcentaje="getPorcentaje(planta.meta, planta.real)"
+                :porcentajeGastos="getPorcentaje(planta.meta, planta.real)"
               >
             </v-wrapper>
             <v-wrapper
                 titulo="Distribución"
                 :valor="distribucion.real| money"
-                :porcentaje="getPorcentaje(distribucion.meta, distribucion.real)"
+                :porcentajeGastos="getPorcentaje(distribucion.meta, distribucion.real)"
               >
             </v-wrapper>
             <v-wrapper
                 titulo="Administrativos"
                 :valor="administrativos.real| money"
-                :porcentaje="getPorcentaje(administrativos.meta, administrativos.real)"
+                :porcentajeGastos="getPorcentaje(administrativos.meta, administrativos.real)"
               >
             </v-wrapper>
             <v-wrapper
                 titulo="Gastos Financieros"
                 :valor="financieros.real| money"
-                :porcentaje="getPorcentaje(financieros.meta, financieros.real)"
+                :porcentajeGastos="getPorcentaje(financieros.meta, financieros.real)"
               >
             </v-wrapper>
             <v-wrapper
                 titulo="Gastos Impuestos"
                 :valor="impuestos.real| money"
-                :porcentaje="getPorcentaje(impuestos.meta, impuestos.real)"
+                :porcentajeGastos="getPorcentaje(impuestos.meta, impuestos.real)"
               >
             </v-wrapper>
             <v-wrapper
@@ -77,7 +77,7 @@
             <v-wrapper
                 titulo="Presupuesto Total"
                 :valor="meta| money"
-                :porcentaje="getPorcentaje(meta,real)"
+                :porcentajeGastos="getPorcentaje(meta,real)"
               >
             </v-wrapper>
             <br><br>

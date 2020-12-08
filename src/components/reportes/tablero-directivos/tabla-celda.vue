@@ -21,7 +21,7 @@
 </template>
 <script>
 export default {
-  props: ['value','indexName','cellClickable', 'names','name', 'vendedor','turno', 'fecha', 'realClickHandler', 'metaClickHandler', 'porcentajeClickHandler'],
+  props: ['value','indexName','cellClickable', 'names','name', 'tipos', 'vendedor','turno', 'fecha', 'realClickHandler', 'metaClickHandler', 'porcentajeClickHandler'],
   methods: {
     getClass(porcentaje) {
       let className = '';
@@ -31,6 +31,15 @@ export default {
       if(this.name === 'agua' || this.nameCalculated === 'agua') {
         if(porcentaje > 100) {
           return className+'malo';
+        }
+        return className+'bueno';
+      }
+      if(this.tipos === 'admin' ) {
+        if(porcentaje > 100) {
+          return className+'malo';
+        }
+        if(porcentaje == 100) {
+          return className+'regular';
         }
         return className+'bueno';
       }
