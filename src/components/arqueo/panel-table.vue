@@ -6,17 +6,19 @@
       <table>
         <thead>
           <tr>
-            <td v-for="(header, i) in headers" :key="i">{{header}}</td>
+            <td v-for="(header, i) in headers" :key="i"><span v-if="header !== 'Crecimiento'">{{header}}</span></td>
             <td v-if="extra">Estado</td>
+            <td v-if="crecimiento">%</td>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(row, i) in parsedData" :key="'row'+i">
-            <td v-for="(col, j) in Object.values(row)" :key="j">
-              <span v-if="porcentaje.length == 0 || (porcentaje.length > 0 && !porcentaje.includes(j))">{{col | number}}</span>
-              <span class="green-text text-darken-2" v-if="porcentaje.length > 0 && porcentaje.includes(j) && col >= 85">{{col}}%</span>
-              <span class="red-text text-darken-2" v-if="porcentaje.length > 0 && porcentaje.includes(j) && col < 85">{{col}}%</span>
+            <td v-for="([name, col], j) in Object.entries(row)" :key="j">
+              <span v-if="name !== 'Crecimiento' && (porcentaje.length == 0 || (porcentaje.length > 0 && !porcentaje.includes(j)))">{{col | number}}</span>
+              <span class="green-text text-darken-2" v-if="name !== 'Crecimiento' && porcentaje.length > 0 && porcentaje.includes(j) && col >= 85">{{col}}%</span>
+              <span class="red-text text-darken-2" v-if="name !== 'Crecimiento' && porcentaje.length > 0 && porcentaje.includes(j) && col < 85">{{col}}%</span>
             </td>
+            <td :class="getClass(row.Crecimiento)">{{row.Crecimiento}}%</td>
             <td v-if="extra && extra[i]" class="center indigo-text text-darken-2">
               <span><i class="material-icons">check_circle</i></span>
             </td>
@@ -54,6 +56,7 @@ export default {
       default: []
     },
     total: Boolean,
+    crecimiento: Boolean,
   },
   data:()=>({
     parsedData: {},
@@ -89,6 +92,11 @@ export default {
       }
       return Number(suma);
     },
+    getClass(crecimiento) {
+      if (crecimiento && crecimiento == 0) return '';
+      if (crecimiento && crecimiento > 0) return 'green-text text-darken-2';
+      return 'red-text text-darken-2';
+    }
   },
   components: {
     'panel-titulo': panelTituloVue,

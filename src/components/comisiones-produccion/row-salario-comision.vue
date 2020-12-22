@@ -1,5 +1,10 @@
 <template>
-  <div class="comision-row text-normal">
+  <div class="comision-row text-normal" v-if="turnos && turnos.length > 0">
+    <div class="input-field col s12">
+    <select @change="onTurnoChange($event.target)">
+      <option v-for="turno in turnos" :key="turno.id" :value="turno.id">{{turno.nombre | nombreVariable}}</option>
+    </select>
+  </div>
     <div class="name text-left">{{name}}</div>
     <div class="day-value">{{kilos | number}}</div>
     <div class="day-value">{{actualPrecioKilo | number}}</div>
@@ -13,7 +18,15 @@
 </template>
 <script>
 export default {
-  props:['name', 'kilos', 'precioKilo','precioKiloVariable','eficiencia', 'sueldoBase', 'puntos', 'eficienciaProduccion'],
+  props:['name', 'kilos', 'precioKilo','precioKiloVariable','eficiencia', 'sueldoBase', 'puntos', 'eficienciaProduccion', 'turnos', 'handleTurnoChange', 'tipo'],
+  mounted() {
+    M.FormSelect.init(document.querySelectorAll('select'));
+  },
+  methods: {
+    onTurnoChange(elmt) {
+      this.handleTurnoChange(this.tipo, elmt.value);
+    }
+  },
   computed: {
     actualPrecioKilo() {
       return this.puntos >= 90 ? this.precioKiloVariable : this.precioKilo;
@@ -47,9 +60,20 @@ export default {
     return money.substr(2);
   }
   },
+  filters: {
+    nombreVariable(nombre) {
+      if (!nombre) return '';
+      const [,nombre2] = nombre.split('-');
+      return nombre2.trim();
+    }
+  },
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
+  .select-wrapper input.select-dropdown {    
+    padding-left: 0 !important;
+    font-size: 12px;
+  }
   .text-normal {
     font-weight: normal;
     color: gray;

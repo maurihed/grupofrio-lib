@@ -21,6 +21,7 @@
     :data="data"
     :scrollable="false"
     titulo="Frecuencia vendedores"
+    :crecimiento="true"
   >
   </panel-tabla>
 </div>

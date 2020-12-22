@@ -417,6 +417,7 @@
         :jefes-produccion="empleados.jefes_produccion"
         :eficiencia-produccion="getEficienciaProduccion()"
         :precioKiloVariable="precioKiloVariable"
+        :turnos-variables="turnosVariables"
       ></salario-comision>
     </div>
   </div>
@@ -523,6 +524,7 @@ export default {
         'CRAG0003',
         'CRAG0004',
       ],
+      turnosVariables: [],
     }
   },
   props: ['fecha', 'suc', 'turno'],
@@ -545,6 +547,7 @@ export default {
         this.fetchEficienciaMantenimiento(),
         this.fetchPuntosProduccion(),
         this.fetchMermaProduccion(),
+        this.fetchTurnosVariables(),
     ]);
 
     this.precioKiloVariable = {
@@ -1087,6 +1090,11 @@ export default {
     async fetchMermaProduccion() {
       const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=mermaProduccion`, { fecha: this.fecha, suc: this.suc, turno: this.turno });
       this.merma = response.data;
+      this.progres++;
+    },
+    async fetchTurnosVariables() {
+      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getTurnosVariables`, { suc: this.suc });
+      this.turnosVariables = response.data;
       this.progres++;
     }
   },

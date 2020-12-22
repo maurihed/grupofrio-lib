@@ -3,6 +3,7 @@
     <div class="panel" v-if="!!cuberos.length || !!sacadores.length || !!maquinistas.length || !!jefesProduccion.length">
       <div v-if="!!cuberos.length">
         <div class="comision-row border-bottom-gray">
+          <div class="turno">Turno Variable</div>
           <div class="name salario-title">Operador Rolito</div>
           <div class="day-value salario-title">Kilos</div>
           <div class="day-value salario-title">Pago por kilo</div>
@@ -24,10 +25,14 @@
           :puntos="puntosCubero"
           :eficiencia-produccion="eficienciaProduccion"
           :precioKiloVariable="precioKiloVariable.cubero"
+          :turnos="turnosRolito"
+          :handleTurnoChange="onTurnoChange"
+          tipo="ROLITO"
         />
       </div>
       <div v-if="!!sacadores.length">
         <div class="comision-row border-bottom-gray">
+          <div class="turno">Turno Variable</div>
           <div class="name salario-title">Operador Barra</div>
           <div class="day-value salario-title">Kilos</div>
           <div class="day-value salario-title">Pago por kilo</div>
@@ -49,10 +54,14 @@
           :puntos="puntosSacador"
           :eficiencia-produccion="eficienciaProduccion"
           :precioKiloVariable="precioKiloVariable.sacador"
+          :turnos="turnosBarra"
+          :handleTurnoChange="onTurnoChange"
+          tipo="BARRA"
         />
       </div>
       <div v-if="!!maquinistas.length">
         <div class="comision-row border-bottom-gray">
+          <div class="turno">Turno Variable</div>
           <div class="name salario-title">Operador Especialista</div>
           <div class="day-value salario-title">Kilos</div>
           <div class="day-value salario-title">Pago por kilo</div>
@@ -78,6 +87,7 @@
       </div>
       <div v-if="!!jefesProduccion.length">
         <div class="comision-row border-bottom-gray">
+          <div class="turno">Turno Variable</div>
           <div class="name salario-title">Lider de celula de produccion</div>
           <div class="day-value salario-title">Kilos</div>
           <div class="day-value salario-title">Pago por kilo</div>
@@ -140,7 +150,8 @@ export default {
   props: [
     'totalKilosBarras', 'totalKilosRolitos','precioCubero', 'precioSacador', 'precioMaquinista',
     'precioLider', 'eficiencia', 'sueldoCubero','sueldoSacador','sueldoMaquinista','sueldoLider',
-    'sacadores', 'cuberos', 'maquinistas', 'jefesProduccion', 'puntos', 'eficienciaProduccion', 'precioKiloVariable'],
+    'sacadores', 'cuberos', 'maquinistas', 'jefesProduccion', 'puntos', 'eficienciaProduccion', 'precioKiloVariable',
+    'turnosVariables'],
   data() { 
     return {};
   },
@@ -161,6 +172,13 @@ export default {
       const sum = puntosArray.reduce((total, punto) => total+punto, 0);
       return Math.round((sum/puntosArray.length)*100)/100;
     },
+    async onTurnoChange(tipo, id) {
+      const kilos = 0;
+      const precioXKilo = 1;
+      const eficiencia = 0;
+      const response = await axios.post(`${env.EVAL_VARIABLE_COMISION_PROD}?option=getVariables`, { suc: this.suc });
+      console.log(tipo, id);
+    }
   },
   filters: {
     money(value) {
@@ -175,6 +193,13 @@ export default {
     }
   },
   computed: {
+    turnosBarra() {
+      console.log(Object.values(this.turnosVariables), 'barra');
+      return Object.values(this.turnosVariables).filter((turno) => turno.nombre.search('BARRA') > -1);
+    },
+    turnosRolito() {
+      return Object.values(this.turnosVariables).filter((turno) => turno.nombre.search('ROLITO') > -1);
+    },
     puntosCubero() {
       return this.getPuntos('cubero');
     },
@@ -222,7 +247,8 @@ export default {
   .comision-row {
     display: grid;
     grid-template-columns:
-      [name] 20%
+      [turno] 15%
+      [name] 15%
       repeat(8, 10%);
     font-size: 15px;
     padding: 5px 0;
