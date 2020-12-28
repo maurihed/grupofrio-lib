@@ -20,6 +20,7 @@
   <div class="row">
     <div class="col s12">
       <panel-tabla
+        :crecimiento="true"
         v-if="isLoaded"
         :porcentaje="[5]"
         :data="cconsumo"
@@ -31,6 +32,7 @@
     </div>
     <div class="col s12">
       <panel-tabla
+        :crecimiento="true"
         v-if="isLoaded"
         :porcentaje="[5]"
         :data="moderno"
@@ -42,6 +44,7 @@
     </div>
     <div class="col s12">
       <panel-tabla
+        :crecimiento="true"
         v-if="isLoaded"
         :porcentaje="[5]"
         :data="tradicional"
@@ -53,6 +56,7 @@
     </div>
     <div class="col s12">
       <panel-tabla
+        :crecimiento="true"
         v-if="isLoaded"
         :porcentaje="[5]"
         :data="recuperar"

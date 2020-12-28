@@ -28,7 +28,7 @@
           </tr>
           <tr v-if="total">
             <td class="text-bold black-text b-none">Total: </td>
-            <td class="text-bold black-text b-none" v-for="i in (headers.length-1)" :key="i">
+            <td class="text-bold black-text b-none" v-for="i in (headers.length-2)" :key="i">
               <span v-if="porcentaje.length == 0 || (porcentaje.length > 0 && !porcentaje.includes(i))">{{getTotal(i) | number}}</span>
               <span class="green-text text-darken-2" v-if="porcentaje.length > 0 && porcentaje.includes(i) && getTotal(i) >= 85">{{getTotal(i)}}%</span>
               <span class="red-text text-darken-2" v-if="porcentaje.length > 0 && porcentaje.includes(i) && getTotal(i) < 85">{{getTotal(i)}}%</span>
