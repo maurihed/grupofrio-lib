@@ -59,7 +59,8 @@ Vue.component('tablero-directivos', require('./components/reportes/tablero-direc
 Vue.component('crud-kpis', require('./components/kpis/index.vue').default);
 Vue.component('v-porcentaje', require('./components/reportes/concentrado-ventas/v-porcentaje.vue').default);
 Vue.component('v-porcentajeGastos', require('./components/reportes/concentrado-ventas/v-porcentajeGastos.vue').default);
-
+// common
+Vue.component('v-map', require('./components/common/v-map.vue').default);
 
 var app = new Vue({
   el: '#app',

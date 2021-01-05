@@ -614,7 +614,11 @@ export default {
       const val = Object.values(this.ventas).reduce((total, item) => {
         if (item[vendedor] && item[vendedor][name]) {
           total.real += item[vendedor][name].real;
-          if (name == 'ventasApp' || name == 'productividad' | name == 'kmxlitro') {
+          if (name == 'ventasApp' || name == 'productividad') {
+            total.meta += item[vendedor][name].meta;
+          } else if (name == 'kmxlitro') {
+            total.kilometraje += item[vendedor][name].kilometraje;
+            total.litros += item[vendedor][name].litros;
             total.meta += item[vendedor][name].meta;
           } else {
             total.meta = item[vendedor][name].meta * 6;
@@ -624,10 +628,11 @@ export default {
       }, {
         real: 0,
         meta: 0,
+        kilometraje: 0,
+        litros: 0,
       });
       if (name == 'kmxlitro') {
-        val.real /= this.workedDays[vendedor];
-        val.real = Math.ceil(val.real*10)/10;
+        val.real = val.litros > 0 ? Math.round(val.kilometraje / val.litros, 1) : 0
         val.meta /= this.workedDays[vendedor];
         val.meta = Math.floor(val.meta);
       }

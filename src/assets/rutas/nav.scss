@@ -1,0 +1,41 @@
+nav.rutas-nav {
+  height: $nav-height;
+  line-height: $nav-height;
+  display: flex;
+  box-shadow: none;
+  .nav-menu {
+    flex: 1;
+  }
+  .nav-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 350px;
+    a {
+      line-height: 50%;
+    }
+    img {
+      height: 35px;
+    }
+  }
+}
+.rutas-info-bar {
+  height: $nav-height;
+  display: flex;
+  .rutas-info-title {
+    width: 350px;
+    background: #8b9dba;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    h5 {
+      margin: 0;
+      color: #FFF;
+      text-overflow: ellipsis;
+    }
+  }
+  .rutas-info {
+    flex: 1;
+    background: #bec9d9;
+  }
+}

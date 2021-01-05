@@ -9,7 +9,7 @@ const presetConfig = require("./build-utils/loadPresets");
 const vueConfig = require("./vue.config");
 const buildDefinePlugin = require('./build-utils/buildDefines');
 
-module.exports = ({ mode, presets } = { mode: 'production', presets: [] }) => {
+module.exports = ({ mode, presets, base } = { mode: 'production', presets: [], base: 'index' }) => {
   return webpackMerge(
     {
       mode,
@@ -24,7 +24,7 @@ module.exports = ({ mode, presets } = { mode: 'production', presets: [] }) => {
       },
       plugins: [
         new HtmlWebpackPlugin({
-          template: './src/index.html'
+          template: `./src/${base || 'index'}.html`
         }),
         new webpack.ProgressPlugin(),
         new VueLoaderPlugin(),
