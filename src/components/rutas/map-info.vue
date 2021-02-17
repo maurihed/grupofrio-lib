@@ -32,7 +32,7 @@
         </ul>
       </div>
     </div>
-    <ul id="slide-out" class="sidenav">
+    <ul id="slide-out" class="sidenav map-sidenav">
       <div class="p-1 h-100 d-flex flex-column">
         <a href="#" @click="closeMenu">Cerrar</a>
         <div class="input-field flex-shrink-0">
@@ -71,7 +71,8 @@
 </template>
 
 <script>
-import { displayError } from '../../assets/js/utilities';
+import { displayError, displayMessage } from '../../assets/js/utilities';
+import { Route } from '../../models/route';
 
 export default {
   name: 'map-info',
@@ -86,7 +87,7 @@ export default {
       closeOnClick: true,
       constrainWidth: false,
     });
-    const [instance] = M.Sidenav.init(document.querySelectorAll('.sidenav'), {
+    const [instance] = M.Sidenav.init(document.querySelectorAll('.map-sidenav'), {
       edge: 'right',
     });
     this.modalInstance = instance;
@@ -121,6 +122,9 @@ export default {
     },
   },
   methods: {
+    handleMarkerClick({ info: client, isSelected }) {
+      this.$store.dispatch(isSelected ? 'ADD_CLIENT' : 'REMOVE_CLIENT', client);
+    },
     openClientsModal() {
       this.modalInstance.open();
     },
@@ -133,13 +137,30 @@ export default {
       window.open(`http://187.237.145.198/HLApp/controllers/rutas/rutasExcel.php?routes=${routes}&suc=${this.suc}`, '_blank');
     },
     async reassignClients() {
-      const response = await axios.post(`${env.RUTAS_API_URL}?option=updateClientRoute`, {
+      await axios.post(`${env.RUTAS_API_URL}?option=updateClientRoute`, {
         routeId: this.selectedRoute,
         clients: this.selectedClients.map(client => client.clave)
       });
+      window.location.reload();
+      // displayMessage('Asignado correctamente!');
+      // this.clearClients();
+      // this.modalInstance.close();
+      // const response = await axios.post(`${env.RUTAS_API_URL}?option=getRoutes`, { suc: this.suc });
+      // let routes = response.data.map(route => ({ ...route, checked: false }));
+      // routes = this.routes.map(route => new Route(route, null, this.handleMarkerClick));
+      // this.$store.dispatch({
+      //   type: 'SET_ROUTES',
+      //   routes: routes
+      // });
     },
     toggleMenu() {
       this.$store.commit('toggleMenu');
+    },
+    clearClients() {
+      this.selectedClients.forEach((client) => this.$store.dispatch('REMOVE_CLIENT', client));
+      Object.values(this.$store.state.routes)
+        .reduce((clients,route) => clients.concat(route.getSelectedPlaces()), [])
+        .forEach(client => client.marker.unselectMarker());
     },
     removeClient(clave) {
       const client = Object.values(this.$store.state.routes)

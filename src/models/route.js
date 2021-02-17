@@ -94,7 +94,7 @@ export class Route {
       const info = this.getPlaceInfo(location);
       return new Place(
         { info, lat: location.lat(), lng: location.lng() },
-        new Marker(location, index, this.map, this.color, info, this.markerClickHandler, index === 1)
+        new Marker(location, index, this.map, this.color, info, this.markerClickHandler, index === 0)
       )
     });
     this.places.forEach(place => place.marker.render());
