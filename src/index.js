@@ -1,9 +1,15 @@
 import Vue from 'vue';
+import Vuex from 'vuex';
 import axios from 'axios';
 import M from 'materialize-css';
+import { store } from './store/index';
 // bootstrap configuration
 window.axios = axios;
 window.M = M;
+
+// store config
+Vue.use(Vuex);
+const Store = new Vuex.Store(store);
 // Filtros
 Vue.filter('money', function (value) {
   if(!Number(value)) return value;
@@ -59,11 +65,16 @@ Vue.component('tablero-directivos', require('./components/reportes/tablero-direc
 Vue.component('crud-kpis', require('./components/kpis/index.vue').default);
 Vue.component('v-porcentaje', require('./components/reportes/concentrado-ventas/v-porcentaje.vue').default);
 Vue.component('v-porcentajeGastos', require('./components/reportes/concentrado-ventas/v-porcentajeGastos.vue').default);
-// common
-Vue.component('v-map', require('./components/common/v-map.vue').default);
+
+// rutas
+Vue.component('v-map', require('./components/rutas/v-map.vue').default);
+Vue.component('map-footer', require('./components/rutas/map-info.vue').default);
+Vue.component('rutas-menu', require('./components/rutas/rutas-menu.vue').default);
+Vue.component('rutas-info-title', require('./components/rutas/rutas-info-title.vue').default);
 
 var app = new Vue({
   el: '#app',
+  store: Store,
 })
 
 // init sidebar
