@@ -4,7 +4,8 @@
       <rutas-info-title>
         <h5>Frecuencias</h5>
       </rutas-info-title>
-      <div class="rutas-info">
+      <div class="d-flex rutas-info">
+        <slot></slot>
         <div class="input-field m-0">
           <select v-model="routeSelected">
             <option value="" disabled selected>Escoge una ruta</option>
