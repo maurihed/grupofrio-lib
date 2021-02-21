@@ -180,6 +180,7 @@ export default {
       let seconds = val % 3600;
       const minutes = Math.floor(seconds / 60);
       seconds = seconds % 60;
+      seconds = Math.round(seconds * 10) / 10;
       return `${hours}h ${minutes}m ${seconds}s`;
     },
     km(val) {

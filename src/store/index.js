@@ -9,6 +9,7 @@ export const store = {
   },
   mutations: {
     setRoutes (state, routes) {
+      console.log(routes);
       state.routes = {...routes};
     },
     setSuc(state, suc) {
@@ -37,7 +38,11 @@ export const store = {
     }
   },
   actions: {
+    SET_ROUTES({ commit }, routes) {
+      commit('setRoutes', routes);
+    },
     SELECT_ROUTE ({ commit, state }, routeId) {
+      console.log(state.routes, routeId);
       const route = state.routes[routeId];
       if (!route.directionDataPromise) {
         route.loadDirectionData();
@@ -48,6 +53,14 @@ export const store = {
       const route = state.routes[routeId];
       route.remove();
       commit('unselectRoute', routeId);
+    },
+    SET_FRECUENCIAS({ commit }, frecuencias) {
+      const frecuenciasNames = frecuencias.map(frecuencia => frecuencia.name);
+      let frecuenciasObj = {};
+      frecuencias.forEach((frecuencia) => { frecuenciasObj[frecuencia.name] = frecuencia });
+      console.log({frecuenciasNames, frecuenciasObj});
+      commit('setRouteIds', frecuenciasNames);
+      commit('setRoutes', frecuenciasObj);
     },
     SET_ROUTES({ commit }, { routes }) {
       const routeIds = routes.map((route) => route.id);
@@ -62,5 +75,10 @@ export const store = {
     REMOVE_CLIENT({ commit }, client) {
       commit('removeClient', client);
     },
+    RESET_ROUTES({ dispatch, state }) {
+      state.selectedRoutes.forEach((route) => {
+        dispatch('UNSELECT_ROUTE', route);
+      });
+    }
   }
 };

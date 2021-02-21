@@ -18,6 +18,7 @@ module.exports = ({ mode }, defines) => {
     CRUD_KPI: JSON.stringify(`${BASE_URL}/reportes/crudPuntos.php`),
     CONFIGURACION_TURNO_VARIABLES: JSON.stringify(`${BASE_URL}/configuracion/turnoVariableComision.php`),
     RUTAS_API_URL: JSON.stringify(`${BASE_URL}/rutas/index.php`),
+    RUTAS_FRECUENCIAS_API_URL: JSON.stringify(`${BASE_URL}/rutas/frecuencias.php`),
   };
   
   return {

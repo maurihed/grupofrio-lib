@@ -71,6 +71,8 @@ Vue.component('v-map', require('./components/rutas/v-map.vue').default);
 Vue.component('map-footer', require('./components/rutas/map-info.vue').default);
 Vue.component('rutas-menu', require('./components/rutas/rutas-menu.vue').default);
 Vue.component('rutas-info-title', require('./components/rutas/rutas-info-title.vue').default);
+//frecuencias
+Vue.component('frecuencia-clientes', require('./components/rutas/frecuencias/index.vue').default);
 
 var app = new Vue({
   el: '#app',

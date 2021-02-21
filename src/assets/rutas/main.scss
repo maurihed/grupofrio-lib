@@ -1,6 +1,6 @@
 .rutas-container {
   width: 100vw;
-  height: calc(100vh - #{$top-bar-height} - #{$nav-height} - #{$nav-height});
+  height: calc(100vh - #{$top-bar-height} - #{$nav-height});
   display: flex;
   .rutas-menu {
     width: 350px;
