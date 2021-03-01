@@ -5,7 +5,7 @@
         <div class="col s4">
           <div class="input-field">
             <select v-model="sucSelected" @change="fetchClients" id="sucursales">
-              <option v-for="sucItem in sucs" :key="sucItem.id" :value="sucItem.id">{{sucItem.name}}</option>
+              <option v-for="sucItem in sucs" :key="sucItem.Name" :value="sucItem.Name">{{sucItem.Remarks}}</option>
             </select>
             <label for="sucursales">Sucursales</label>
           </div>
