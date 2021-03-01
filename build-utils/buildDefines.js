@@ -19,6 +19,7 @@ module.exports = ({ mode }, defines) => {
     CONFIGURACION_TURNO_VARIABLES: JSON.stringify(`${BASE_URL}/configuracion/turnoVariableComision.php`),
     RUTAS_API_URL: JSON.stringify(`${BASE_URL}/rutas/index.php`),
     RUTAS_FRECUENCIAS_API_URL: JSON.stringify(`${BASE_URL}/rutas/frecuencias.php`),
+    REPORTE_CLIENTE: JSON.stringify(`${BASE_URL}/reportes/clientes.php`),
   };
   
   return {
