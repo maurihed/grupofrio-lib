@@ -61,6 +61,7 @@ Vue.component('panel-tabla', require('./components/arqueo/panel-table.vue').defa
 // reportes
 Vue.component('concentrado-ventas', require('./components/reportes/concentrado-ventas/index.vue').default);
 Vue.component('tablero-directivos', require('./components/reportes/tablero-directivos/index.vue').default);
+Vue.component('reporte-cliente', require('./components/reportes/clientes/index.vue').default);
 // Kpis
 Vue.component('crud-kpis', require('./components/kpis/index.vue').default);
 Vue.component('v-porcentaje', require('./components/reportes/concentrado-ventas/v-porcentaje.vue').default);
@@ -73,7 +74,7 @@ Vue.component('rutas-menu', require('./components/rutas/rutas-menu.vue').default
 Vue.component('rutas-info-title', require('./components/rutas/rutas-info-title.vue').default);
 //frecuencias
 Vue.component('frecuencia-clientes', require('./components/rutas/frecuencias/index.vue').default);
-
+//
 var app = new Vue({
   el: '#app',
   store: Store,
