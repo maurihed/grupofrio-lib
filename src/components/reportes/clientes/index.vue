@@ -11,13 +11,12 @@
           </div>
         </div>
         <div class="col s5">
-          <div class="input-field">
-            <select id="sucursales" v-model="clientSelected">
-              <option :value="null">Selecciona un cliente</option>
-              <option v-for="client in clients" :key="client.CardCode" :value="client.CardCode">{{client.CardName}}</option>
-            </select>
-            <label for="sucursales">clientes</label>
-          </div>
+          <search-select
+            title="Clientes"
+            v-model="clientSelected"
+            :options="formatedClients()"
+            placeholder="Seleccione un cliente"
+          ></search-select>
         </div>
         <div class="col s3">
           <button @click="fetchClientData" class="btn btn-csutom">Consultar</button>
@@ -35,7 +34,7 @@
             <reporte-card :data="routeInfo"></reporte-card>
           </div>
           <div class="col s12 m6 l4 mb-1">
-            <reporte-card :data="clientData.sales"></reporte-card>
+            <reporte-card :data="clientData.sales" :moneyFormat="[2]"></reporte-card>
           </div>
         </div>
         <div class="row">
@@ -103,6 +102,9 @@ export default {
             const response = await axios.post(`${env.REPORTE_CLIENTE}?option=getClientData`, {clave: this.clientSelected});
             this.clientData = response.data;
             this.isLoaded = true;
+        },
+        formatedClients() {
+          return this.clients.map((client) => ({ id: client.CardCode, label: client.CardName }));
         }
     },
     components: {

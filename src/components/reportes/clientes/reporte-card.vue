@@ -1,8 +1,9 @@
 <template>
   <div class="reporte-card">
-    <p v-for="([key, value]) in Object.entries(data)" :key="key">
+    <p v-for="([key, value], index) in Object.entries(data)" :key="key">
       <span class="text-bold primary">{{key}}: </span>
-      <span class="secondary">{{value}}</span>
+      <span v-if="moneyFormat.includes(index)" class="secondary">{{value | money}}</span>
+      <span v-if="!moneyFormat.includes(index)" class="secondary">{{value | number}}</span>
     </p>
   </div>
 </template>
@@ -10,7 +11,18 @@
 <script>
 export default {
   name: 'reporte-card',
-  props: ['data'],
+  props: {
+    data: Object,
+    moneyFormat: {
+      type: Array,
+      default: function () {
+        return [];
+      }
+    },
+  },
+  mounted(){
+    console.log(this.data, this.moneyFormat)
+  }
 }
 </script>
 

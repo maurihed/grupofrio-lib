@@ -38,6 +38,8 @@ Vue.component('eval-aspectos-limpieza', require('./components/evalLimpieza/index
 Vue.component('bitacora-merma', require('./components/bitacora-merma/index.vue').default)
 Vue.component('merma-input', require('./components/bitacora-merma/merma-input.vue').default)
 Vue.component('comisiones-produccion', require('./components/comisiones-produccion/comisiones.vue').default)
+Vue.component('search-select', require('./components/common/search-select.vue').default)
+
 // -- Configuracion --
 Vue.component('conf-turnos', require('./components/configuracion/turnos/index.vue').default)
 Vue.component('variables-vendedores', require('./components/configuracion/varaiblesVendedores/index.vue').default)
