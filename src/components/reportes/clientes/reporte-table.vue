@@ -10,7 +10,10 @@
             </thead>
             <tbody>
                 <tr v-for="(item, index) in data" :key="index">
-                    <td v-for="(subItem, key) in item" :key="'sub'+key">{{subItem}}</td>
+                    <td v-for="(subItem, key, index) in item" :key="'sub'+key">
+                        <span v-if="moneyFormat.includes(index)">{{subItem | money}}</span>
+                        <span v-if="!moneyFormat.includes(index)">{{subItem}}</span>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -19,7 +22,16 @@
 <script>
 export default {
     name: 'reporte-table',
-    props: ['title', 'data'],
+    props: {
+        title: String,
+        data: Object,
+        moneyFormat: {
+            type: Array,
+            default: function() {
+                return [];
+            }
+        }
+    },
     methods: {
 
     },

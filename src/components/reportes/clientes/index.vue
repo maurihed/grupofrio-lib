@@ -42,12 +42,14 @@
             <reporte-table
               title="Productos"
               :data="clientData.lastProducts"
+              :moneyFormat="[2]"
             ></reporte-table>
           </div>
           <div class="col s12 m6">
             <reporte-table
               title="Últimas Ventas"
               :data="clientData.lastSales"
+              :moneyFormat="[3]"
             ></reporte-table>
           </div>
         </div>

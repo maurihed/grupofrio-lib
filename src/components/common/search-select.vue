@@ -128,7 +128,7 @@ export default {
       &--show {
         display: block;
       }
-      max-width: 150%;
+      width: 100%;
       display: none;
       position: absolute;
       min-width: 100%;
