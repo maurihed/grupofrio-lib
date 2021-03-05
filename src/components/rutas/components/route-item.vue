@@ -55,7 +55,7 @@ export default {
     .route-clients {
       position: absolute;
       left: 100%;
-      height: 600px;
+      height: 510px;
       width: 400px;
       z-index: 1;
       top: 0;

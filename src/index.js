@@ -70,6 +70,7 @@ Vue.component('v-porcentaje', require('./components/reportes/concentrado-ventas/
 Vue.component('v-porcentajeGastos', require('./components/reportes/concentrado-ventas/v-porcentajeGastos.vue').default);
 
 // rutas
+Vue.component('rutas-clientes', require('./components/rutas/index.vue').default);
 Vue.component('v-map', require('./components/rutas/v-map.vue').default);
 Vue.component('map-footer', require('./components/rutas/map-info.vue').default);
 Vue.component('rutas-menu', require('./components/rutas/rutas-menu.vue').default);

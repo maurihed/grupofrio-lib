@@ -21,7 +21,7 @@
           <frecuencias-map ></frecuencias-map>
         </div>
         <div class="map-footer">
-          <map-footer suc="SUC04"></map-footer>
+          <map-footer suc="SUC04" :isFrecuencias="true"></map-footer>
         </div>
       </div>
     </div>

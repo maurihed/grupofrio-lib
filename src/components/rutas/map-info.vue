@@ -25,7 +25,7 @@
       <div class="footer-item actions-field">
         <a class='dropdown-trigger waves-effect waves-light btn-small white-text' href='#' data-target='dropdown1'>Acciones</a>
         <ul id='dropdown1' class='dropdown-content'>
-          <li><a href="#!" @click="openClientsModal">Asignar Clientes</a></li>
+          <li v-if="!isFrecuencias"><a href="#!" @click="openClientsModal">Asignar Clientes</a></li>
           <li><a href="#!" @click="exoportClients">Exportar</a></li>
           <li class="divider" tabindex="-1"></li>
           <li><a href="#!" @click="toggleMenu">{{ isMenuOpen ? 'Cerrar' : 'Abrir' }} menu</a></li>
@@ -76,7 +76,7 @@ import { Route } from '../../models/route';
 
 export default {
   name: 'map-info',
-  props: ['suc'],
+  props: ['suc', 'isFrecuencias'],
   data: () => ({
     modalInstance: null,
     selectedRoute: null,
@@ -129,6 +129,9 @@ export default {
       this.modalInstance.open();
     },
     exoportClients() {
+      if (this.isFrecuencias) {
+        window.open(`http://187.239.145.198/HLApp/controllers/rutas/frecuenciasExcel.php?route=${route}`, '_blank');
+      }
       const routes = this.selectedRoutes.join(',');
       if (!routes) {
         displayError('Selecciona al menos una ruta');
