@@ -38,6 +38,20 @@
       </div>
     </div>
     <div class="row">
+      <div class="col s12 m6">
+        <panel-dos
+          titulo="Gasto local"
+          :cols="gastoLocal"
+        ></panel-dos>
+      </div>
+      <div class="col s12 m6">
+        <panel-dos
+          titulo="Gasto Gasolina"
+          :cols="gastoGasolina"
+        ></panel-dos>
+      </div>
+    </div>
+    <div class="row">
       <div class="col s12 m4">
           <panel-cols
             titulo="Resumen Ventas"
@@ -68,6 +82,7 @@
 </template>
 <script>
 import panelcolsVue from './panel-cols.vue';
+import panelDosVue from './panel-dos.vue';
 import panelSmallVue from './panel-small.vue';
 import panelTableVue from './panel-table.vue';
 
@@ -90,6 +105,8 @@ export default {
     extraMerma: {},
     extraUnidades: {},
     extraAlmacen: {},
+    gastoLocal: [],
+    gastoGasolina: [],
   }),
   async created() {
     this.cols = [
@@ -97,7 +114,7 @@ export default {
       { titulo:'Gasto credito', valor: 4257.45 },
       { titulo:'Gasto Total', valor: 8514.90 },
     ];
-    await Promise.all([
+    await Promise.allSettled([
       this.fetchMerma(),
       this.fetchEntradasSalidas('Salidas'),
       this.fetchEntradasSalidas('Entradas'),
@@ -107,11 +124,29 @@ export default {
       this.fetchPagos(),
       this.fetchUnidades(),
       this.fetchAlmacen(),
+      this.fetchGasolina(),
     ]);
     this.initConcentrado();
+    this.getGastoLocal();
     this.isLoaded = true;
   },
   methods: {
+    getGastoLocal() {
+      const percentage  = this.ventasResumen[2] && this.ventasResumen[2].valor ? Math.round(
+        ((this.gastos[0].valor || 0) / this.ventasResumen[2].valor) * 10) / 10 : 0;
+      this.gastoLocal = [
+        {
+          titulo: 'Gasto local',
+          valor: this.gastos[0].valor || 0,
+          filter: 'money',
+        },
+        {
+          valor: percentage,
+          filter: 'percentage',
+          class: percentage <= 20 ? 'green-text text-darken-4' : 'red-text text-darken-4'
+        }
+      ];
+    },
     initConcentrado() {
       const contado = this.ventasResumen.find((item)=> item.titulo == 'Venta contado').valor;
       const pagado = this.pagos.find((item)=> item.titulo == 'Pago local').valor;
@@ -210,9 +245,27 @@ export default {
       ];
       this.progres++;
     },
+    async fetchGasolina() {
+      const {data: gasto} = await axios.post(`${env.REPORTES_ARQUEO}?option=getGastosGasolina`,{ fecha: this.fecha, suc: this.suc });
+      const percentage  = this.ventasResumen[2] && this.ventasResumen[2].valor ? Math.round(
+        ((gasto || 0) / this.ventasResumen[2].valor) * 1000) / 10 : 0;
+      this.gastoGasolina = [
+        {
+          titulo: 'Gasto Gasolina',
+          valor: gasto,
+          filter: 'money',
+        },
+        {
+          valor: percentage,
+          filter: 'percentage',
+          class: percentage <= 8 ? 'green-text text-darken-4' : 'red-text text-darken-4'
+        }
+      ];
+    }
   },
   components:{
     'panel-cols': panelcolsVue,
+    'panel-dos': panelDosVue,
     'panel-small': panelSmallVue,
     'panel-table': panelTableVue,
   },

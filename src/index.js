@@ -12,10 +12,17 @@ Vue.use(Vuex);
 const Store = new Vuex.Store(store);
 // Filtros
 Vue.filter('money', function (value) {
-  if(!Number(value)) return value;
+  if(isNaN(Number(value))) return value;
   if (!value) return '$0'
   return '$'+(new Intl.NumberFormat("en-US").format(value));
-})
+});
+
+Vue.filter('percentage', function (value) {
+  if(isNaN(Number(value))) return value;
+  const number = new Intl.NumberFormat("es-MX").format(value);
+  return `${number} %`; 
+});
+
 Vue.filter('number', function (value) {
   if(!Number(value)) return value;
   if (!value) return 0;
