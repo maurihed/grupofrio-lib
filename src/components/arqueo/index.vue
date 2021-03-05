@@ -133,7 +133,7 @@ export default {
   methods: {
     getGastoLocal() {
       const percentage  = this.ventasResumen[2] && this.ventasResumen[2].valor ? Math.round(
-        ((this.gastos[0].valor || 0) / this.ventasResumen[2].valor) * 10) / 10 : 0;
+        ((this.gastos[0].valor || 0) / this.ventasResumen[2].valor) * 1000) / 10 : 0;
       this.gastoLocal = [
         {
           titulo: 'Gasto local',
