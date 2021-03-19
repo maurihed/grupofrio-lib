@@ -30,11 +30,22 @@ Vue.filter('number', function (value) {
 })
 Vue.filter('hour', function (value) {
   if (!value) return '';
+  if (value == '--') return '--';
   const [hours, minutes] = value.split(':');
   const meridian = hours < 12 ? 'AM': 'PM'; 
   let hour = hours%12;
   hour = hour == 0 ? 12 : hour;
   return `${hour}:${minutes} ${meridian}`;
+})
+Vue.filter('HLHour', function(value) {
+  if (!value) return '';
+  const fullHour = String(value).padStart(4,0);
+  const minutes = Number(fullHour.slice(-2));
+  const hours = Number(fullHour.slice(0, 2));
+  const meridian = hours < 12 ? 'AM': 'PM'; 
+  let hour = hours%12;
+  hour = hour == 0 ? 12 : hour;
+  return `${String(hour).padStart(2,'0')}:${String(minutes).padStart(2,'0')} ${meridian}`;
 })
 // Vue components
 Vue.component('vue-button', require('./button.vue').default)
@@ -84,6 +95,9 @@ Vue.component('rutas-menu', require('./components/rutas/rutas-menu.vue').default
 Vue.component('rutas-info-title', require('./components/rutas/rutas-info-title.vue').default);
 //frecuencias
 Vue.component('frecuencia-clientes', require('./components/rutas/frecuencias/index.vue').default);
+// Localizador
+Vue.component('hl-localizador', require('./components/localizador/index.vue').default);
+
 //
 var app = new Vue({
   el: '#app',

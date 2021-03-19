@@ -3,6 +3,10 @@
   height: calc(100vh - #{$top-bar-height} - #{$nav-height} - #{$nav-height});
   display: flex;
   .rutas-menu {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    overflow-y: auto;
     width: 350px;
     height: 100%;
     flex-shrink: 0;

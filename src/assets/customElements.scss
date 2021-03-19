@@ -46,15 +46,22 @@ table {
 }
 
 .btn-custom {
-  margin: 0 5px 20px 5px;
   border: 1px solid $primary;
   box-shadow: 0px 2px 3px #e0e0e0;
-  transition: all .25s;
-  color: $primary;
+  transition: all 0.25s;
+  line-height: 1rem;
+  font-size: 12px;
   padding: 3px 5px;
   background-color: #FFFFFF;
+  color: $primary;
   &:hover {
     cursor: pointer;
+    background-color: $primary;
+    border: 1px solid $primary;
+    color: #FFF;
+    border-radius: 0px 10px;
+  }
+  &:focus {
     background-color: $primary;
     border: 1px solid $primary;
     color: #FFF;
@@ -67,4 +74,8 @@ table {
     outline: 1px solid #CCC;
     padding: 20px 10px;
     margin-bottom: 50px;
+}
+
+.datepicker-day-button {
+  line-height: 34px !important;
 }
