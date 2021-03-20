@@ -3,7 +3,7 @@
     <div><span>Descripción: </span> <span class="text-bold">{{producto.descripcion}}</span></div>
     <div><span>Cantidad: </span> <span class="text-bold">{{producto.cantidad | number}} pza</span></div>
     <div><span>Importe: </span> <span class="text-bold">{{producto.importe | money}}</span></div>
-    <div><span>Kilos: </span> <span class="text-bold">{{producto.cantidad | number}} kg</span></div>
+    <div><span>Kilos: </span> <span class="text-bold">{{producto.kilos | number}} kg</span></div>
     <div><span>Hora: </span> <span class="text-bold">{{producto.hora | HLHour}}</span></div>
   </div>
 </template>

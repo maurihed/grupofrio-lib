@@ -5,7 +5,6 @@
         <h5>Frecuencias</h5>
       </rutas-info-title>
       <div class="d-flex rutas-info">
-        <slot></slot>
         <div class="rutas-camionetas">
           <img src="http://187.237.145.198/HLApp/img/icono_user.png" alt="car">
           <div class="input-field m-0 flex-grow-1">
@@ -19,6 +18,7 @@
             <span class="text-bold">{{vendedorSelected.vehiculo_id}}</span>
           </div>
         </div>
+        <slot></slot>
       </div>
     </div>
     <div class="rutas-container">
