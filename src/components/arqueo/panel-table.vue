@@ -18,7 +18,7 @@
               <span class="green-text text-darken-2" v-if="name !== 'Crecimiento' && porcentaje.length > 0 && porcentaje.includes(j) && col >= 85">{{col}}%</span>
               <span class="red-text text-darken-2" v-if="name !== 'Crecimiento' && porcentaje.length > 0 && porcentaje.includes(j) && col < 85">{{col}}%</span>
             </td>
-            <td :class="getClass(row.Crecimiento)">{{row.Crecimiento}}%</td>
+            <td v-if="row.Crecimiento != undefined" :class="getClass(row.Crecimiento)">{{row.Crecimiento}}%</td>
             <td v-if="extra && extra[i]" class="center indigo-text text-darken-2">
               <span><i class="material-icons">check_circle</i></span>
             </td>
