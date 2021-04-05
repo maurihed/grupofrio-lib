@@ -45,6 +45,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .rutas-menu {
+    overflow-y: visible !important;
+  }
   .route-title {
     color: #2d3a8d;
     font-weight: bold;
