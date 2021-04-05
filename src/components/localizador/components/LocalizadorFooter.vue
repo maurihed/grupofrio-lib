@@ -21,6 +21,7 @@
             <div><span>Clientes sin visitar: </span> <span class="text-bold">{{ visitas.sinVisitar }}</span></div>
           </div>
           <div class="d-flex flex-column">
+            <div><span>Total Clientes: </span> <span class="text-bold">{{nClientes}}</span></div>
             <div><span>Hora de salida: </span> <span class="text-bold">{{ inicioRuta.inicio || '--' | hour }}</span></div>
             <div><span>Hora de venta: </span> <span class="text-bold">{{ inicioRuta.fin || '--' | hour }}</span></div>
           </div>
@@ -203,6 +204,9 @@ export default {
     },
     isTraking() {
       return this.$store.state.localizador.trankingInfo.isTraking
+    },
+    nClientes() {
+      return this.$store.state.localizador.clientes.length;
     },
   },
 }

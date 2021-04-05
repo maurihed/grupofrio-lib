@@ -1,5 +1,5 @@
 <template>
-  <div @click="toggleProductos" class="localizadorClientCard primary" :class="{'localizadorClientCard--active': isActive}">
+  <div @click="openWindowsInfo" class="localizadorClientCard primary" :class="{'localizadorClientCard--active': isActive}">
     <div class="localizadorClientCard__color" :class="{
       'localizadorClientCard__color--blue': cliente.estado == 1,
       'localizadorClientCard__color--red': cliente.estado == 0,
@@ -14,14 +14,12 @@
         <span v-if="cliente.comment">Comment: </span> <span v-if="cliente.comment" class="text-bold">"{{cliente.comment}}"</span>
       </div>
     </div>
-    <div class="localizadorClientCard__popup">
-      <product-card v-for="(producto, index) in cliente.productos" :key="index" :producto="producto"></product-card>
-    </div>
   </div>
 </template>
 
 <script>
 import ProductCardVue from './Product-card.vue';
+import Vue from 'vue';
 
 export default {
   name:'LocalizadorClientCard',
@@ -38,6 +36,38 @@ export default {
       if (this.cliente.productos.length) {
         this.isActive = !this.isActive;
       }
+    },
+    openWindowsInfo() {
+      const ruta = this.$store.state.localizador.ruta;
+      const { markers } = ruta;
+      const marker = markers.find(m => m.cliente.clave == this.cliente.clienteId);
+      const venta = this.cliente.Venta;
+      if (!marker.infoWindow) {
+        let productos = '';
+        this.cliente.productos.forEach((producto) => {
+          productos += `
+          <div class="productCard">
+            <div><span>Descripción: </span> <span class="text-bold">${producto.descripcion}</span></div>
+            <div><span>Cantidad: </span> <span class="text-bold">${Vue.filter('number')(producto.cantidad)} pza</span></div>
+            <div><span>Importe: </span> <span class="text-bold">${Vue.filter('money')(producto.importe)}</span></div>
+            <div><span>Kilos: </span> <span class="text-bold">${Vue.filter('number')(producto.kilos)} Kg</span></div>
+            <div><span>Hora: </span> <span class="text-bold">${Vue.filter('HLHour')(producto.hora)}</span></div>
+          </div>`;
+        }); 
+        marker.setInfoWindow(new window.google.maps.InfoWindow({
+          content: `
+            <h6 style="font-family: axiforma bold; color:#0b109f; font-size:18px;">${this.cliente.clienteId}</h6>
+            <span>${this.cliente.nombreTienda}</span> <br/>
+            <span>Venta: </span><span class="text-bold primary">$ ${venta || 0}</span><br/>
+            ${this.cliente.comentario ? `<span>Comentario:</span> <span>${this.cliente.comentario}</span>` : ''}
+            <br>
+            ${productos}
+          `,
+          })
+        );
+      }
+      marker.toggleInfoWindow();
+      this.isActive = !this.isActive;
     }
   },
   components: {
@@ -80,20 +110,6 @@ export default {
     }
     &__details {
       font-size: 14px;
-    }
-    &__popup {
-      display: none;
-      position: absolute;
-      min-height: 150px;
-      max-height: 630px;
-      overflow: auto;
-      width: 350px;
-      top: 150px;
-      left: 400px;
-      z-index: 1;
-      background: #dedede;
-      box-shadow: 0 1px 3px 0 rgb(60 64 67 / 30%), 0 4px 8px 3px rgb(60 64 67 / 15%);
-      padding: 1rem;
     }
     &--active {
       background: #dedede;

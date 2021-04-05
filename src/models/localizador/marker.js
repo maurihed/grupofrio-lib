@@ -9,6 +9,7 @@ export class Marker {
     this.isRendered = false;
     this.googleMarker = null;
     this.isInfoOpen = false;
+    this.infowindow = null;
     this.estados = [
       '#b71c1c', // 0 sin accion
       '#2e3b8d', // 1 venta
@@ -19,6 +20,12 @@ export class Marker {
     this.render = this.render.bind(this);
     this.remove = this.remove.bind(this);
     this.setMap = this.setMap.bind(this);
+    this.toggleInfoWindow = this.toggleInfoWindow.bind(this);
+    this.setInfoWindow = this.setInfoWindow.bind(this);
+  }
+
+  setInfoWindow(infoWindow) {
+    this.infoWindow = infoWindow;
   }
 
   render() {
@@ -67,6 +74,15 @@ export class Marker {
     if (this.googleMarker) {
       this.googleMarker.setMap(null);
     }
+  }
+
+  toggleInfoWindow() {
+    if (this.isInfoOpen) {
+      this.infoWindow.close();
+    } else {
+      this.infoWindow.open(this.map, this.googleMarker);
+    }
+    this.isInfoOpen = !this.isInfoOpen;
   }
 
   getMarkerIcon(stroke = "#fff") {
