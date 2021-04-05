@@ -110,7 +110,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .rutas-container {
     height: calc(100vh - 121px) !important;
   }

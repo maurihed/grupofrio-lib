@@ -7,7 +7,7 @@
       <div class="d-flex rutas-info">
         <slot></slot>
         <div class="input-field m-0">
-          <select v-model="routeSelected">
+          <select v-model="routeSelected" @change="setRoute">
             <option value="" disabled selected>Escoge una ruta</option>
             <option v-for="route in routes" :value="route.id" :key="route.id">{{route.name}}</option>
           </select>
@@ -53,6 +53,11 @@ export default {
   },
   updated() {
     M.FormSelect.init(document.querySelectorAll('select'));
+  },
+  methods: {
+    setRoute(route) {
+      this.$store.dispatch('SET_FRECUENCIA_ROUTE', this.routeSelected);
+    }
   },
 }
 </script>

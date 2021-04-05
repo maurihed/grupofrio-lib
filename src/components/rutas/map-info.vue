@@ -120,6 +120,9 @@ export default {
     selectedClients() {
       return this.$store.state.selectedClients;
     },
+    frecuenciaRoute() {
+      return this.$store.state.frecuenciaRouteSelected;
+    }
   },
   methods: {
     handleMarkerClick({ info: client, isSelected }) {
@@ -130,7 +133,8 @@ export default {
     },
     exoportClients() {
       if (this.isFrecuencias) {
-        window.open(`http://187.239.145.198/HLApp/controllers/rutas/frecuenciasExcel.php?route=${route}`, '_blank');
+        window.open(`http://187.237.145.198/HLApp/controllers/rutas/frecuenciasExcel.php?route=${this.frecuenciaRoute}`, '_blank');
+        return;
       }
       const routes = this.selectedRoutes.join(',');
       if (!routes) {

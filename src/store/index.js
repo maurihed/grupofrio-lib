@@ -9,6 +9,7 @@ export const store = {
     isMenuOpen: true,
     map: null,
     selectedClients: [],
+    frecuenciaRouteSelected: null,
     localizador: {
       trankingInfo: {
         interval: null,
@@ -127,6 +128,9 @@ export const store = {
     },
     setLoadingState(state, isLoading) {
       state.isLoading = isLoading;
+    },
+    setFrecuenciaRoute(state, route) {
+      state.frecuenciaRouteSelected = route;
     }
   },
   actions: {
@@ -219,6 +223,9 @@ export const store = {
     SET_LOCALIZADOR_VENDEDOR({ commit, dispatch }, vendedor) {
       dispatch('UNFOLLOW_VENDEDOR');
       commit('setLocalizadorVendedor', vendedor);
+    },
+    SET_FRECUENCIA_ROUTE({ commit }, route) {
+      commit('setFrecuenciaRoute', route);
     }
   }
 };
