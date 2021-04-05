@@ -62,7 +62,10 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+  .rutas-container .rutas-menu {
+    overflow-y: visible;
+  }
   .rutas-info {
     .input-field {
       width: 250px;
