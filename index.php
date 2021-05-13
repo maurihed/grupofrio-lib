@@ -3,31 +3,31 @@ $menu = [
   [
     'tipo' => 'link',
     'nombre' => 'Concentrado',
-    'url' => 'http://187.237.145.198/HLApp/GrupoFrio/views/reportes/concentrado.php',
-    'icon' => 'http://187.237.145.198/HLApp/img/menuReportes/conc1.svg',
-    'iconHovered' => 'http://187.237.145.198/HLApp/img/menuReportes/conc2.svg',
+    'url' => 'http://187.188.181.34/HLApp/GrupoFrio/views/reportes/concentrado.php',
+    'icon' => 'http://187.188.181.34/HLApp/img/menuReportes/conc1.svg',
+    'iconHovered' => 'http://187.188.181.34/HLApp/img/menuReportes/conc2.svg',
     'permiso' => 'concentrado'
   ],
   [
     'tipo' => 'dropdown',
     'nombre' => 'Frecuencias',
-    'icon' => 'http://187.237.145.198/HLApp/img/menuReportes/conc1.svg',
-    'iconHovered' => 'http://187.237.145.198/HLApp/img/menuReportes/conc2.svg',
+    'icon' => 'http://187.188.181.34/HLApp/img/menuReportes/conc1.svg',
+    'iconHovered' => 'http://187.188.181.34/HLApp/img/menuReportes/conc2.svg',
     'permiso' => 'frecuencia',
     'children' => [
       [
         'nombre' => 'Frecuencia',
-        'url' => 'http://187.237.145.198/HLApp/views/reportesVenta/#frecuencias',
+        'url' => 'http://187.188.181.34/HLApp/views/reportesVenta/#frecuencias',
         'permiso' => 'frecuencia.frecuencia',
       ],
       [
         'nombre' => 'Frecuencia Oxxo',
-        'url' => 'http://187.237.145.198/HLApp/views/reportesVenta/#frecuenciasOxxo',
+        'url' => 'http://187.188.181.34/HLApp/views/reportesVenta/#frecuenciasOxxo',
         'permiso' => 'frecuencia.oxxo',
       ],
       [
         'nombre' => 'Frecuencia vendedores',
-        'url' => 'http://187.237.145.198/HLApp/GrupoFrio/views/reportes/frecuencias/unidades.php',
+        'url' => 'http://187.188.181.34/HLApp/GrupoFrio/views/reportes/frecuencias/unidades.php',
         'permiso' => 'frecuencia.vendedores',
       ]
     ]
@@ -42,8 +42,8 @@ $menu = [
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PHP with VUE</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="http://187.237.145.198/HLApp/fonts/Axiforma/Axiforma%20Bold.otf">
-  <link rel="stylesheet" href="http://187.237.145.198/HLApp/fonts/Axiforma/Axiforma%20Bold.otf">
+  <link rel="stylesheet" href="http://187.188.181.34/HLApp/fonts/Axiforma/Axiforma%20Bold.otf">
+  <link rel="stylesheet" href="http://187.188.181.34/HLApp/fonts/Axiforma/Axiforma%20Bold.otf">
   <link rel="stylesheet" href="./dist/main.css">
 </head>
 <body>
@@ -55,7 +55,7 @@ $menu = [
       <div class="mobile-menu">
         <a href="#" data-target="slide-out" class="sidenav-trigger" id="menu"><i class="material-icons">menu</i></a>
       </div>
-      <a id="logo" href="/HLApp/views/index.php" class="brand-logo"><img src="http://187.237.145.198/HLApp/img/logoLaurita.png" alt="Logo"></a>
+      <a id="logo" href="/HLApp/views/index.php" class="brand-logo"><img src="http://187.188.181.34/HLApp/img/logoLaurita.png" alt="Logo"></a>
     </div>
     <div class="menu-items">
       <div class="nav-wrapper">

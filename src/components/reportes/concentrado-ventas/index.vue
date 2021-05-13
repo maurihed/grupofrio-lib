@@ -698,16 +698,16 @@ export default {
     },
     goToArqueo(fecha, isGastos = '') {
       if (fecha) {
-        let uri = `http://187.237.145.198/HLApp/GrupoFrio/views/reportes/arqueo.php?fecha=${fecha}&suc=${this.suc}`;
+        let uri = `http://187.188.181.34/HLApp/GrupoFrio/views/reportes/arqueo.php?fecha=${fecha}&suc=${this.suc}`;
         if(isGastos) {
-          uri = `http://187.237.145.198/HLApp/views/reportesVenta/?op=gastos&suc=${this.suc}&day1=${fecha}&day2=${fecha}#gastos`;
+          uri = `http://187.188.181.34/HLApp/views/reportesVenta/?op=gastos&suc=${this.suc}&day1=${fecha}&day2=${fecha}#gastos`;
         }
         window.open(uri, '_blank');
       }
     },
     goToProduccion(turno) {
       const [id] = turno.split('-');
-      const uri = `http://187.237.145.198/HLApp/GrupoFrio/views/comisiones/index.php?fecha=${this.fecha}&suc=${this.suc}&turno=${id}`;
+      const uri = `http://187.188.181.34/HLApp/GrupoFrio/views/comisiones/index.php?fecha=${this.fecha}&suc=${this.suc}&turno=${id}`;
       window.open(uri, '_blank');
     },
     getAcumuladoVentaSelected() {

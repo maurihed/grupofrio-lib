@@ -40,7 +40,7 @@ export default {
       const { fila } = filaCol;
       const tanqueId = `${this.suc}_T${id}_${columna}${fila}_${filaCol.canastillas}`;
       const idT = this.tanqueSelected.idMaquinas;
-      const url = `http://187.237.145.198/HLApp/core/produccion/OrdenTrabajo.php?id=${o.id}&articulo=${o.articulo}&Sucursal=${o.Sucursal}&SerieP=${o.SerieP}&SerieE=${o.SerieE}&docEntry=${o.docEntry}&TanqueID=${tanqueId}&Planeada=${o.Planeada}&Generada=${o.Generada}&tanqueId=${idT}`;
+      const url = `http://187.188.181.34/HLApp/core/produccion/OrdenTrabajo.php?id=${o.id}&articulo=${o.articulo}&Sucursal=${o.Sucursal}&SerieP=${o.SerieP}&SerieE=${o.SerieE}&docEntry=${o.docEntry}&TanqueID=${tanqueId}&Planeada=${o.Planeada}&Generada=${o.Generada}&tanqueId=${idT}`;
       window.location.href = url;
     }
   }

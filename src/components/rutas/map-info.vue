@@ -133,7 +133,7 @@ export default {
     },
     exoportClients() {
       if (this.isFrecuencias) {
-        window.open(`http://187.237.145.198/HLApp/controllers/rutas/frecuenciasExcel.php?route=${this.frecuenciaRoute}`, '_blank');
+        window.open(`http://187.188.181.34/HLApp/controllers/rutas/frecuenciasExcel.php?route=${this.frecuenciaRoute}`, '_blank');
         return;
       }
       const routes = this.selectedRoutes.join(',');
@@ -141,7 +141,7 @@ export default {
         displayError('Selecciona al menos una ruta');
         return;
       }
-      window.open(`http://187.237.145.198/HLApp/controllers/rutas/rutasExcel.php?routes=${routes}&suc=${this.suc}`, '_blank');
+      window.open(`http://187.188.181.34/HLApp/controllers/rutas/rutasExcel.php?routes=${routes}&suc=${this.suc}`, '_blank');
     },
     async reassignClients() {
       await axios.post(`${env.RUTAS_API_URL}?option=updateClientRoute`, {

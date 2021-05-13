@@ -6,14 +6,14 @@
       </rutas-info-title>
       <div class="d-flex rutas-info">
         <div class="rutas-camionetas">
-          <img src="http://187.237.145.198/HLApp/img/icono_user.png" alt="car">
+          <img src="http://187.188.181.34/HLApp/img/icono_user.png" alt="car">
           <div class="input-field m-0 flex-grow-1">
             <select v-model="vendedorSelected" @change="fetchVendedorInfo">
               <option :value="null" disabled>Escoge un vendedor</option>
               <option v-for="vendedor in vendedores" :value="vendedor" :key="vendedor.idVendedor">{{vendedor.NOMBRE}}</option>
             </select>
           </div>
-          <img src="http://187.237.145.198/HLApp/img/icono_user.png" alt="car">
+          <img src="http://187.188.181.34/HLApp/img/icono_user.png" alt="car">
           <div class="d-flex align-center flex-grow-1">
             <span class="text-bold">{{vendedorSelected.vehiculo_id}}</span>
           </div>
