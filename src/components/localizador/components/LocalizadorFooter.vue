@@ -123,11 +123,6 @@ export default {
         }
       });
     },
-    clearMap() {
-      for (let i = 0; i < this.features.length; i++) {
-        this.map.data.remove(this.features[i]);
-      }
-    },
     async openInventario() {
       // getInventario
       this.modalInstance.open();
@@ -147,40 +142,7 @@ export default {
       this.fechas = arrFechas.map(f => new Date(f.fechaEntrega.replace('-','/')).toDateString());
     },
     async fetchDatosRastreo(fecha) {
-      const  params = new URLSearchParams();
-      const iconsetngs = {
-        path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
-        strokeWeight: 1,
-        fillColor: '#FF0000',
-        fillOpacity: 0.5,
-        strokeColor: '#FF0000'
-      };
-      params.append('fecha', fecha);
-      params.append('idChofer', this.vendedor.idVendedor);
-      const response = await axios.post(`${env.BASE_URL}/controllers/traceDataReader.php`, params);
-      const geoJson = response.data;
-      if (geoJson === '-1') {
-          displayError(`No existen los datos de rastreo para ${fecha}`);
-          return;
-      }
-      if (!geoJson.Error) {
-        this.clearMap();
-        this.features = this.map.data.addGeoJson(geoJson, null, (respuesta) => {
-          this.map.data.setStyle(function(feature) {
-            return {
-              path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-              strokeColor: feature.getProperty('strokeColor'),
-              strokeWeight: 3,
-              icons: [{
-                  icon: iconsetngs,
-                  repeat: '100px'
-              }]
-            }
-          });
-                // generarPathLinea(respuesta);
-                // crearMarcadores(datos);
-        });
-      }
+      this.$store.dispatch('FETCH_DATOS_RASTREO', { chofer: this.vendedor.idVendedor, fecha });
     },
   },
   computed: {

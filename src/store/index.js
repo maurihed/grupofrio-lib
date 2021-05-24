@@ -1,4 +1,5 @@
 import { today } from '../assets/js/date-utilities';
+import { displayError } from '../assets/js/utilities';
 import { Route } from '../models/localizador/route';
 
 export const store = {
@@ -42,6 +43,7 @@ export const store = {
       },
       kilosVendidos: 0,
       ruta: null,
+      features: [],
       isLoading: false
     }
   },
@@ -131,17 +133,28 @@ export const store = {
     },
     setFrecuenciaRoute(state, route) {
       state.frecuenciaRouteSelected = route;
+    },
+    setFeatures(state, features) {
+      state.localizador.features = features;
     }
   },
   actions: {
-    FOLLOW_VENDEDOR({ commit, state }) {
+    FOLLOW_VENDEDOR({ dispatch, commit, state }) {
       const vendedor = state.localizador.vendedor;
+      const { map } = state;
       const params = new URLSearchParams();
       params.append('idChofer', vendedor.idVendedor);
-      const interval = setInterval(async () => {
+      
+      const updateTrackInfo = async () => {
         const response = await axios.post(`${env.BASE_URL}/controllers/gpsDataReader.php`, params);
         commit('setTrakingInfo',{ location: response.data.ubicacion, isAwake: response.data.status === "Encendido"});
-      }, 5000);
+        dispatch('FETCH_DATOS_RASTREO', {chofer: vendedor.idVendedor, fecha: today()})
+      };
+      
+      updateTrackInfo();
+      map.setZoom(18);
+      const interval = setInterval(updateTrackInfo, 5000);
+      
       commit('setTrakingState', true);
       commit('setLocalizadorInterval', interval);
     },
@@ -226,6 +239,44 @@ export const store = {
     },
     SET_FRECUENCIA_ROUTE({ commit }, route) {
       commit('setFrecuenciaRoute', route);
+    },
+    CLEAR_MAP({state}) {
+      const { map, localizador: { features } } = state;
+      for (let i = 0; i < features.length; i++) {
+        map.data.remove(features[i]);
+      } 
+    },
+    async FETCH_DATOS_RASTREO({ dispatch, commit, state }, {chofer, fecha}) {
+      const { map } = state;
+      const  params = new URLSearchParams();
+      params.append('fecha', fecha);
+      params.append('idChofer', chofer);
+      const { data: geoJson } = await axios.post(`${env.BASE_URL}/controllers/traceDataReader.php`, params);
+      if (geoJson === '-1') {
+        displayError(`No existen los datos de rastreo para ${fecha}`);
+          return;
+      }
+      if (!geoJson.Error) {
+        dispatch('CLEAR_MAP');
+        commit('setFeatures', map.data.addGeoJson(geoJson));
+        map.data.setStyle(function(feature) {
+          return {
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            strokeColor: feature.getProperty('strokeColor'),
+            strokeWeight: 3,
+            icons: [{
+                icon: {
+                  path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
+                  strokeWeight: 1,
+                  fillColor: '#FF0000',
+                  fillOpacity: 0.5,
+                  strokeColor: '#FF0000'
+                },
+                repeat: '100px'
+            }]
+          }
+        });
+      }
     }
   }
 };

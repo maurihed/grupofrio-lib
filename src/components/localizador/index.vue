@@ -92,6 +92,8 @@ export default {
       this.$store.dispatch('SET_LOCALIZADOR_VENDEDOR', this.vendedorSelected);
       this.$store.dispatch('GET_VENDEDOR_INFO', { chofer: this.vendedorSelected.idVendedor, fecha: this.fecha });
       this.$store.dispatch('GET_ROUTE_INFO', { vendedorId: this.vendedorSelected.idVendedor, fecha: this.fecha });
+      this.$store.dispatch('FETCH_DATOS_RASTREO', { chofer: this.vendedorSelected.idVendedor, fecha: this.fecha });
+
       // this.$store.dispatch('FOLLOW_VENDEDOR');
     }
   },
