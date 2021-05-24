@@ -114,7 +114,7 @@ export default {
 
 <style lang="scss" scoped>
   .rutas-container {
-    height: calc(100vh - 121px) !important;
+    height: calc(100vh - 130px) !important;
   }
   .rutas-info {
     .input-field {
