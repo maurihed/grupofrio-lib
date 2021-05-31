@@ -104,7 +104,7 @@ export default {
   height: 2px;
   min-width: 30px;
 }
-.collapsible-body {
+.collapsible .collapsible-body {
   padding: 0px !important;
   margin: 0px !important;
 }
