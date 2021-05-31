@@ -106,6 +106,7 @@ export default {
 }
 .collapsible-body {
   padding: 0px !important;
+  margin: 0px !important;
 }
 .mermas {
   &__top {
