@@ -94,7 +94,9 @@ export default {
       this.canastillas = tanque.n_canastillas;
       this.tipoBarras = Number(tanque.tipo_barras);
     }
-    M.FormSelect.init(document.querySelectorAll('select'), {});
+  },
+  updated() {
+    M.FormSelect.init(document.querySelectorAll('select'));
   },
   methods: {
     closeModal() {
