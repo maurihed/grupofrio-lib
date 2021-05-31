@@ -3,7 +3,7 @@
     <a class="btn-link center" @click="removeEvaluation" v-if="isEvaluated">
       {{value | number}} / <span class="text-muted">{{horaComputed | hour}} </span>
     </a>
-    <div class="input-field" v-if="!isEvaluated">
+    <div class="mermaInput" v-if="!isEvaluated">
       <input placeholder="0" :value="value" @blur="updateValue" type="number" class="validate">
     </div>
   </div>
@@ -75,5 +75,16 @@ export default {
   }
   .text-muted{
     color: gray;
+  }
+  .mermaInput {
+    input {
+      background: #ffffff !important;
+      width: 80px !important;
+      height: 20px !important;
+      border: 1px solid #2e3b8d !important;
+      border-radius: 10px !important;
+      text-align: center;
+      margin: 0 !important;
+    }
   }
 </style>

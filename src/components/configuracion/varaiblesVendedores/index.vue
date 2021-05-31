@@ -3,24 +3,30 @@
     <br>
     <progress-indicator :show="!isLoaded"></progress-indicator>
     <div v-if="isLoaded">
-        <h5 class="center text-primary">Vendedores</h5>
+      <div class="card m-0 mb-1 p-1">
+        <h6 class="center text-bold primary">Vendedores</h6>
         <vendedor-card v-for="vendedor in vendedores" :key="vendedor.ExtEmpNo"
           :vendedor="vendedor"
           :action="actualizarVariable"
-          >
+        >
         </vendedor-card>
-        <h5 class="center text-primary">Supervisores</h5>
+      </div>
+      <div class="card m-0 mb-1 p-1">
+        <h6 class="center text-bold primary">Supervisores</h6>
         <vendedor-card v-for="supervisor in supervisores" :key="supervisor.ExtEmpNo"
           :vendedor="supervisor"
           :action="actualizarVariable"
           >
         </vendedor-card>
-        <h5 class="center text-primary">Gerentes</h5>
+      </div>
+      <div class="card m-0 mb-1 p-1">
+        <h6 class="center text-bold primary">Gerentes</h6>
         <vendedor-card v-for="gerente in gerentes" :key="gerente.ExtEmpNo"
           :vendedor="gerente"
           :action="actualizarVariable"
-          >
+        >
         </vendedor-card>
+      </div>
     </div>
   </div>
 </template>

@@ -1,69 +1,53 @@
 <template>
   <div class="turnos">
-    <div class="panel">
-      <div class="container-fluid">
-        <div class="row vertical-center">
-            <div class="col s3 align-center">
-              <span class="title">Turno Matutino</span>
-            </div>
-            <div class="col s4">
-              <div class="input-field">
-                <input id="m-startTime" type="text" class="timepicker" :value="to12Format(matutino && matutino.hora_inicial)">
-                <label for="m-startTime">Hora inicial</label>
-              </div>
-            </div>
-            <div class="col s4">
-              <div class="input-field">
-                <input id="m-endTime" type="text" class="timepicker" :value="to12Format(matutino && matutino.hora_final)">
-                <label for="m-endTime">Hora final</label>
-              </div>
-            </div>
-            <div class="col s1 buttons-area">
-              <button class="btn-floating red darken-4" @click="deleteTurno('m-')"><i class="material-icons">delete_forever</i></button>
-              <button class="btn-floating" @click="saveTurno('m-')"><i class="material-icons">save</i></button>
-            </div>
+    <div class="border rounded mb-1">
+      <div class="d-flex align-center flex-wrap justify-content-around">
+        <span class="text-bold secondary px-1">Turno Matutino</span>
+        <div class="input-field input-filed-small m-0">
+          <input id="m-startTime" type="text" class="timepicker" :value="to12Format(matutino && matutino.hora_inicial)">
+          <label for="m-startTime">Hora inicial</label>
         </div>
-        <div class="row vertical-center">
-            <div class="col s3 align-center">
-              <span class="title">Turno Vespertino</span>
-            </div>
-            <div class="col s4">
-              <div class="input-field">
-                <input id="v-startTime" type="text" class="timepicker" :value="to12Format(vespertino && vespertino.hora_inicial)">
-                <label for="v-startTime">Hora inicial</label>
-              </div>
-            </div>
-            <div class="col s4">
-              <div class="input-field">
-                <input id="v-endTime" type="text" class="timepicker" :value="to12Format(vespertino && vespertino.hora_final)">
-                <label for="v-endTime">Hora final</label>
-              </div>
-            </div>
-            <div class="col s1 buttons-area">
-              <button class="btn-floating red darken-4" @click="deleteTurno('v-')"><i class="material-icons">delete_forever</i></button>
-              <button class="btn-floating" @click="saveTurno('v-')"><i class="material-icons">save</i></button>
-            </div>
+        <div class="input-field input-filed-small m-0">
+          <input id="m-endTime" type="text" class="timepicker" :value="to12Format(matutino && matutino.hora_final)">
+          <label for="m-endTime">Hora final</label>
         </div>
-        <div class="row vertical-center">
-            <div class="col s3 align-center">
-              <span class="title">Turno Nocturno</span>
-            </div>
-            <div class="col s4">
-              <div class="input-field">
-                <input id="n-startTime" type="text" class="timepicker" :value="to12Format(nocturno && nocturno.hora_inicial)">
-                <label for="n-startTime">Hora inicial</label>
-              </div>
-            </div>
-            <div class="col s4">
-              <div class="input-field">
-                <input id="n-endTime" type="text" class="timepicker" :value="to12Format(nocturno && nocturno.hora_final)">
-                <label for="n-endTime">Hora final</label>
-              </div>
-            </div>
-            <div class="col s1 buttons-area">
-              <button class="btn-floating red darken-4" @click="deleteTurno('n-')"><i class="material-icons">delete_forever</i></button>
-              <button class="btn-floating" @click="saveTurno('n-')"><i class="material-icons">save</i></button>
-            </div>
+        <div>
+          <button @click="deleteTurno('m-')" class="btn-floating btn-small mx-1 red darken-4"><i class="material-icons">delete</i></button>
+          <button  @click="saveTurno('m-')" class="btn-floating btn-small mx-1"><i class="material-icons">save</i></button>
+        </div>
+      </div>
+    </div>
+    <div class="border rounded mb-1">
+      <div class="d-flex align-center flex-wrap justify-content-around">
+        <span class="text-bold secondary px-1">Turno Vespertino</span>
+        <div class="input-field input-filed-small m-0">
+          <input id="v-startTime" type="text" class="timepicker" :value="to12Format(vespertino && vespertino.hora_inicial)">
+          <label for="v-startTime">Hora inicial</label>
+        </div>
+        <div class="input-field input-filed-small m-0">
+          <input id="v-endTime" type="text" class="timepicker" :value="to12Format(vespertino && vespertino.hora_final)">
+          <label for="v-endTime">Hora final</label>
+        </div>
+        <div>
+          <button @click="deleteTurno('v-')" class="btn-floating btn-small mx-1 red darken-4"><i class="material-icons">delete</i></button>
+          <button  @click="saveTurno('v-')" class="btn-floating btn-small mx-1"><i class="material-icons">save</i></button>
+        </div>
+      </div>
+    </div>
+    <div class="border rounded mb-1">
+      <div class="d-flex align-center flex-wrap justify-content-around">
+        <span class="text-bold secondary px-1">Turno Nocturno</span>
+        <div class="input-field input-filed-small m-0">
+          <input id="n-startTime" type="text" class="timepicker" :value="to12Format(nocturno && nocturno.hora_inicial)">
+          <label for="n-startTime">Hora inicial</label>
+        </div>
+        <div class="input-field input-filed-small m-0">
+          <input id="n-endTime" type="text" class="timepicker" :value="to12Format(nocturno && nocturno.hora_final)">
+          <label for="n-endTime">Hora final</label>
+        </div>
+        <div>
+          <button @click="deleteTurno('n-')" class="btn-floating btn-small mx-1 red darken-4"><i class="material-icons">delete</i></button>
+          <button  @click="saveTurno('n-')" class="btn-floating btn-small mx-1"><i class="material-icons">save</i></button>
         </div>
       </div>
     </div>
@@ -85,7 +69,6 @@ export default {
       const month = String(D.getMonth() + 1).padStart(2,0);
       this.date = `${D.getFullYear()}-${month}-${D.getDate()}`;
       const response = await axios.post(`${env.CONFIGURACION_TURNO}?option=getTurnos`, { suc: this.suc });
-      console.log(response.data);
       this.matutino = response.data.find((turno) => turno.nombre === 'MATUTINO')
       this.vespertino = response.data.find((turno) => turno.nombre === 'VESPERTINO');
       this.nocturno = response.data.find((turno) => turno.nombre === 'NOCTURNO');

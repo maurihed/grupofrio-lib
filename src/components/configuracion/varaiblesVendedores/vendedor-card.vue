@@ -1,15 +1,15 @@
 <template>
-  <div class="vendedor-card">
-    <span class="vendedor-card-nombre">{{vendedor.NOMBRE}}</span>
-    <div class="input-field">
+  <div class="border rounded mb-1 d-flex align-center">
+    <span class="flex-1">{{vendedor.NOMBRE}}</span>
+    <div class="flex-1 input-field">
       <input id="sueldo_base" v-model="sueldo_base" type="number" class="validate">
       <label for="sueldo_base">Sueldo base</label>
     </div>
-    <div class="input-field">
+    <div class="flex-1 input-field">
       <input id="comision" v-model="comision" type="number" min="0.000" max="1" step="0.001" class="validate">
       <label for="comision">Comision</label>
     </div>
-    <button class="btn-floating" @click="guardar"><i class="material-icons">save</i></button>
+    <button class="flex-shrink-0 btn-floating mx-1" @click="guardar"><i class="material-icons">save</i></button>
   </div>
 </template>
 

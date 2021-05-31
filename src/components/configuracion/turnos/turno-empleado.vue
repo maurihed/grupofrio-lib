@@ -14,19 +14,21 @@
     </div>
   </div>
   <div v-if="isLoaded">
-    <ul class="collection with-header turno-empleado-overflow-visible" v-for="(empleados, puesto) in puestos" :key="puesto">
-      <li class="collection-header title"><h6>{{puesto}}</h6></li>
-      <li v-for="empleado in empleados" :key="empleado.id" class="collection-item turno-empleado-row">
-        {{empleado.nombre}} - {{empleado.id}}
-        <turno-select
-          :empleado="empleado.id"
-          :turnos="turnos"
-          :turno="empleado.turno_id"
-          :key="'turno-select-'+empleado.id"
-        >
-        </turno-select>
-      </li>
-    </ul>
+    <div class="card m-0 mb-1 p-1" v-for="(empleados, puesto) in puestos" :key="puesto">
+      <h6 class="center text-bold primary">{{puesto}}</h6>
+        <div class="border rounded mb-1" v-for="empleado in empleados" :key="empleado.id">
+          <div class="d-flex align-center flex-wrap">
+            <span class="text-bold secondary px-1 flex-grow-1">{{empleado.nombre}} - {{empleado.id}}</span>
+              <turno-select
+                :empleado="empleado.id"
+                :turnos="turnos"
+                :turno="empleado.turno_id"
+                :key="'turno-select-'+empleado.id"
+              >
+              </turno-select>
+          </div>
+        </div>
+    </div>
   </div>
 </div>
 </template>
