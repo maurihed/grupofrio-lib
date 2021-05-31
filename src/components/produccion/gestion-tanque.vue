@@ -74,7 +74,7 @@ export default {
       columnas: 0,
       canastillas: 0,
       tipoBarras: 0,
-      tiposBarras:[75,150],
+      tiposBarras:[50,75,150],
       cajonesDeshabilitados: [],
       tanque: {},
       cajonSelected: null,
